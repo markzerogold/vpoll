@@ -1,0 +1,65 @@
+# Pollbot Requirements
+
+This file contains all requirements for the pollbot Discord bot project.
+Last updated: 2025-10-21
+
+## Bot Name
+Tentative bot name: "PollBot" (May be renamed later)
+
+## Use Case
+On a Discord server, run tournaments such as "Which Star Trek Character is the best" or "Top Pizza Toppings".
+These tournaments are tracked in a Google Sheet and matches are determined by Discord polls.
+
+Example Google Sheet: https://docs.google.com/spreadsheets/d/1DHSEcWDfhF-aZQ-gbQMNN-ozOd0bbLOFgtRmzAbK5J0/edit?usp=sharing
+
+## Core Functionality
+
+### Tournament Creation
+- Bot must support command to initiate a tournament from a Google Sheet:
+  ```
+  /tournament create <Google Sheet link>
+  ```
+
+### Poll Creation
+- Bot must create polls for tournament matches in Discord using native Discord polls
+- Discord Poll Documentation: https://discord.com/developers/docs/resources/poll
+- Command to create polls for specific matches:
+  ```
+  /tournament create poll region 1 round 1
+  ```
+
+### Poll Tracking & Updates
+- Bot must track poll results from Discord
+- Bot must update the Google Sheet to advance the tournament based on poll results
+
+## Tournament Structure
+
+### Overview
+- All tournaments have exactly 64 entities (participants/competitors)
+- Participants are matched against each other in bracket-style tournament
+- Tournament data is managed in a Google Sheet
+
+### Seeding System
+- Google Sheet has a "Rank" tab with a ranked list of all tournament participants
+- Rankings in the "Rank" tab determine the seeding order
+- Ranked participants are distributed into 4 regions
+
+### Regions
+- Each tournament has 4 regions
+- Each region has customized names (specific to that tournament)
+- Seeded participants are distributed across regions by ranking:
+  - Distribution is done 4 at a time (one participant per region)
+  - 16 participants per region (16 ranks × 4 regions = 64 total)
+  - Example distribution:
+    - Rank 1 → Region 1
+    - Rank 2 → Region 2
+    - Rank 3 → Region 3
+    - Rank 4 → Region 4
+    - Rank 5 → Region 1
+    - Rank 6 → Region 2
+    - etc.
+
+## Technical Requirements
+- Integration with Google Sheets API to read tournament data and write results
+- Use Discord's native poll feature for voting
+- Track poll results and automatically update tournament progression
