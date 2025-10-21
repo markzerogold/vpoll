@@ -1,0 +1,75 @@
+# Reference Documentation
+
+This file contains links to reference documentation for external integrations and APIs used in the PollBot project.
+Last updated: 2025-10-21
+
+## Discord API Documentation
+
+### General Discord.js
+- Discord.js Guide: https://discordjs.guide/
+- Discord.js Documentation: https://discord.js.org/docs/packages/discord.js/main
+- Discord.js GitHub: https://github.com/discordjs/discord.js
+
+### Discord Polls
+- Discord Poll Resource Documentation: https://discord.com/developers/docs/resources/poll
+- Poll API Reference: https://discord.com/developers/docs/resources/poll#poll-object
+- Poll Create Structure: https://discord.com/developers/docs/resources/poll#poll-create-request-object
+
+### Discord Slash Commands
+- Slash Commands Guide: https://discord.com/developers/docs/interactions/application-commands
+- Interaction Response Types: https://discord.com/developers/docs/interactions/receiving-and-responding
+
+### Discord Developer Portal
+- Developer Portal: https://discord.com/developers/applications
+- Bot Permissions Calculator: https://discord.com/developers/docs/topics/permissions
+
+## Google Sheets API Documentation
+
+### Google Sheets API v4
+- Overview: https://developers.google.com/sheets/api/guides/concepts
+- API Reference: https://developers.google.com/sheets/api/reference/rest
+- Node.js Quickstart: https://developers.google.com/sheets/api/quickstart/nodejs
+
+### Reading Data
+- Reading Values: https://developers.google.com/sheets/api/guides/values#read
+- spreadsheets.values.get: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get
+- Batch Get Values: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet
+
+### Writing Data
+- Writing Values: https://developers.google.com/sheets/api/guides/values#write
+- spreadsheets.values.update: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update
+- Batch Update Values: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+
+### Authentication
+- Authentication Overview: https://developers.google.com/sheets/api/guides/authorizing
+- Service Account Setup: https://developers.google.com/identity/protocols/oauth2/service-account
+- OAuth 2.0 for Client-side Apps: https://developers.google.com/identity/protocols/oauth2
+
+### Google APIs Node.js Client
+- GitHub Repository: https://github.com/googleapis/google-api-nodejs-client
+- npm Package: https://www.npmjs.com/package/googleapis
+- Sheets API Examples: https://github.com/googleapis/google-api-nodejs-client/tree/main/samples/sheets
+
+## Project-Specific References
+
+### Example Tournament Google Sheet
+- Star Trek Tournament: https://docs.google.com/spreadsheets/d/1DHSEcWDfhF-aZQ-gbQMNN-ozOd0bbLOFgtRmzAbK5J0/edit?usp=sharing
+- Sheet Structure:
+  - "Rank" tab: Ranked list of 64 participants (determines seeding)
+  - 4 Region tabs: Tournament brackets with custom region names
+  - 16 participants per region (64 total)
+
+## Additional Resources
+
+### TypeScript
+- TypeScript Documentation: https://www.typescriptlang.org/docs/
+
+### Node.js Libraries
+- dotenv (Environment Variables): https://www.npmjs.com/package/dotenv
+- googleapis: https://www.npmjs.com/package/googleapis
+
+## Notes
+
+- All API keys and credentials should be stored in `.env` file (never committed to git)
+- Google Sheets API requires OAuth 2.0 or Service Account authentication
+- Discord polls are a native Discord feature (not buttons/reactions)
