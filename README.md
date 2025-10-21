@@ -1,4 +1,4 @@
-# Pollbot
+# vPoll
 
 A Discord bot for creating and managing polls in your Discord servers.
 
@@ -52,7 +52,7 @@ A Discord bot for creating and managing polls in your Discord servers.
 ## Project Structure
 
 ```
-pollbot/
+vpoll/
 ├── src/
 │   ├── commands/       # Slash command definitions
 │   ├── events/         # Discord event handlers

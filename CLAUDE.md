@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Pollbot is a Discord bot for creating and managing polls within Discord servers using discord.js v14.
+vPoll is a Discord bot for creating and managing polls within Discord servers using discord.js v14.
 
 ## Development Commands
 

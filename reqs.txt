@@ -1,10 +1,10 @@
-# Pollbot Requirements
+# vPoll Requirements
 
-This file contains all requirements for the pollbot Discord bot project.
+This file contains all requirements for the vPoll Discord bot project.
 Last updated: 2025-10-21
 
 ## Bot Name
-Tentative bot name: "PollBot" (May be renamed later)
+Bot name: "vPoll" 
 
 ## Use Case
 On a Discord server, run tournaments such as "Which Star Trek Character is the best" or "Top Pizza Toppings".

@@ -1,7 +1,7 @@
 {
-  "name": "pollbot",
+  "name": "vpoll",
   "version": "1.0.0",
-  "description": "A Discord bot for creating and managing polls",
+  "description": "vPoll - A Discord bot for managing tournament voting polls",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
