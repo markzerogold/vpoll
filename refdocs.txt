@@ -53,7 +53,7 @@ Last updated: 2025-10-21
 ## Project-Specific References
 
 ### Example Tournament Google Sheet
-- Star Trek Tournament: https://docs.google.com/spreadsheets/d/1DHSEcWDfhF-aZQ-gbQMNN-ozOd0bbLOFgtRmzAbK5J0/edit?usp=sharing
+- Star Trek Tournament: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk/edit?usp=sharing
 - Sheet Structure:
   - "Rank" tab: Ranked list of 64 participants (determines seeding)
   - 4 Region tabs: Tournament brackets with custom region names
@@ -73,3 +73,23 @@ Last updated: 2025-10-21
 - All API keys and credentials should be stored in `.env` file (never committed to git)
 - Google Sheets API requires OAuth 2.0 or Service Account authentication
 - Discord polls are a native Discord feature (not buttons/reactions)
+
+## Google Sheets API Setup (Completed)
+
+### Service Account Configuration
+- Project: vPoll-Bot (Google Cloud Console)
+- Service Account: vpoll-sheets-access
+- Credentials: `keys/vpoll-key.json` (not committed to git)
+- Scopes: `https://www.googleapis.com/auth/spreadsheets`
+
+### Testing
+- Run `npm run test-sheets` to verify Google Sheets API connection
+- Test script: `src/test-sheets.ts`
+
+### Template Sheet Structure
+- Template URL: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk/edit
+- **Tabs:**
+  - Rank: A1:B65 (Rank number, Participant name)
+  - Teams: A1:E17 (Seeding groups + 4 region columns with participant names)
+  - Bracket: Visual tournament bracket
+  - Config: Tournament settings (poll length, etc.)

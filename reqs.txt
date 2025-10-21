@@ -10,7 +10,7 @@ Bot name: "vPoll"
 On a Discord server, run tournaments such as "Which Star Trek Character is the best" or "Top Pizza Toppings".
 These tournaments are tracked in a Google Sheet and matches are determined by Discord polls.
 
-Example Google Sheet: https://docs.google.com/spreadsheets/d/1DHSEcWDfhF-aZQ-gbQMNN-ozOd0bbLOFgtRmzAbK5J0/edit?usp=sharing
+Example Google Sheet: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk/edit?usp=sharing
 
 ## Core Functionality
 

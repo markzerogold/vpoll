@@ -12,14 +12,21 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "deploy-commands": "ts-node src/deploy-commands.ts"
+    "deploy-commands": "ts-node src/deploy-commands.ts",
+    "test-sheets": "ts-node src/test-sheets.ts"
   },
-  "keywords": ["discord", "bot", "poll", "voting"],
+  "keywords": [
+    "discord",
+    "bot",
+    "poll",
+    "voting"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "googleapis": "^164.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
