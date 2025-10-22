@@ -27,7 +27,7 @@ This document identifies overlapping, conflicting, or unclear scenarios that nee
 ### Overlap Group 2: Channel Configuration (Scenarios 2, 28, 29)
 **Issue:** Channel configuration appears in multiple places with potential conflicts
 
-- **Scenario 2**: Config tab sets tournament rules (includes Discord Channel ID - from reqs.md)
+- **Scenario 2**: Config tab sets tournament rules (includes Discord Channel ID - from REQS.md)
 - **Scenario 28**: Config tab specifies optional Announcements Channel ID
 - **Scenario 29**: Config tab configures channel/thread organization
 
