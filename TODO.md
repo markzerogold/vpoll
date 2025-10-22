@@ -112,7 +112,13 @@ This file tracks all pending tasks and implementation work for the vPoll project
 
 - [ ] **Brainstorm deployment architecture** - How will the bot work when deployed?
   - Initial use case: Private bot for one Discord server with friends
-  - Public bot considerations:
+    - **Discord Developer Portal**: Turn OFF "Public Bot" toggle in Bot settings
+    - Only bot owner can invite the bot to servers
+    - Others cannot generate invite links even with Client ID
+    - Optional: Add code to restrict bot to specific server ID
+    - Simpler implementation, no multi-server architecture needed
+    - Lower costs, no scaling concerns for MVP
+  - Public bot considerations (for future if/when we go public):
     - Multi-server support architecture
     - Google Sheets API quota limits and costs
     - Service account scalability (one service account vs. per-server accounts)
