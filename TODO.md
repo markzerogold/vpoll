@@ -191,7 +191,7 @@ This file tracks all pending tasks and implementation work for the vPoll project
 
 ## Future Features (Deferred)
 
-See `future.txt` for features planned for later versions:
+See `FUTURE.md` for features planned for later versions:
 - Reseeding after each round
 - Historical statistics across tournaments
 - Multiple concurrent tournaments per server
