@@ -1,0 +1,19 @@
+vPoll Scenarios
+
+1. In google sheets, the user fills out a copy of the template, adding participants, ranking participants, and naming regions
+2. In google sheets, the user sets the tournament rules in the config tab
+3. The google sheet uses the ranking to fill out the seed groups that are used to fill out the bracket
+4. In google sheets, the user shares the completed copy of the template with the VPoll service account email (vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com). This may be a new email alias in the future
+5. In google sheets, the user shares the sheet as view only
+6. In discord, the discord admin adds the bot and sets permissions (need to define these)
+7. In discord, the discord admin starts the tournament with a command that specified the the template to use
+8. In discord, the discord admin starts the first round of polls based on the poll batches parameter
+9. In discord, the discord admin can use vPoll to generate an "advertising" link share the tournament in other threads of channels (Need to config advertising thread template)
+10. In discord, the polls run based on their configured duration, discord users vote in the polls
+11. In discord, vPoll monitors the polls, when they complete, vPoll updates the google sheet template copy for the tournament, setting the winner in the Bracket tab and recording how many votes each participant got in the Results tab of the sheet (need to define the results tab layout)
+12. In discord, the discord admin launches the next round of polls, vPoll follows the same patterns as the first round
+13. In discord, when the tournament ends, vPoll updates the results tab of the google sheet
+14. In discord, at any time, the discord admin can use vPoll to share the current results in the discord channel (need to define formatting)
+15. In discord, at the end of the tournament, the discord admin can use vPoll to generate a post about the winner and optionally include a celebratory link
+16. In discord, at any time, users can also ask vPoll to share the current results
+17. In discord, at any time, users or the discord admin can ask vPoll for the link to the sheet template so they can view the Bracket

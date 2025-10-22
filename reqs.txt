@@ -59,6 +59,78 @@ Example Google Sheet: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfB
     - Rank 6 → Region 2
     - etc.
 
+## Google Sheets Template Structure
+
+### Template Usage
+- Both master template and custom templates are supported
+- Custom templates must follow the same format as the master template
+- Template format will be documented for users who want to create custom sheets
+
+### Sheet Tabs
+
+#### Rank Tab
+- Column A: Rank value (1-64)
+- Column B: Participant name (string)
+- Column C: Notes column - user can add additional data or links (e.g., wiki articles) for more info
+
+#### Config Tab
+Configuration settings stored as key-value pairs (Column A = setting name, Column B = value):
+
+1. **Tournament Name** - Display name for the tournament
+2. **Tournament Description** - Brief description of what's being voted on
+3. **Start Date** - When the tournament begins
+4. **Poll Length** - Duration in hours (e.g., 24)
+5. **Poll Batches** - How many polls to launch at once:
+   - "full round" - All matches in a round at once
+   - "one per region" - 1 match per region (4 total)
+   - "two per region" - 2 matches per region (8 total)
+   - "half round" - Launch half the matches, then the other half
+   - "sequential" - One poll at a time
+   - Custom number - Exact number specified
+6. **Discord Channel ID** - Which channel to post polls in
+7. **Auto-advance** - Whether to automatically start next round after current round completes (true/false)
+8. **Tie Breaker Rule** - What to do if poll ends in tie (admin decides, higher seed wins, revote, etc.)
+9. **Results Visibility** - When users can see results (after voting, after poll closes, at tournament end)
+
+#### Teams Tab
+- Column A: Rank
+- Columns B-E: Region names (customizable per tournament)
+- Example region names: ALPHA, BETA, GAMMA, DELTA
+- Shows how the 64 participants are distributed across 4 regions based on seeding
+
+#### Bracket Tab
+- Complex formula-driven structure that displays tournament bracket
+- Shows participant names with seed numbers
+- After match completion, displays vote counts: `[votes] (seed) Participant Name`
+  - Example before match: `(1) Spock (TOS/TAS/Films/SNW)`
+  - Example after match: `45 (1) Spock (TOS/TAS/Films/SNW)`
+- Vote counts are pulled from Results tab via formulas
+- vPoll writes TRUE/FALSE winner indicators to advance the bracket
+
+#### Results Tab
+Each completed match is added as a new row (chronologically, oldest first) with these columns:
+
+1. Match ID - Unique identifier for the match
+2. Round - Round name/number (Round 1, Round 2, Sweet 16, Elite 8, etc.)
+3. Region - Region name (ALPHA, BETA, GAMMA, DELTA, or FINAL for finals)
+4. Participant 1 Name
+5. Participant 1 Seed
+6. Participant 1 Votes
+7. Participant 2 Name
+8. Participant 2 Seed
+9. Participant 2 Votes
+10. Winner - Name of winning participant
+11. Discord Poll ID - Discord's poll ID for reference
+12. Poll Start Time - Timestamp when poll started
+13. Poll End Time - Timestamp when poll completed
+14. Total Votes - Sum of all votes cast
+15. Notes - Additional information or comments
+
+### Google Sheets Sharing
+- User shares completed template with vPoll service account: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com
+- Sheet must be shared with "Editor" permissions so vPoll can update results
+- Note: Service account email may change to a new alias in the future
+
 ## Technical Requirements
 - Integration with Google Sheets API to read tournament data and write results
 - Use Discord's native poll feature for voting
