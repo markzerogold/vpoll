@@ -6,18 +6,24 @@ This file tracks all pending tasks and implementation work for the vPoll project
 
 ### Scenarios Needing Definition/Refinement
 
+**HIGH PRIORITY - Conflicts/Overlaps (See SCENARIO_REVIEW.md):**
+- [ ] **RESOLVE: Results Sharing Overlap** (scenarios 14, 16, 26) - Consolidate or clarify distinctions
+- [ ] **RESOLVE: Channel Config Hierarchy** (scenarios 2, 28, 29) - Define precedence rules
+- [ ] **RESOLVE: Auto vs Manual Rounds** (scenarios 8, 12, 24) - Define interaction rules
+- [ ] **RESOLVE: Role Restrictions Feasibility** (scenario 19) - Research Discord API capabilities
+
+**MEDIUM PRIORITY - Clarifications Needed:**
+- [ ] **CLARIFY: Tournament End Flow** (scenarios 11, 13, 15) - Define sequence and what each does
+- [ ] **CLARIFY: Advertising vs Announcements** (scenarios 9, 28) - Define clear differences
+- [ ] **CLARIFY: Sheet Link Wording** (scenario 17) - Tournament sheet vs template
+- [ ] **CLARIFY: Config Tab Organization** - Group 13+ config options into sections
+
+**ORIGINAL SCENARIOS - Still Need Definition:**
 - [ ] **Scenario 6**: Discord bot setup - Define required permissions
 - [ ] **Scenario 7**: Starting tournament - Define command syntax and parameters
 - [ ] **Scenario 8**: First round of polls - Define how poll batches work in detail
-- [ ] **Scenario 9**: Advertising links - Define advertising thread template format
 - [ ] **Scenario 10**: Poll voting process - Ensure Discord native poll behavior is documented
-- [ ] **Scenario 11**: Auto-update results - Document the update flow in detail
-- [ ] **Scenario 12**: Subsequent rounds - Clarify differences from first round if any
-- [ ] **Scenario 13**: Tournament end update - Define final sheet updates
-- [ ] **Scenario 14**: Admin sharing results - Define formatting for results display
-- [ ] **Scenario 15**: Winner announcement - Define post format and celebratory link options
-- [ ] **Scenario 16**: Users sharing results - Same as scenario 14?
-- [ ] **Scenario 17**: Sharing sheet link - Simple command to return the Google Sheets URL
+- [ ] **Scenario 20**: Match preview timing - Define exact timing and format
 
 ### New Scenarios Added (Need Implementation Planning)
 
