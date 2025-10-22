@@ -55,8 +55,11 @@ Last updated: 2025-10-21
 ### Example Tournament Google Sheet
 - Star Trek Tournament: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk/edit?usp=sharing
 - Sheet Structure:
-  - "Rank" tab: Ranked list of 64 participants (determines seeding)
-  - 4 Region tabs: Tournament brackets with custom region names
+  - "Participants" tab: Ranked list of 64 participants (determines seeding)
+  - "Regions" tab: Shows how 64 participants are distributed across 4 regions
+  - "Bracket" tab: Visual tournament bracket
+  - "Config" tab: Tournament settings
+  - "Results" tab: Match results tracking
   - 16 participants per region (64 total)
 
 ## Additional Resources
@@ -89,7 +92,8 @@ Last updated: 2025-10-21
 ### Template Sheet Structure
 - Template URL: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk/edit
 - **Tabs:**
-  - Rank: A1:B65 (Rank number, Participant name)
-  - Teams: A1:E17 (Seeding groups + 4 region columns with participant names)
-  - Bracket: Visual tournament bracket
-  - Config: Tournament settings (poll length, etc.)
+  - Participants: A1:D65 (Rank number, Participant name, Notes, Reference Link)
+  - Regions: A1:E17 (Rank column + 4 region columns with participant names)
+  - Bracket: Visual tournament bracket (formula-driven)
+  - Config: Tournament settings (poll length, batches, channel IDs, etc.)
+  - Results: Match results (16 columns per completed match)
