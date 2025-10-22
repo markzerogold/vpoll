@@ -275,6 +275,46 @@ async function populateSheet(spreadsheetId: string) {
       spreadsheetId,
       requestBody: {
         requests: [
+          // Freeze header row for Participants tab
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: sheetIdMap['Participants'],
+                gridProperties: { frozenRowCount: 1 },
+              },
+              fields: 'gridProperties.frozenRowCount',
+            },
+          },
+          // Freeze header row for Config tab
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: sheetIdMap['Config'],
+                gridProperties: { frozenRowCount: 1 },
+              },
+              fields: 'gridProperties.frozenRowCount',
+            },
+          },
+          // Freeze header row for Regions tab
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: sheetIdMap['Regions'],
+                gridProperties: { frozenRowCount: 1 },
+              },
+              fields: 'gridProperties.frozenRowCount',
+            },
+          },
+          // Freeze header row for Results tab
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: sheetIdMap['Results'],
+                gridProperties: { frozenRowCount: 1 },
+              },
+              fields: 'gridProperties.frozenRowCount',
+            },
+          },
           // Bold headers for Participants tab
           {
             repeatCell: {
