@@ -88,6 +88,28 @@ This file tracks all pending tasks and implementation work for the vPoll project
 
 ## Deployment & Scaling Planning
 
+- [ ] **Define MVP (Minimum Viable Product) features**
+  - Identify core essential features for first working version
+  - Review all 27 scenarios and mark as MVP vs. future enhancement
+  - Reconsider each feature through lens of:
+    - **Cost**: Google Sheets API calls, database operations, compute resources
+    - **Scalability**: Does it work for 1 server? 10 servers? 100 servers?
+    - **Complexity**: Implementation effort vs. value provided
+    - **Dependencies**: External services, quota limits, rate limits
+  - Features to evaluate for MVP inclusion:
+    - Scenarios 1-17 (original core scenarios) - Which are truly essential?
+    - Scenario 18: Pause/resume - Nice to have or essential?
+    - Scenario 19: Role restrictions - Security concern or optional?
+    - Scenario 20: Match previews - Core feature or enhancement?
+    - Scenario 21: Live vote updates - High API cost, is it worth it?
+    - Scenario 22: Validation - Essential for good UX
+    - Scenario 23: Tiebreaker - Essential for tournament completion
+    - Scenario 24: Auto-scheduling - Convenience vs. API monitoring costs
+    - Scenario 25: Reference links - Low cost, high value
+    - Scenario 26: Bracket export - Image generation cost/complexity
+    - Scenario 27: User notifications - Database + DM costs
+  - Create MVP feature list and v2/v3 roadmap
+
 - [ ] **Brainstorm deployment architecture** - How will the bot work when deployed?
   - Initial use case: Private bot for one Discord server with friends
   - Public bot considerations:
