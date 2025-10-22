@@ -31,6 +31,19 @@ This file tracks all pending tasks and implementation work for the vPoll project
 - [ ] **Scenario 25**: Participant reference links
 - [ ] **Scenario 26**: Bracket export as image/PDF
 - [ ] **Scenario 27**: User notification subscriptions
+- [ ] **Scenario 28**: Announcement channel for tournament/round start notifications
+- [ ] **Scenario 29**: Channel/thread organization options - NEEDS REVIEW for permissions
+
+### Discord Permissions & Channel Management (NEEDS RESEARCH)
+
+- [ ] **Research Discord permissions for Scenario 29** - Channel/thread organization
+  - Does vPoll need "Manage Threads" permission to create threads?
+  - Does vPoll need "Manage Channels" permission to create channels?
+  - Can bot post to existing channels/threads with just "Send Messages"?
+  - What's the best UX: bot auto-creates threads vs. admin pre-creates them?
+  - Permission implications for private vs. public bot
+  - Should thread/channel creation be MVP or future feature?
+  - Alternative: Require admin to manually create channels/threads and provide IDs in config
 
 ## Implementation Tasks
 
