@@ -2,143 +2,406 @@
 
 This file tracks all pending tasks and implementation work for the vPoll project.
 
-## Documentation Tasks
+**Last Updated:** 2025-10-22
+**Status:** Requirements finalized, implementation planning phase
 
-### Scenarios Needing Definition/Refinement
+---
 
-**HIGH PRIORITY - Conflicts/Overlaps (See REQUIREMENTS.md "Scenario Conflicts and Overlaps Review" section):**
-- [ ] **RESOLVE: Results Sharing Overlap** (scenarios 14, 16, 26) - Consolidate or clarify distinctions
-- [ ] **RESOLVE: Channel Config Hierarchy** (scenarios 2, 28, 29) - Define precedence rules
-- [ ] **RESOLVE: Auto vs Manual Rounds** (scenarios 8, 12, 24) - Define interaction rules
-- [ ] **RESOLVE: Role Restrictions Feasibility** (scenario 19) - Research Discord API capabilities
+## Critical Gaps & Questions from REQUIREMENTS.md Review
 
-**MEDIUM PRIORITY - Clarifications Needed:**
-- [ ] **CLARIFY: Tournament End Flow** (scenarios 11, 13, 15) - Define sequence and what each does
-- [ ] **CLARIFY: Advertising vs Announcements** (scenarios 9, 28) - Define clear differences
-- [ ] **CLARIFY: Sheet Link Wording** (scenario 17) - Tournament sheet vs template
-- [ ] **CLARIFY: Config Tab Organization** - Group 13+ config options into sections
+### Architecture & Design Questions
 
-**ORIGINAL SCENARIOS - Still Need Definition:**
-- [ ] **Scenario 6**: Discord bot setup - Define required permissions
-- [ ] **Scenario 7**: Starting tournament - Define command syntax and parameters
-- [ ] **Scenario 8**: First round of polls - Define how poll batches work in detail
-- [ ] **Scenario 10**: Poll voting process - Ensure Discord native poll behavior is documented
-- [ ] **Scenario 20**: Match preview timing - Define exact timing and format
+- [ ] **CRITICAL: State Management Strategy**
+  - REQUIREMENTS.md Section 9 defines `TournamentState` interface as in-memory
+  - Question: How do we persist state across bot restarts?
+  - Options:
+    - Accept risk for MVP (document that bot restart loses active tournament state)
+    - Add simple JSON file persistence
+    - Add database (PostgreSQL, SQLite, MongoDB)
+  - Decision needed before implementation starts
+  - Related: Auto-scheduling persistence (REQUIREMENTS.md Section 11 - Dependencies & Risks)
 
-### New Scenarios Added (Need Implementation Planning)
+- [ ] **CRITICAL: Tournament Command Structure**
+  - REQUIREMENTS.md shows `/tournament create`, `/tournament start`, `/tournament next-round`, etc.
+  - Current code has `/poll` and `/ping` only
+  - Question: Should all tournament commands be subcommands of `/tournament`? (e.g., `/tournament create` vs `/create-tournament`)
+  - Discord.js supports both patterns - which is better UX?
+  - Need to define complete command structure before implementation
 
-- [ ] **Scenario 18**: Tournament pause/resume functionality
-- [ ] **Scenario 19**: Role-based voting restrictions
-- [ ] **Scenario 20**: Match preview posts
-- [ ] **Scenario 21**: Live vote count updates
-- [ ] **Scenario 22**: Bracket validation before tournament start
-- [ ] **Scenario 23**: Automatic tiebreaker using dice rolls
-- [ ] **Scenario 24**: Automatic round scheduling
-- [ ] **Scenario 25**: Participant reference links
-- [ ] **Scenario 26**: Bracket export as image/PDF
-- [ ] **Scenario 27**: User notification subscriptions
-- [ ] **Scenario 28**: Announcement channel for tournament/round start notifications
-- [ ] **Scenario 29**: Channel/thread organization options - NEEDS REVIEW for permissions
+- [ ] **CRITICAL: Google Sheets Write Strategy**
+  - REQUIREMENTS.md Section 9 shows bracket updates write TRUE/FALSE to specific cells
+  - Question: How do we determine WHICH cells to write to?
+  - Need bracket cell mapping logic (match → cell location)
+  - Is this encoded in formulas? Hardcoded? Dynamic?
+  - Current SheetsService has generic writeRange() but no bracket-specific logic
 
-### Discord Permissions & Channel Management (NEEDS RESEARCH)
+- [ ] **CRITICAL: Poll Event Handling**
+  - REQUIREMENTS.md Section 9 shows poll close event handling
+  - Current code: No poll event listeners implemented
+  - Question: What Discord.js events do we listen to?
+    - `messagePollVoteAdd`? `messagePollVoteRemove`?
+    - Are there poll close events?
+  - Need to research Discord.js v14 poll event API
+  - Fallback: 10-minute polling strategy (REQUIREMENTS.md mentions this)
 
-- [ ] **Research Discord permissions for Scenario 29** - Channel/thread organization
-  - Does vPoll need "Manage Threads" permission to create threads?
-  - Does vPoll need "Manage Channels" permission to create channels?
-  - Can bot post to existing channels/threads with just "Send Messages"?
-  - What's the best UX: bot auto-creates threads vs. admin pre-creates them?
-  - Permission implications for private vs. public bot
-  - Should thread/channel creation be MVP or future feature?
-  - Alternative: Require admin to manually create channels/threads and provide IDs in config
+### Missing Implementation Components
+
+- [ ] **Define TypeScript Interfaces**
+  - REQUIREMENTS.md Section 9 has comprehensive TypeScript interfaces
+  - Need to create: `src/types/tournament.ts` with all interfaces
+  - Interfaces needed:
+    - `TournamentState`, `TournamentConfig`, `Region`, `Participant`
+    - `ActivePoll`, `MatchParticipant`, `ScheduledTask`, `MatchResult`
+
+- [ ] **Create Service Layer**
+  - Current: `SheetsService` exists but is generic
+  - Need tournament-specific services:
+    - `src/services/tournament.ts` - Tournament state management
+    - `src/services/poll.ts` - Poll creation and tracking
+    - `src/services/validation.ts` - Google Sheets validation (Scenario 23)
+    - `src/services/bracket.ts` - Bracket logic and cell mapping
+
+- [ ] **Error Handling & Retry Logic**
+  - REQUIREMENTS.md Section 9 shows retry logic for Google Sheets
+  - Need to implement: `safeSheetUpdate()` with exponential backoff
+  - Discord rate limit handling
+  - Permission validation before operations
+
+### Testing Framework (from removed Success Metrics)
+
+- [ ] **Adapt Success Metrics into Testing Requirements**
+  - Removed Section 4 (Success Metrics) should become test cases:
+    - Setup completion: Can admin create tournament successfully?
+    - Tournament completion: Does tournament progress through all 6 rounds?
+    - Poll participation: Do polls get created correctly?
+    - Setup time: Is validation fast enough (<30 seconds)?
+    - Sheet validation pass rate: Are error messages helpful?
+    - Poll creation error rate: Do polls create without failures?
+    - Round advancement time: Does auto-advance work within 2 minutes?
+
+- [ ] **Create Test Plan Document**
+  - Unit tests for each service
+  - Integration tests for end-to-end scenarios 1-30
+  - Mock Discord API (avoid live Discord during testing)
+  - Mock Google Sheets API (avoid quota usage during testing)
+  - Test data: Sample tournament sheets for different states
+
+### Documentation Alignment
+
+- [ ] **Update README.md**
+  - Current README describes basic poll bot, not tournament bot
+  - Add tournament features overview
+  - Add setup instructions for Google Sheets service account
+  - Add links to REQUIREMENTS.md for detailed specs
+  - Add example tournament workflow
+
+- [ ] **Create DEPLOYMENT.md**
+  - Private bot deployment instructions (toggle in Discord portal)
+  - Environment variables needed
+  - Google Sheets service account setup
+  - Bot permissions checklist
+  - Troubleshooting guide
+
+- [ ] **Create TESTING.md**
+  - How to run test suite
+  - How to create test tournament sheets
+  - Manual testing checklist for each scenario
+  - Performance testing guidelines
+
+---
+
+## Documentation Tasks (RESOLVED)
+
+### ✅ Completed - All scenario conflicts resolved in REQUIREMENTS.md Decision Log
+
+- [x] **RESOLVED: Results Sharing Overlap** (Decision 1) - Three distinct commands: `/tournament results`, `/tournament bracket`, `/tournament bracket-image`
+- [x] **RESOLVED: Channel Config Hierarchy** (Decision 2) - Primary channel → Announcements channel → Threads
+- [x] **RESOLVED: Auto vs Manual Rounds** (Decision 3) - Round 1 manual, rounds 2+ auto if configured
+- [x] **RESOLVED: Role Restrictions** (Decision 4) - Config only, not enforced in MVP
+- [x] **RESOLVED: Tournament End Flow** (Decision 5) - Continuous updates + final celebration
+- [x] **RESOLVED: Advertising vs Announcements** (Decision 6) - Recruitment vs updates
+- [x] **RESOLVED: Sheet Link Wording** (Decision 7) - "Bracket" not "template"
+- [x] **RESOLVED: Match Preview Timing** (Decision 8) - Fixed 60-second delay
+- [x] **RESOLVED: Multi-Tournament Support** (Decision 9) - Single tournament per server (MVP)
+- [x] **RESOLVED: Config Tab Organization** (Decision 10) - 8 required + 8 optional settings
+
+---
 
 ## Implementation Tasks
 
-### Google Sheets Integration
+### Phase 1: Core Tournament Flow (MUST HAVE - MVP)
 
-- [ ] Update test-sheets.ts to read from renamed tabs (Participants, Regions)
-- [ ] Add Tiebreaker column to Results tab structure
-- [ ] Add Reference Link column (Column D) to Participants tab
-- [ ] Implement sheet validation logic (Scenario 22)
-- [ ] Implement Results tab writing with all 16 columns
+**Priority:** Critical for basic functionality
+
+#### Google Sheets Integration
+- [ ] Create `src/services/validation.ts` - Implement Scenario 23 validation
+  - Validate tab structure (5 required tabs)
+  - Validate Participants tab (64 unique participants, ranks 1-64)
+  - Validate Config tab (8 required settings)
+  - Validate Regions tab (4 unique region names)
+  - Check service account permissions
+  - Check Discord channel access
+- [ ] Update `SheetsService` to handle new tab names
+  - Update test-sheets.ts to read "Participants" (not "Rank")
+  - Update test-sheets.ts to read "Regions" (not "Teams")
+- [ ] Implement Results tab writing (16 columns per match)
 - [ ] Implement Bracket tab TRUE/FALSE winner updates
+  - Need bracket cell mapping logic (match ID → cell location)
+  - Research: Are cell locations in template? Hardcoded? Formula-driven?
 
-### Discord Bot Commands
+#### Tournament Commands (Phase 1 MVP)
+- [ ] `/tournament create <sheet-url>` - Scenario 7
+  - Parse Google Sheets URL to extract spreadsheet ID
+  - Call validation service (Scenario 23)
+  - Load tournament config and participants
+  - Store tournament state (in-memory for MVP)
+  - Return confirmation with tournament details
+- [ ] `/tournament start` - Scenario 8
+  - Display tournament summary
+  - Confirm with admin
+  - Launch first round polls (call poll service)
+- [ ] `/tournament next-round` - Scenario 13 (manual advancement)
+  - Check if previous round complete
+  - Display next round preview
+  - Confirm with admin
+  - Launch next round polls
 
-- [ ] Define all slash commands needed for tournament management
-- [ ] `/tournament create` - Start new tournament from Google Sheet
-- [ ] `/tournament start-round` - Launch polls for a round
-- [ ] `/tournament pause` - Pause tournament
-- [ ] `/tournament resume` - Resume paused tournament
-- [ ] `/tournament results` - Show current results
-- [ ] `/tournament winner` - Generate winner announcement
-- [ ] `/tournament bracket` - Generate bracket image/PDF
-- [ ] `/tournament sheet` - Get Google Sheets link
-- [ ] `/tournament advertise` - Generate advertising post
-- [ ] `/participant info <name>` - Get reference link for participant
-- [ ] `/subscribe` - Subscribe to tournament notifications
-- [ ] `/unsubscribe` - Unsubscribe from tournament notifications
+#### Poll Management
+- [ ] Create `src/services/poll.ts`
+  - `createPoll()` - Create Discord native poll (Scenario 9)
+  - `createPollBatch()` - Handle batching (full round, one per region, etc.)
+  - `monitorPolls()` - 10-minute fallback polling
+  - `processPollResults()` - Scenario 12 result processing
+- [ ] Research Discord.js v14 poll events
+  - What events exist for poll close?
+  - How to listen for poll completion?
+  - Fallback strategy if events missed
+- [ ] Implement poll creation with batching (Scenario 9)
+  - Parse "Poll Batches" config (full round, one per region, sequential, etc.)
+  - Create appropriate number of polls
+  - Track active polls in tournament state
 
-### Discord Bot Features
+#### Result Tracking & Bracket Updates
+- [ ] Implement automatic result processing (Scenario 12)
+  - Listen for poll close events (primary method)
+  - Fallback: Check active polls every 10 minutes
+  - Determine winner from vote counts
+  - Handle ties → dice roll (Scenario 24)
+  - Update Bracket tab (TRUE/FALSE)
+  - Append row to Results tab (16 columns)
+  - Post confirmation message in Discord
+- [ ] Implement tiebreaker dice roll (Scenario 24)
+  - Generate random 1-100 for each participant
+  - Re-roll if tied
+  - Post announcement message
+  - Log in Results tab Tiebreaker column
 
-- [ ] Discord poll creation and monitoring
-- [ ] Auto-update Google Sheets when polls complete
-- [ ] Dice roll tiebreaker implementation
-- [ ] Match preview post generation
-- [ ] Live vote count update scheduler
-- [ ] Bracket validation logic
-- [ ] Automatic round scheduling
-- [ ] User notification system (DM subscriptions)
-- [ ] Bracket image/PDF generation
-- [ ] Role-based voting restriction enforcement
+#### Winner Announcement
+- [ ] Implement tournament completion detection (Scenario 14)
+  - Detect when Round 6 (Championship) poll closes
+  - Update tournament status to "completed"
+  - Retrieve winner's Reference Link (if available)
+  - Check Celebratory GIF config
+  - Post winner announcement with all details
 
-### Database/Persistence
+### Phase 2: Admin Controls (MUST HAVE - MVP)
 
-- [ ] Design database schema for tournament state tracking
-- [ ] User notification preferences storage
-- [ ] Active tournament tracking
-- [ ] Poll-to-match mapping
-- [ ] Tournament status (active/paused/completed)
+**Priority:** Essential for tournament management
 
-### Configuration
+- [ ] `/tournament pause` - Scenario 18
+  - Update tournament status to "paused"
+  - Suspend auto-scheduling (if enabled)
+  - Block manual next-round commands
+  - Active polls continue and complete normally
+- [ ] `/tournament resume` - Scenario 18
+  - Update tournament status to "active"
+  - Re-enable auto-scheduling (if configured)
+  - Allow manual commands again
+- [ ] `/tournament cancel` - Scenario 19
+  - Confirm with admin (destructive action)
+  - Close all active polls immediately
+  - Process current results
+  - Update status to "canceled"
+  - Post cancellation announcement
+  - Preserve data (don't delete)
+- [ ] `/tournament results` - Scenario 15 (text summary)
+  - Display current round status
+  - Show active/completed matches per region
+  - Show recent results (last 3-5 matches)
+  - Link to Google Sheets
+- [ ] `/tournament bracket` - Scenario 15 (sheets link)
+  - Return Google Sheets URL
+  - Simple command, just post link
+- [ ] `/tournament winner` - Scenario 16 (manual winner post)
+  - Check tournament status (must be "completed")
+  - Generate same announcement as Scenario 14
+  - Allow re-posting winner
 
-- [ ] Add all new config parameters to Config tab reading logic
-- [ ] Validate all required config values are present
-- [ ] Handle optional config values (defaults)
+### Phase 3: Advanced Configuration (SHOULD HAVE - MVP)
 
-### Testing & Quality Assurance
+**Priority:** Nice to have, adds polish
 
-- [ ] **Create comprehensive test plan**
-  - Unit tests for Google Sheets integration
-  - Unit tests for Discord poll creation and monitoring
-  - Integration tests for end-to-end tournament flow
-  - Test scenarios for all 27 documented scenarios
-  - Edge cases: ties, validation failures, missing data
-  - Automated testing framework (Jest, pytest, or similar)
-  - Use logs to verify correct behavior at each step
-  - Test data: Sample Google Sheets for different tournament states
-  - Mock Discord API responses for testing without live server
-  - Performance testing: API call limits, response times
-  - Regression testing suite for future changes
+- [ ] Auto round scheduling (Scenario 25)
+  - Parse "Auto Round Scheduling" config (immediate, X days, X hours)
+  - Schedule next round launch after delay
+  - Post announcement when round completes
+  - Post announcement when next round starts
+  - Handle manual override (cancel scheduled launch)
+  - Handle pause interaction (suspend countdown)
+  - **NOTE:** Scheduling lost on bot restart (documented risk)
+- [ ] Match preview posts (Scenario 21)
+  - Read Notes (Column C) and Reference Link (Column D) from Participants
+  - Post preview 60 seconds before poll
+  - For batches: All previews → wait 60s → all polls
+- [ ] Announcements channel (Scenario 29)
+  - Read "Announcements Channel ID" from Config
+  - Post tournament/round announcements to separate channel
+  - Fall back to primary channel if not configured
+- [ ] Advertising post generation (Scenario 10)
+  - Read "Advertising Template" from Config
+  - Replace placeholders ({tournament_name}, {description}, etc.)
+  - Post ephemeral message (admin only)
+  - Admin copies/pastes to desired channels
 
-- [ ] **Design scalable logging framework**
-  - Choose logging library (winston, pino, or built-in)
-  - Define log levels (error, warn, info, debug, trace)
-  - Log structure and format (JSON for easy parsing?)
-  - What to log:
-    - All Google Sheets API calls (read/write operations)
-    - All Discord API calls (poll creation, updates)
-    - Tournament state changes (start, pause, round advancement)
-    - User commands and actions
-    - Errors and exceptions with full context
-    - Performance metrics (API latency, processing time)
-  - Log storage strategy:
-    - Local files for development
-    - Cloud logging for production (CloudWatch, Stackdriver, etc.)
-    - Log rotation and retention policies
-  - Privacy considerations: Don't log sensitive user data
-  - Searchability and monitoring: structured logs for easy querying
-  - Alerting: critical errors trigger notifications
-  - Cost considerations for cloud logging at scale
+### Phase 4: Deferred Features (OUT OF SCOPE - MVP)
+
+**See FUTURE.md for details**
+
+- [ ] Multi-tournament concurrent support (Decision 9)
+- [ ] Required voter role enforcement (Decision 4 - not technically feasible with native polls)
+- [ ] Live vote count updates (Scenario 22 - high API cost)
+- [ ] User DM notifications (Scenario 28 - requires database)
+- [ ] Bracket image/PDF generation (Scenario 27 - rendering complexity)
+- [ ] Participant reference link lookup (Scenario 26 - low priority)
+- [ ] Thread/channel auto-creation (Scenario 30 - admin pre-creates for MVP)
+
+---
+
+## Testing & Quality Assurance
+
+### Test Infrastructure Setup
+
+- [ ] **Choose testing framework**
+  - Options: Jest (most popular), Vitest (fast), Mocha+Chai
+  - Decision: Jest recommended for Discord.js projects
+  - Install: `npm install --save-dev jest @types/jest ts-jest`
+  - Configure: Create `jest.config.js`
+
+- [ ] **Create test utilities**
+  - Mock Discord client and interactions
+  - Mock Google Sheets API responses
+  - Test data: Sample tournament configurations
+  - Test data: Sample participant lists (64 participants)
+  - Test helpers: Create tournament state objects
+
+### Unit Tests (Per Service)
+
+- [ ] `SheetsService` tests
+  - Test readRange() with valid/invalid spreadsheet IDs
+  - Test writeRange() with various data formats
+  - Test batchReadRanges() with multiple ranges
+  - Test error handling and retries
+  - Mock Google Sheets API to avoid quota usage
+
+- [ ] `ValidationService` tests (Scenario 23)
+  - Test with valid Google Sheets → passes validation
+  - Test with missing tabs → returns specific errors
+  - Test with invalid participants (duplicates, wrong ranks) → errors
+  - Test with missing config values → errors
+  - Test with invalid Discord channel → errors
+  - Test permission checking (service account access)
+
+- [ ] `PollService` tests
+  - Test createPoll() with different match configurations
+  - Test createPollBatch() with all batching options
+  - Test processPollResults() with winner determination
+  - Test tie detection and dice roll tiebreaker
+  - Mock Discord API to avoid live Discord calls
+
+- [ ] `TournamentService` tests
+  - Test tournament state management
+  - Test round progression logic
+  - Test pause/resume functionality
+  - Test status transitions (created → active → completed)
+
+### Integration Tests (End-to-End Scenarios)
+
+- [ ] Scenario 1-7: Setup flow
+  - Test: Create tournament from valid Google Sheet
+  - Expected: Tournament loaded, config validated, participants distributed
+- [ ] Scenario 8: Start tournament
+  - Test: Launch first round of polls
+  - Expected: 32 polls created (or per batching config)
+- [ ] Scenario 12-13: Result tracking and advancement
+  - Test: Poll closes → results processed → bracket updated → next round
+  - Expected: Winner determined, sheets updated, ready for next round
+- [ ] Scenario 14: Tournament completion
+  - Test: Final poll closes → winner announced
+  - Expected: Correct winner, announcement posted, status = completed
+- [ ] Scenario 18: Pause/resume
+  - Test: Pause during active round → resume
+  - Expected: Auto-scheduling suspended, polls continue, can resume
+- [ ] Scenario 24: Tiebreaker
+  - Test: Poll ends in exact tie
+  - Expected: Dice roll executed, winner determined, logged in results
+
+### Performance & Load Tests
+
+- [ ] Google Sheets API quota monitoring
+  - Test: Track API calls during full tournament (63 matches)
+  - Expected: <200 requests total (well under 10,000 daily limit)
+- [ ] Discord rate limit handling
+  - Test: Create 32 polls rapidly (full round batch)
+  - Expected: No rate limit errors, 1-second delays between polls
+- [ ] Round advancement timing
+  - Test: Time from last poll close to next round start
+  - Expected: <2 minutes (per removed Success Metrics)
+
+### Edge Case Tests
+
+- [ ] Missing Google Sheets permissions
+- [ ] Invalid Google Sheets URL format
+- [ ] Bot kicked from Discord server mid-tournament
+- [ ] Discord channel deleted mid-tournament
+- [ ] Bot restart during active tournament
+- [ ] Multiple admins trying to control tournament simultaneously
+- [ ] Empty Participants tab
+- [ ] Non-numeric Poll Length config
+- [ ] Invalid batching option
+
+---
+
+## Logging Framework
+
+### Logging Setup
+
+- [ ] **Choose logging library**
+  - Options: winston (most popular), pino (fastest), bunyan
+  - Decision: winston recommended for Discord bots
+  - Install: `npm install winston`
+  - Create `src/utils/logger.ts`
+
+- [ ] **Define log levels and usage**
+  - **error**: Failures that prevent operation (API errors, invalid state)
+  - **warn**: Concerning but recoverable (missed poll event, retry triggered)
+  - **info**: Normal operations (tournament created, round started, poll closed)
+  - **debug**: Detailed operation info (poll IDs, sheet ranges, state changes)
+  - **trace**: Very verbose (every API call, every function entry/exit)
+
+- [ ] **Define what to log**
+  - ✅ Tournament lifecycle events (create, start, pause, resume, cancel, complete)
+  - ✅ Google Sheets API calls (method, range, success/failure)
+  - ✅ Discord API calls (command executed, poll created, message posted)
+  - ✅ Poll events (created, closed, results processed)
+  - ✅ Errors with full context (stack trace, request data, tournament state)
+  - ✅ Performance metrics (API latency, processing time)
+  - ❌ Do NOT log: User IDs (privacy), API keys/tokens (security)
+
+- [ ] **Configure log output**
+  - Development: Console output with colors (winston.transports.Console)
+  - Production: File output with rotation (winston.transports.File)
+  - Format: JSON for structured logging and easy parsing
+  - Include: timestamp, level, message, metadata (tournamentId, guildId, etc.)
 
 ## Deployment & Scaling Planning
 
