@@ -6,7 +6,7 @@ This file tracks all pending tasks and implementation work for the vPoll project
 
 ### Scenarios Needing Definition/Refinement
 
-**HIGH PRIORITY - Conflicts/Overlaps (See SCENARIO_REVIEW.md):**
+**HIGH PRIORITY - Conflicts/Overlaps (See REQUIREMENTS.md "Scenario Conflicts and Overlaps Review" section):**
 - [ ] **RESOLVE: Results Sharing Overlap** (scenarios 14, 16, 26) - Consolidate or clarify distinctions
 - [ ] **RESOLVE: Channel Config Hierarchy** (scenarios 2, 28, 29) - Define precedence rules
 - [ ] **RESOLVE: Auto vs Manual Rounds** (scenarios 8, 12, 24) - Define interaction rules
