@@ -81,27 +81,27 @@ const mockParticipants = [
   { rank: 64, name: 'Tuvix (VOY)', notes: 'Transporter accident fusion of Tuvok and Neelix.', refLink: 'https://memory-alpha.fandom.com/wiki/Tuvix' },
 ];
 
-// Tournament configuration
+// Tournament configuration with descriptions
 const tournamentConfig = [
-  ['Setting Name', 'Value'],
-  ['--- REQUIRED TOURNAMENT SETTINGS ---', ''],
-  ['Tournament Name', 'Star Trek Character Battle 2025'],
-  ['Tournament Description', 'Vote for the best character across all Star Trek series!'],
-  ['Start Date', '2025-10-25'],
-  ['Poll Length', '24'],
-  ['Poll Batches', 'full round'],
-  ['Discord Channel ID', '1234567890123456789'],
-  ['Auto-advance', 'true'],
-  ['Tie Breaker Rule', 'Dice roll'],
-  ['--- OPTIONAL FEATURES ---', ''],
-  ['Results Visibility', 'after voting'],
-  ['Required Voter Role', ''],
-  ['Match Preview Posts', 'true'],
-  ['Live Vote Updates', 'never'],
-  ['Auto Round Scheduling', '3 days'],
-  ['Advertising Template', '🏆 **{tournament_name}** is starting {start_date}!\n\n{description}\n\n🎯 {participants_count} participants competing across 4 regions\n📊 View live bracket: {bracket_link}\n🗳️ Vote here: {channel_link}\n\nMay the best character win! 🖖'],
-  ['Announcements Channel ID', ''],
-  ['Celebratory GIF', 'true'],
+  ['Setting Name', 'Value', 'Valid Options / Description'],
+  ['--- REQUIRED TOURNAMENT SETTINGS ---', '', ''],
+  ['Tournament Name', 'Star Trek Character Battle 2025', 'Any text - Display name for the tournament'],
+  ['Tournament Description', 'Vote for the best character across all Star Trek series!', 'Any text - Brief description shown in announcements'],
+  ['Start Date', '2025-10-25', 'Date in YYYY-MM-DD format (display only, not enforced)'],
+  ['Poll Length', '24', 'Number of hours (positive integer). Examples: 24, 48, 72'],
+  ['Poll Batches', 'full round', '"full round" | "one per region" | "two per region" | "half round" | "sequential" | number (e.g., "6")'],
+  ['Discord Channel ID', '1234567890123456789', 'Channel ID from Discord (right-click channel → Copy Channel ID). Bot must have access.'],
+  ['Auto-advance', 'true', 'true | false - Automatically start next round after current completes'],
+  ['Tie Breaker Rule', 'Dice roll', '"Dice roll" - Automatic dice roll (1-100) for tied matches'],
+  ['--- OPTIONAL FEATURES ---', '', ''],
+  ['Results Visibility', 'after voting', '"after voting" | "after poll closes" | "at tournament end" (Note: Discord native polls always show live counts)'],
+  ['Required Voter Role', '', 'Discord role ID (not enforced in MVP - future feature)'],
+  ['Match Preview Posts', 'true', 'true | false - Post participant info 60 seconds before each poll'],
+  ['Live Vote Updates', 'never', '"never" | "halfway through poll" | "when 1 hour remains" | "every 6 hours" | "every 12 hours" (not enforced in MVP)'],
+  ['Auto Round Scheduling', '3 days', 'blank (disabled) | "immediate" | "X days" | "X hours" - Delay before auto-starting next round'],
+  ['Advertising Template', '🏆 **{tournament_name}** is starting {start_date}!\n\n{description}\n\n🎯 {participants_count} participants competing across 4 regions\n📊 View live bracket: {bracket_link}\n🗳️ Vote here: {channel_link}\n\nMay the best character win! 🖖', 'Template with placeholders: {tournament_name}, {description}, {start_date}, {participants_count}, {bracket_link}, {channel_link}'],
+  ['Announcements Channel ID', '', 'Channel ID for tournament updates (optional). Falls back to primary channel if blank.'],
+  ['Celebratory GIF', 'true', 'true | false - Include random GIF in winner announcement'],
 ];
 
 async function populateSheet(spreadsheetId: string) {
@@ -119,7 +119,7 @@ async function populateSheet(spreadsheetId: string) {
 
     // First, create/rename tabs to match our structure
     console.log('Setting up tabs...');
-    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
+    let metadata = await sheets.spreadsheets.get({ spreadsheetId });
     const existingSheets = metadata.data.sheets || [];
 
     const requiredTabs = ['Participants', 'Config', 'Regions', 'Bracket', 'Results'];
@@ -158,6 +158,18 @@ async function populateSheet(spreadsheetId: string) {
       console.log('✅ Tabs created/renamed\n');
     }
 
+    // Re-fetch metadata to get updated sheet IDs
+    metadata = await sheets.spreadsheets.get({ spreadsheetId });
+    const allSheets = metadata.data.sheets || [];
+
+    // Create a map of tab names to sheet IDs
+    const sheetIdMap: { [key: string]: number } = {};
+    allSheets.forEach(sheet => {
+      const title = sheet.properties?.title || '';
+      const sheetId = sheet.properties?.sheetId || 0;
+      sheetIdMap[title] = sheetId;
+    });
+
     // Prepare data for batch update
     const batchData = [];
 
@@ -175,7 +187,7 @@ async function populateSheet(spreadsheetId: string) {
     // 2. Config tab
     console.log('Populating Config tab...');
     batchData.push({
-      range: 'Config!A1:B20',
+      range: 'Config!A1:C20',
       values: tournamentConfig,
     });
 
@@ -257,18 +269,75 @@ async function populateSheet(spreadsheetId: string) {
       },
     });
 
-    // Format headers
+    // Format headers and columns
     console.log('Applying formatting...');
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId,
       requestBody: {
         requests: [
-          // Bold all headers
+          // Bold headers for Participants tab
           {
             repeatCell: {
-              range: { sheetId: 0, startRowIndex: 0, endRowIndex: 1 },
+              range: { sheetId: sheetIdMap['Participants'], startRowIndex: 0, endRowIndex: 1 },
               cell: { userEnteredFormat: { textFormat: { bold: true } } },
               fields: 'userEnteredFormat.textFormat.bold',
+            },
+          },
+          // Bold headers for Config tab
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Config'], startRowIndex: 0, endRowIndex: 1 },
+              cell: { userEnteredFormat: { textFormat: { bold: true } } },
+              fields: 'userEnteredFormat.textFormat.bold',
+            },
+          },
+          // Bold headers for Regions tab
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Regions'], startRowIndex: 0, endRowIndex: 1 },
+              cell: { userEnteredFormat: { textFormat: { bold: true } } },
+              fields: 'userEnteredFormat.textFormat.bold',
+            },
+          },
+          // Bold headers for Results tab
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Results'], startRowIndex: 0, endRowIndex: 1 },
+              cell: { userEnteredFormat: { textFormat: { bold: true } } },
+              fields: 'userEnteredFormat.textFormat.bold',
+            },
+          },
+          // Auto-resize Config tab columns for better readability
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId: sheetIdMap['Config'],
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 3,
+              },
+            },
+          },
+          // Auto-resize Participants tab columns
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId: sheetIdMap['Participants'],
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 4,
+              },
+            },
+          },
+          // Auto-resize Results tab columns
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId: sheetIdMap['Results'],
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 16,
+              },
             },
           },
         ],
