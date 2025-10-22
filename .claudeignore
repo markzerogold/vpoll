@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.js.map
+
+# Git files
+.git/
+
+# API Keys and credentials
+keys/
+*.json.key
+vpoll-key.json
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Lock files (large and auto-generated)
+package-lock.json
+yarn.lock
+
+# Templates (use Google Sheets as source of truth)
+*.xlsx
+*.xls

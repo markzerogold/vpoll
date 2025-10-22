@@ -96,6 +96,9 @@ Configuration settings stored as key-value pairs (Column A = setting name, Colum
 11. **Match Preview Posts** - Enable/disable preview posts before each poll showing participant info (true/false)
 12. **Live Vote Updates** - Frequency of vote count updates during active polls ("never", "halfway through poll", "when 1 hour remains", "every 6 hours", etc.)
 13. **Auto Round Scheduling** (optional) - Automatically start next round after delay (e.g., "3 days", "immediate", or blank for manual)
+14. **Advertising Template** - Template for advertising posts with placeholders: `{tournament_name}`, `{description}`, `{start_date}`, `{participants_count}`, `{bracket_link}`, `{channel_link}`, etc.
+15. **Announcements Channel ID** (optional) - Channel for tournament/round start announcements (separate from poll channel)
+16. **Celebratory GIF** - Enable/disable random celebratory GIF in winner announcement (true/false)
 
 #### Regions Tab
 - Column A: Rank
@@ -169,38 +172,154 @@ This section describes the end-to-end user workflows for vPoll.
 4. In google sheets, the user shares the completed copy of the template with the VPoll service account email (vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com). This may be a new email alias in the future
 5. In google sheets, the user sets the sheet's general link sharing to 'Anyone with the link can view' so that Discord users can access the bracket without needing Google account permissions
 
-### Discord Bot Setup and Tournament Launch (Scenarios 6-8)
+### Discord Bot Setup and Tournament Launch (Scenarios 6-9)
 
-6. In discord, the discord admin adds the bot and sets permissions (need to define these)
-7. In discord, the discord admin starts the tournament with a command that specified the the template to use
-8. In discord, the discord admin starts the first round of polls based on the poll batches parameter
+6. In discord, the discord admin adds the bot with the following required permissions:
+   - Send Messages
+   - Embed Links
+   - Create Public Threads
+   - Use Slash Commands
+   - Add Reactions (for bot feedback/confirmations)
+   - Manage Messages (to edit/delete bot's own messages)
+   - Read Message History
+   - Attach Files (for bracket image/PDF exports)
+   - Note: Role checking (Scenario 19) requires no additional permissions - Discord provides role info in slash command interactions
+   - Note: DM notifications (Scenario 27) require no special permissions - vPoll handles "Cannot send DM" errors gracefully
+   - Note: Thread/channel creation (Scenario 29) - Admin must pre-create threads/channels and provide IDs in Config tab (bot does not auto-create for MVP)
+7. In discord, the discord admin creates a new tournament using the command:
+   ```
+   /tournament create <google-sheets-url>
+   ```
+   - vPoll reads the Google Sheets template, validates all required data (see Scenario 22), and loads tournament configuration from the Config tab
+   - Tournament name comes from the Config tab, not the command
+   - If validation succeeds, vPoll confirms tournament creation and displays tournament details
+8. In discord, the discord admin starts the tournament using the command:
+   ```
+   /tournament start
+   ```
+   - vPoll responds with tournament details (name, number of participants, rounds, config settings) and asks for confirmation
+   - Admin confirms to begin the tournament
+   - Upon confirmation, vPoll automatically launches the first round of polls based on the Poll Batches config setting
+   - For MVP: Assumes single tournament per server (see FUTURE.md for multi-tournament support)
+9. In discord, vPoll creates Discord native polls for Round 1 matches according to the Poll Batches parameter:
+   - **"full round"**: All 32 Round 1 matches posted at once
+   - **"one per region"**: 8 matches per region (4 batches total - one batch per region)
+   - **"two per region"**: 16 matches per region (2 batches total)
+   - **"half round"**: 16 matches (2 batches total)
+   - **"sequential"**: One match at a time (32 batches total)
+   - **Custom number**: Admin specifies number of matches per batch in Config tab
+   - Each poll uses the configured Poll Length (hours) from Config tab
+   - Poll format shows both participants with their seed numbers
 
-### Tournament Operations (Scenarios 9-17)
+### Tournament Operations (Scenarios 10-19)
 
-9. In discord, the discord admin can use vPoll to generate an "advertising" link share the tournament in other threads of channels (Need to config advertising thread template)
-10. In discord, the polls run based on their configured duration, discord users vote in the polls
-11. In discord, vPoll monitors the polls, when they complete, vPoll updates the google sheet template copy for the tournament, setting the winner in the Bracket tab and recording how many votes each participant got in the Results tab of the sheet (need to define the results tab layout)
-12. In discord, the discord admin launches the next round of polls, vPoll follows the same patterns as the first round
-13. In discord, when the tournament ends, vPoll updates the results tab of the google sheet
-14. In discord, at any time, the discord admin can use vPoll to share the current results in the discord channel (need to define formatting)
-15. In discord, at the end of the tournament, the discord admin can use vPoll to generate a post about the winner and optionally include a celebratory link
-16. In discord, at any time, users can also ask vPoll to share the current results
-17. In discord, at any time, users or the discord admin can ask vPoll for the link to the sheet template so they can view the Bracket
+10. In discord, the discord admin can use vPoll to generate an advertising post using the command:
+   ```
+   /tournament advertise
+   ```
+   - vPoll generates a formatted message based on the Advertising Template defined in the Config tab
+   - Template supports placeholders like `{tournament_name}`, `{description}`, `{start_date}`, `{participants_count}`, `{bracket_link}`, etc.
+   - vPoll responds with the generated message, which admin can copy/paste to other channels/threads
+   - Example template: "🏆 **{tournament_name}** is starting {start_date}! {participants_count} participants competing. Vote here: {bracket_link}"
+11. In discord, the polls run based on their configured Poll Length duration, discord users vote using Discord's native poll interface
+   - vPoll uses Discord native polls without custom intervention during voting
+   - Users vote directly through Discord's standard poll UI
+   - Polls automatically close after the configured Poll Length (hours)
+   - For MVP: No vote confirmations, role restrictions during voting, or real-time vote tracking (see FUTURE.md)
+12. In discord, vPoll monitors the polls and automatically updates results when they complete:
+   - **Primary method**: vPoll listens for Discord's poll close events and immediately processes results
+   - **Fallback method**: vPoll checks poll status every 10 minutes in case an event is missed
+   - When a poll closes, vPoll:
+     - Retrieves final vote counts from the Discord poll
+     - Determines the winner (or triggers dice roll tiebreaker if tied - see Scenario 24)
+     - Updates the Bracket tab: Sets TRUE for winner, FALSE for loser in the appropriate cells
+     - Writes new row to Results tab with all 16 columns (Match ID, Round, Region, P1 Name, P1 Seed, P1 Votes, P2 Name, P2 Seed, P2 Votes, Winner, Discord Poll ID, Poll Start Time, Poll End Time, Total Votes, Tiebreaker, Notes)
+     - Posts confirmation message in Discord channel
+13. In discord, subsequent rounds (Rounds 2-6) are launched based on the Auto Round Scheduling config setting:
+   - **If Auto Round Scheduling is enabled** (e.g., "3 days", "immediate"):
+     - vPoll automatically launches the next round after the specified delay once the previous round completes
+   - **If Auto Round Scheduling is disabled/blank**:
+     - Admin must manually run `/tournament next-round` command
+   - **Round completion safeguards** (prevents race conditions):
+     - A round is only considered "complete" when ALL polls in that round have closed AND all results have been written to Google Sheets
+     - vPoll uses tournament state tracking to prevent starting a new round until previous round is fully processed
+     - If admin attempts `/tournament next-round` while previous round is still processing, vPoll responds with error message indicating which polls are still pending
+   - **Round launching behavior** (same as Scenario 9):
+     - vPoll creates polls according to Poll Batches config setting
+     - Each poll uses configured Poll Length duration
+14. In discord, when the tournament ends (final poll of Round 6 closes), vPoll automatically:
+   - Marks tournament status as "completed" in database
+   - Retrieves the winner's Reference Link from Participants tab Column D (if provided)
+   - Posts winner announcement message containing:
+     - Tournament name and completion message
+     - Winner's name and final vote count
+     - Winner's Reference Link (image URL or webpage) if available
+     - Optional: Random celebratory GIF from Discord's GIF service (if "Celebratory GIF" config option is enabled)
+   - Updates tournament metadata in Google Sheets (e.g., completion timestamp, final winner)
+15. In discord, at any time during or after the tournament, the discord admin can request results in multiple formats:
+   - **Text/Embed Summary**: `/tournament results`
+     - Posts Discord embed with:
+       - Tournament progress (e.g., "Round 3 of 6 - In Progress")
+       - Current round status (active polls, completed matches)
+       - Recent match results with vote counts
+       - Link to Google Sheets bracket
+   - **Google Sheets Link**: `/tournament bracket`
+     - Posts the Google Sheets URL for users to view full bracket
+     - Simple direct access to complete bracket visualization
+   - **Bracket Image/PDF**: `/tournament bracket-image`
+     - Generates and posts bracket visualization as image or PDF (see Scenario 27)
+     - Shareable format without requiring Google Sheets access
+16. In discord, the discord admin can manually trigger a winner announcement at any time using:
+   ```
+   /tournament winner
+   ```
+   - Generates the same winner announcement format as Scenario 14 (automatic completion)
+   - Useful if admin wants to re-post the winner announcement or if automatic announcement was missed
+   - Can only be run after tournament is complete (final poll closed)
+17. In discord, regular users have the same access to result commands as admins (see Scenario 15):
+   - All users can run `/tournament results`, `/tournament bracket`, and `/tournament bracket-image`
+   - No permission restrictions - democratic access to tournament information
+   - Commands work identically for both admins and regular users
+18. In discord, the discord admin can pause and resume an active tournament:
+   - **Pause**: `/tournament pause`
+     - Marks tournament status as "paused"
+     - Prevents new rounds from starting
+     - Active polls continue running and complete normally
+     - Auto Round Scheduling is suspended (won't auto-launch next round)
+   - **Resume**: `/tournament resume`
+     - Marks tournament status as "active"
+     - Allows rounds to continue
+     - Re-enables Auto Round Scheduling if it was configured
+19. In discord, the discord admin can cancel a tournament entirely:
+   ```
+   /tournament cancel
+   ```
+   - vPoll asks for confirmation before canceling
+   - Upon confirmation:
+     - Immediately closes all active polls and processes current results
+     - Marks tournament status as "canceled" in database
+     - Posts cancellation announcement in Discord channel
+     - Does NOT delete tournament data - results remain in Google Sheets and database for reference
+     - Tournament cannot be resumed after cancellation (different from pause)
 
-### Advanced Features (Scenarios 18-29)
+### Advanced Features (Scenarios 20-30)
 
-18. In discord, the discord admin can pause an active tournament (marking it as paused status), which prevents new rounds from starting but allows active polls to finish. Admin can resume the tournament later to continue
-19. In the config tab, the user can optionally specify a Discord role requirement for voting - only users with that role can participate in polls
-20. In the config tab, the user can enable match preview posts - when enabled, vPoll posts a preview message before each poll starts, showing participant names and any additional info from the Notes column (Participants tab Column C)
-21. In the config tab, the user can configure live vote count updates with options like "never", "halfway through poll", "when 1 hour remains", "every 6 hours", etc. When enabled, vPoll posts current vote counts for active polls at the specified intervals
-22. In discord, when the admin starts a tournament, vPoll validates the Google Sheet has all required data (64 participants in Participants tab, all required config values set, 4 regions named in Regions tab, etc.). If validation fails, vPoll sends the admin a warning message detailing what is missing or incorrect
-23. In discord, when a poll ends in a tie, vPoll uses a dice roll to determine the winner, posts a message in the channel announcing the tie and dice roll result, and logs the dice roll result in a "Tiebreaker" column in the Results tab
-24. In the config tab, the user can enable automatic round scheduling - when enabled, vPoll automatically starts the next round after a specified delay (e.g., "3 days after previous round ends" or "immediate"). This allows tournaments to run automatically without manual admin intervention for each round
-25. In the Participants tab, Column D is an optional Reference Link for each participant - this can be an image URL or a webpage with information about the participant. During a tournament, users can ask vPoll for the reference link for any participant via a command
-26. In discord, at any time during or after the tournament, the admin or users can request vPoll to generate and share a bracket image/PDF showing all current results, making it easy to share tournament progress
-27. In discord, users can opt-in to receive DM notifications when new polls go live in tournaments they're following. Users can subscribe/unsubscribe from tournament notifications via commands, and vPoll stores these preferences in a database
-28. In the config tab, the user can optionally specify an Announcements Channel ID where vPoll will automatically post tournament start announcements and round start announcements (separate from the channel where polls are posted). This allows tournament updates to be shared in a general announcement channel while keeping polls in a dedicated channel
-29. In the config tab, the user can configure channel/thread organization with options including: run tournament in a specific channel, run tournament in a specific thread, create separate threads for each round's polls, or create separate threads for each individual poll. NEEDS REVIEW: Determine if vPoll needs channel/thread creation permissions when added to Discord, or if admin must pre-create channels/threads
+20. In the config tab, the user can optionally specify a Discord role requirement for voting:
+   - **Config option**: Required Voter Role (Discord role ID)
+   - **MVP behavior**: Config option exists but is NOT enforced during voting
+   - vPoll reads this config value but does not restrict poll access
+   - Documentation will note this is a planned feature for future versions
+   - Full enforcement mechanism deferred to FUTURE.md (requires custom voting implementation instead of Discord native polls)
+21. In the config tab, the user can enable match preview posts - when enabled, vPoll posts a preview message before each poll starts, showing participant names and any additional info from the Notes column (Participants tab Column C)
+22. In the config tab, the user can configure live vote count updates with options like "never", "halfway through poll", "when 1 hour remains", "every 6 hours", etc. When enabled, vPoll posts current vote counts for active polls at the specified intervals
+23. In discord, when the admin creates a tournament (Scenario 7), vPoll validates the Google Sheet has all required data (64 participants in Participants tab, all required config values set, 4 regions named in Regions tab, etc.). If validation fails, vPoll sends the admin a warning message detailing what is missing or incorrect
+24. In discord, when a poll ends in a tie, vPoll uses a dice roll to determine the winner, posts a message in the channel announcing the tie and dice roll result, and logs the dice roll result in a "Tiebreaker" column in the Results tab
+25. In the config tab, the user can enable automatic round scheduling - when enabled, vPoll automatically starts the next round after a specified delay (e.g., "3 days after previous round ends" or "immediate"). This allows tournaments to run automatically without manual admin intervention for each round
+26. In the Participants tab, Column D is an optional Reference Link for each participant - this can be an image URL or a webpage with information about the participant. During a tournament, users can ask vPoll for the reference link for any participant via a command
+27. In discord, at any time during or after the tournament, the admin or users can request vPoll to generate and share a bracket image/PDF showing all current results, making it easy to share tournament progress
+28. In discord, users can opt-in to receive DM notifications when new polls go live in tournaments they're following. Users can subscribe/unsubscribe from tournament notifications via commands, and vPoll stores these preferences in a database
+29. In the config tab, the user can optionally specify an Announcements Channel ID where vPoll will automatically post tournament start announcements and round start announcements (separate from the channel where polls are posted). This allows tournament updates to be shared in a general announcement channel while keeping polls in a dedicated channel
+30. In the config tab, the user can configure channel/thread organization with options including: run tournament in a specific channel, run tournament in a specific thread, create separate threads for each round's polls, or create separate threads for each individual poll. For MVP: Admin must pre-create threads/channels and provide IDs in Config tab (bot does not auto-create)
 
 ## Scenario Conflicts and Overlaps Review
 

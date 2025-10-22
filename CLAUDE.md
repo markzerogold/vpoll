@@ -4,7 +4,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-vPoll is a Discord bot for creating and managing polls within Discord servers using discord.js v14.
+vPoll is a Discord bot for running tournament-style voting competitions (e.g., "Best Star Trek Character") using:
+- **Discord.js v14** for bot functionality and native Discord polls
+- **Google Sheets API v4** for tournament data management and results tracking
+- **64-participant single elimination** tournament structure with 4 customizable regions
+
+## Google Sheets Template Structure
+
+All tournaments use a Google Sheets template with 5 tabs:
+
+### Participants Tab (A1:D65)
+- Column A: Rank (1-64, determines seeding)
+- Column B: Participant Name
+- Column C: Notes (optional context/description)
+- Column D: Reference Link (optional image/wiki URL)
+
+### Regions Tab (A1:E17)
+- Column A: Rank
+- Columns B-E: 4 region columns (customizable names, 16 participants each)
+- Distribution: Ranks 1-4 → Regions 1-4, Ranks 5-8 → Regions 1-4, etc.
+
+### Config Tab
+Tournament settings (13+ parameters):
+- Tournament Name, Description, Start Date
+- Poll Length (hours), Poll Batches, Discord Channel ID
+- Auto-advance, Tiebreaker, Results Visibility
+- Required Voter Role, Match Preview Posts, Live Vote Updates
+- Auto Round Scheduling, Announcements Channel
+
+### Bracket Tab
+- Formula-driven visual tournament bracket
+- Vote display format: `45 (1) Spock` (votes before seed)
+- TRUE/FALSE winner indicators
+
+### Results Tab (16 columns per match, chronological order)
+Match ID, Round, Region, P1 Name, P1 Seed, P1 Votes, P2 Name, P2 Seed, P2 Votes, Winner, Discord Poll ID, Poll Start Time, Poll End Time, Total Votes, Tiebreaker, Notes
+
+## Service Account
+- Email: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com
+- Credentials: `keys/vpoll-key.json` (not committed)
+- Scope: `https://www.googleapis.com/auth/spreadsheets`
 
 ## Development Commands
 
@@ -18,6 +57,7 @@ cp .env.example .env        # Create environment file (then edit with credential
 ```bash
 npm run build               # Compile TypeScript to JavaScript (required before first run)
 npm run deploy-commands     # Deploy slash commands to Discord (required after adding/changing commands)
+npm run test-sheets         # Test Google Sheets API connection (reads template structure)
 npm run dev                 # Run in development mode with hot reload
 npm start                   # Run in production mode
 ```
