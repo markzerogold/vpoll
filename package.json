@@ -13,7 +13,8 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "deploy-commands": "ts-node src/deploy-commands.ts",
-    "test-sheets": "ts-node src/test-sheets.ts"
+    "test-sheets": "ts-node src/test-sheets.ts",
+    "populate-test-sheet": "ts-node src/populate-test-sheet.ts"
   },
   "keywords": [
     "discord",
