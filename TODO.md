@@ -204,7 +204,7 @@ See `FUTURE.md` for features planned for later versions:
 - [x] Define Regions tab structure
 - [x] Define Bracket tab behavior
 - [x] Define Results tab columns (1-16)
-- [x] Document 29 scenarios in REQS.md (User Scenarios section)
+- [x] Document 29 scenarios in REQUIREMENTS.md (User Scenarios section)
 - [x] Rename Rank tab to Participants tab
 - [x] Rename Teams tab to Regions tab
 - [x] Create future.txt for deferred features
