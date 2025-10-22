@@ -292,18 +292,21 @@ Setup Phase (Scenarios 1-9)
 **Flow:**
 1. Regions tab automatically populates based on Participants tab rankings
 2. Admin reviews distribution:
-   - Rank 1 → Region 1 (Column B)
-   - Rank 2 → Region 2 (Column C)
-   - Rank 3 → Region 3 (Column D)
-   - Rank 4 → Region 4 (Column E)
-   - Rank 5 → Region 1 (Column B)
-   - [Pattern repeats: 16 participants per region]
+   - Row 1 contains generic headers: Rank, Region 1, Region 2, Region 3, Region 4
+   - Row 2 contains customizable region names (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
+   - Rows 3-18 contain participant distribution:
+     - Rank 1 → Region 1 (Column B)
+     - Rank 2 → Region 2 (Column C)
+     - Rank 3 → Region 3 (Column D)
+     - Rank 4 → Region 4 (Column E)
+     - Rank 5 → Region 1 (Column B)
+     - [Pattern repeats: 16 participants per region]
 
-3. Admin customizes region names in row 1 (e.g., "ALPHA", "BETA", "GAMMA", "DELTA")
+3. Admin customizes region names in row 2 (e.g., "ALPHA", "BETA", "GAMMA", "DELTA" or themed names)
 
-**Why This Matters:** Region names add thematic flavor (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion" for Star Trek tournament).
+**Why This Matters:** Region names add thematic flavor while keeping generic headers consistent across all tournaments. The two-row header structure makes it clear that columns represent bracket regions.
 
-**Success Criteria:** All 4 regions have custom names, distribution looks balanced
+**Success Criteria:** All 4 regions have custom names in row 2, distribution looks balanced, headers are frozen for easy scrolling
 
 ---
 
@@ -2240,42 +2243,53 @@ Celebratory GIF            | true
 
 ### Tab 3: Regions
 
-**Range:** A1:E17 (17 rows including header)
+**Range:** A1:E18 (18 rows including 2 header rows)
 **Purpose:** Show participant distribution across 4 tournament regions
 
-| Column | Header | Data Type | Description |
-|--------|--------|-----------|-------------|
-| A | Rank | Integer (1-64) | References Participants tab rankings |
-| B | Region 1 Name | String | First region (customizable name in row 1) |
-| C | Region 2 Name | String | Second region (customizable name in row 1) |
-| D | Region 3 Name | String | Third region (customizable name in row 1) |
-| E | Region 4 Name | String | Fourth region (customizable name in row 1) |
+**Header Structure:**
+- **Row 1 (Generic Headers):** Rank, Region 1, Region 2, Region 3, Region 4 - These remain constant across all tournaments
+- **Row 2 (Customizable Region Names):** Admin customizes these per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
+- **Rows 3-18 (Participant Data):** 16 participants distributed across 4 regions
+
+| Column | Row 1 Header | Row 2 Content | Data Type | Description |
+|--------|--------------|---------------|-----------|-------------|
+| A | Rank | (blank) | Integer (1-16) | Sequential rank within region distribution |
+| B | Region 1 | Custom Name | String | First region participants (customizable name in row 2) |
+| C | Region 2 | Custom Name | String | Second region participants (customizable name in row 2) |
+| D | Region 3 | Custom Name | String | Third region participants (customizable name in row 2) |
+| E | Region 4 | Custom Name | String | Fourth region participants (customizable name in row 2) |
 
 **Distribution Pattern:**
-- Rank 1 → Region 1 (Column B, Row 2)
-- Rank 2 → Region 2 (Column C, Row 2)
-- Rank 3 → Region 3 (Column D, Row 2)
-- Rank 4 → Region 4 (Column E, Row 2)
-- Rank 5 → Region 1 (Column B, Row 3)
+- Rank 1 → Region 1 (Column B, Row 3)
+- Rank 2 → Region 2 (Column C, Row 3)
+- Rank 3 → Region 3 (Column D, Row 3)
+- Rank 4 → Region 4 (Column E, Row 3)
+- Rank 5 → Region 1 (Column B, Row 4)
 - [Pattern repeats: 16 participants per region]
 
 **Region Name Customization:**
-- Row 1 contains region names (editable)
+- Row 2 contains customizable region names (editable)
 - Region names must be unique
+- Column A in row 2 should remain blank
 - Typical examples: "ALPHA", "BETA", "GAMMA", "DELTA" OR "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion"
 
 **Formulas:**
-- Cells B2:E17 contain VLOOKUP formulas referencing Participants tab
+- Cells B3:E18 contain VLOOKUP formulas referencing Participants tab
 - Automatically populate based on Participants tab Rank column
 - Do not manually edit participant names in this tab
 
+**Formatting:**
+- Both header rows (rows 1-2) are frozen for scrolling visibility
+- Both header rows (rows 1-2) are bold
+
 **Example:**
 ```
-Rank | Federation          | Klingon Empire       | Romulan Star Empire  | Dominion
------|---------------------|----------------------|----------------------|---------------------
-1    | Spock               | Picard               | Data                 | Worf
-5    | Janeway             | Sisko                | Kirk                 | Seven of Nine
-9    | Riker               | O'Brien              | Quark                | Odo
+Rank     | Region 1   | Region 2        | Region 3             | Region 4
+---------|------------|-----------------|----------------------|------------------
+         | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
+1        | Spock      | Picard          | Data                 | Worf
+2        | Janeway    | Sisko           | Kirk                 | Seven of Nine
+3        | Riker      | O'Brien         | Quark                | Odo
 ...
 ```
 

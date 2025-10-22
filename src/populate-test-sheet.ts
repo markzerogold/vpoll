@@ -193,7 +193,12 @@ async function populateSheet(spreadsheetId: string) {
 
     // 3. Regions tab
     console.log('Populating Regions tab...');
-    const regionsData = [['Rank', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion']];
+    const regionsData = [
+      // Row 1: Generic region headers
+      ['Rank', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
+      // Row 2: Customizable region names (user can edit these)
+      ['', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion'],
+    ];
 
     // Distribute 64 participants across 4 regions (16 each)
     for (let i = 0; i < 16; i++) {
@@ -206,7 +211,7 @@ async function populateSheet(spreadsheetId: string) {
       regionsData.push(row);
     }
     batchData.push({
-      range: 'Regions!A1:E17',
+      range: 'Regions!A1:E18',
       values: regionsData,
     });
 
@@ -295,12 +300,12 @@ async function populateSheet(spreadsheetId: string) {
               fields: 'gridProperties.frozenRowCount',
             },
           },
-          // Freeze header row for Regions tab
+          // Freeze header rows for Regions tab (both generic headers and region names)
           {
             updateSheetProperties: {
               properties: {
                 sheetId: sheetIdMap['Regions'],
-                gridProperties: { frozenRowCount: 1 },
+                gridProperties: { frozenRowCount: 2 },
               },
               fields: 'gridProperties.frozenRowCount',
             },
@@ -331,10 +336,10 @@ async function populateSheet(spreadsheetId: string) {
               fields: 'userEnteredFormat.textFormat.bold',
             },
           },
-          // Bold headers for Regions tab
+          // Bold headers for Regions tab (both rows: generic headers and region names)
           {
             repeatCell: {
-              range: { sheetId: sheetIdMap['Regions'], startRowIndex: 0, endRowIndex: 1 },
+              range: { sheetId: sheetIdMap['Regions'], startRowIndex: 0, endRowIndex: 2 },
               cell: { userEnteredFormat: { textFormat: { bold: true } } },
               fields: 'userEnteredFormat.textFormat.bold',
             },
