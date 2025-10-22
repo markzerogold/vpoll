@@ -97,11 +97,12 @@ Configuration settings stored as key-value pairs (Column A = setting name, Colum
 12. **Live Vote Updates** - Frequency of vote count updates during active polls ("never", "halfway through poll", "when 1 hour remains", "every 6 hours", etc.)
 13. **Auto Round Scheduling** (optional) - Automatically start next round after delay (e.g., "3 days", "immediate", or blank for manual)
 
-#### Teams Tab
+#### Regions Tab
 - Column A: Rank
 - Columns B-E: Region names (customizable per tournament)
 - Example region names: ALPHA, BETA, GAMMA, DELTA
 - Shows how the 64 participants are distributed across 4 regions based on seeding
+- Seeding is referenced/pulled from the Participants tab
 
 #### Bracket Tab
 - Complex formula-driven structure that displays tournament bracket
