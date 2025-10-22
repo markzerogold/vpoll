@@ -72,6 +72,7 @@ Example Google Sheet: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfB
 - Column A: Rank value (1-64)
 - Column B: Participant name (string)
 - Column C: Notes column - user can add additional data or links (e.g., wiki articles) for more info
+- Column D: Reference Link (optional) - image URL or webpage with information about the participant
 
 #### Config Tab
 Configuration settings stored as key-value pairs (Column A = setting name, Column B = value):
@@ -89,8 +90,12 @@ Configuration settings stored as key-value pairs (Column A = setting name, Colum
    - Custom number - Exact number specified
 6. **Discord Channel ID** - Which channel to post polls in
 7. **Auto-advance** - Whether to automatically start next round after current round completes (true/false)
-8. **Tie Breaker Rule** - What to do if poll ends in tie (admin decides, higher seed wins, revote, etc.)
+8. **Tie Breaker Rule** - Dice roll (automatic)
 9. **Results Visibility** - When users can see results (after voting, after poll closes, at tournament end)
+10. **Required Voter Role** (optional) - Discord role ID required to vote in polls
+11. **Match Preview Posts** - Enable/disable preview posts before each poll showing participant info (true/false)
+12. **Live Vote Updates** - Frequency of vote count updates during active polls ("never", "halfway through poll", "when 1 hour remains", "every 6 hours", etc.)
+13. **Auto Round Scheduling** (optional) - Automatically start next round after delay (e.g., "3 days", "immediate", or blank for manual)
 
 #### Teams Tab
 - Column A: Rank
@@ -124,7 +129,8 @@ Each completed match is added as a new row (chronologically, oldest first) with 
 12. Poll Start Time - Timestamp when poll started
 13. Poll End Time - Timestamp when poll completed
 14. Total Votes - Sum of all votes cast
-15. Notes - Additional information or comments
+15. Tiebreaker - Dice roll result if match ended in a tie (blank if no tie)
+16. Notes - Additional information or comments
 
 ### Google Sheets Sharing
 - User shares completed template with vPoll service account: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com
