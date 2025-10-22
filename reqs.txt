@@ -40,8 +40,8 @@ Example Google Sheet: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfB
 - Tournament data is managed in a Google Sheet
 
 ### Seeding System
-- Google Sheet has a "Rank" tab with a ranked list of all tournament participants
-- Rankings in the "Rank" tab determine the seeding order
+- Google Sheet has a "Participants" tab with a ranked list of all tournament participants
+- Rankings in the "Participants" tab determine the seeding order
 - Ranked participants are distributed into 4 regions
 
 ### Regions
@@ -68,7 +68,7 @@ Example Google Sheet: https://docs.google.com/spreadsheets/d/1Z83Lr02EW9wvpH3YfB
 
 ### Sheet Tabs
 
-#### Rank Tab
+#### Participants Tab
 - Column A: Rank value (1-64)
 - Column B: Participant name (string)
 - Column C: Notes column - user can add additional data or links (e.g., wiki articles) for more info
