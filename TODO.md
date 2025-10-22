@@ -1,0 +1,111 @@
+# vPoll TODO List
+
+This file tracks all pending tasks and implementation work for the vPoll project.
+
+## Documentation Tasks
+
+### Scenarios Needing Definition/Refinement
+
+- [ ] **Scenario 6**: Discord bot setup - Define required permissions
+- [ ] **Scenario 7**: Starting tournament - Define command syntax and parameters
+- [ ] **Scenario 8**: First round of polls - Define how poll batches work in detail
+- [ ] **Scenario 9**: Advertising links - Define advertising thread template format
+- [ ] **Scenario 10**: Poll voting process - Ensure Discord native poll behavior is documented
+- [ ] **Scenario 11**: Auto-update results - Document the update flow in detail
+- [ ] **Scenario 12**: Subsequent rounds - Clarify differences from first round if any
+- [ ] **Scenario 13**: Tournament end update - Define final sheet updates
+- [ ] **Scenario 14**: Admin sharing results - Define formatting for results display
+- [ ] **Scenario 15**: Winner announcement - Define post format and celebratory link options
+- [ ] **Scenario 16**: Users sharing results - Same as scenario 14?
+- [ ] **Scenario 17**: Sharing sheet link - Simple command to return the Google Sheets URL
+
+### New Scenarios Added (Need Implementation Planning)
+
+- [ ] **Scenario 18**: Tournament pause/resume functionality
+- [ ] **Scenario 19**: Role-based voting restrictions
+- [ ] **Scenario 20**: Match preview posts
+- [ ] **Scenario 21**: Live vote count updates
+- [ ] **Scenario 22**: Bracket validation before tournament start
+- [ ] **Scenario 23**: Automatic tiebreaker using dice rolls
+- [ ] **Scenario 24**: Automatic round scheduling
+- [ ] **Scenario 25**: Participant reference links
+- [ ] **Scenario 26**: Bracket export as image/PDF
+- [ ] **Scenario 27**: User notification subscriptions
+
+## Implementation Tasks
+
+### Google Sheets Integration
+
+- [ ] Update test-sheets.ts to read from renamed tabs (Participants, Regions)
+- [ ] Add Tiebreaker column to Results tab structure
+- [ ] Add Reference Link column (Column D) to Participants tab
+- [ ] Implement sheet validation logic (Scenario 22)
+- [ ] Implement Results tab writing with all 16 columns
+- [ ] Implement Bracket tab TRUE/FALSE winner updates
+
+### Discord Bot Commands
+
+- [ ] Define all slash commands needed for tournament management
+- [ ] `/tournament create` - Start new tournament from Google Sheet
+- [ ] `/tournament start-round` - Launch polls for a round
+- [ ] `/tournament pause` - Pause tournament
+- [ ] `/tournament resume` - Resume paused tournament
+- [ ] `/tournament results` - Show current results
+- [ ] `/tournament winner` - Generate winner announcement
+- [ ] `/tournament bracket` - Generate bracket image/PDF
+- [ ] `/tournament sheet` - Get Google Sheets link
+- [ ] `/tournament advertise` - Generate advertising post
+- [ ] `/participant info <name>` - Get reference link for participant
+- [ ] `/subscribe` - Subscribe to tournament notifications
+- [ ] `/unsubscribe` - Unsubscribe from tournament notifications
+
+### Discord Bot Features
+
+- [ ] Discord poll creation and monitoring
+- [ ] Auto-update Google Sheets when polls complete
+- [ ] Dice roll tiebreaker implementation
+- [ ] Match preview post generation
+- [ ] Live vote count update scheduler
+- [ ] Bracket validation logic
+- [ ] Automatic round scheduling
+- [ ] User notification system (DM subscriptions)
+- [ ] Bracket image/PDF generation
+- [ ] Role-based voting restriction enforcement
+
+### Database/Persistence
+
+- [ ] Design database schema for tournament state tracking
+- [ ] User notification preferences storage
+- [ ] Active tournament tracking
+- [ ] Poll-to-match mapping
+- [ ] Tournament status (active/paused/completed)
+
+### Configuration
+
+- [ ] Add all new config parameters to Config tab reading logic
+- [ ] Validate all required config values are present
+- [ ] Handle optional config values (defaults)
+
+## Future Features (Deferred)
+
+See `future.txt` for features planned for later versions:
+- Reseeding after each round
+- Historical statistics across tournaments
+- Multiple concurrent tournaments per server
+
+## Completed Tasks
+
+- [x] Document Google Sheets template structure
+- [x] Define Participants tab columns (A-D)
+- [x] Define Config tab parameters (1-13)
+- [x] Define Regions tab structure
+- [x] Define Bracket tab behavior
+- [x] Define Results tab columns (1-16)
+- [x] Document 27 scenarios in vpollscen.txt
+- [x] Rename Rank tab to Participants tab
+- [x] Rename Teams tab to Regions tab
+- [x] Create future.txt for deferred features
+
+---
+
+Last updated: 2025-10-22
