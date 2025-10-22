@@ -86,6 +86,41 @@ This file tracks all pending tasks and implementation work for the vPoll project
 - [ ] Validate all required config values are present
 - [ ] Handle optional config values (defaults)
 
+### Testing & Quality Assurance
+
+- [ ] **Create comprehensive test plan**
+  - Unit tests for Google Sheets integration
+  - Unit tests for Discord poll creation and monitoring
+  - Integration tests for end-to-end tournament flow
+  - Test scenarios for all 27 documented scenarios
+  - Edge cases: ties, validation failures, missing data
+  - Automated testing framework (Jest, pytest, or similar)
+  - Use logs to verify correct behavior at each step
+  - Test data: Sample Google Sheets for different tournament states
+  - Mock Discord API responses for testing without live server
+  - Performance testing: API call limits, response times
+  - Regression testing suite for future changes
+
+- [ ] **Design scalable logging framework**
+  - Choose logging library (winston, pino, or built-in)
+  - Define log levels (error, warn, info, debug, trace)
+  - Log structure and format (JSON for easy parsing?)
+  - What to log:
+    - All Google Sheets API calls (read/write operations)
+    - All Discord API calls (poll creation, updates)
+    - Tournament state changes (start, pause, round advancement)
+    - User commands and actions
+    - Errors and exceptions with full context
+    - Performance metrics (API latency, processing time)
+  - Log storage strategy:
+    - Local files for development
+    - Cloud logging for production (CloudWatch, Stackdriver, etc.)
+    - Log rotation and retention policies
+  - Privacy considerations: Don't log sensitive user data
+  - Searchability and monitoring: structured logs for easy querying
+  - Alerting: critical errors trigger notifications
+  - Cost considerations for cloud logging at scale
+
 ## Deployment & Scaling Planning
 
 - [ ] **Define MVP (Minimum Viable Product) features**
