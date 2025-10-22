@@ -2,6 +2,8 @@
 
 This document identifies overlapping, conflicting, or unclear scenarios that need review and reconciliation.
 
+**Note:** All scenarios are now documented in REQS.md under the "User Scenarios" section.
+
 ## Overlapping Scenarios
 
 ### Overlap Group 1: Results Sharing (Scenarios 14, 16, 26)
