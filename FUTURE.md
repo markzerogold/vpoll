@@ -1,6 +1,6 @@
 # vPoll Future Features
 
-This file tracks potential features for future versions of vPoll.
+This file is a record of deferred features that will be considered for future versions of vPoll. These features have been identified during requirements analysis but are not part of the initial MVP (Minimum Viable Product) release. They may be implemented in subsequent versions based on user feedback, technical feasibility, and resource availability.
 
 ## Tournament Management
 
