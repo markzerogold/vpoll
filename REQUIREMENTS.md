@@ -139,6 +139,9 @@ vPoll combines three key technologies to deliver automated tournament management
 - Announcements channel (Scenario 29)
 - Advertising post generation (Scenario 10)
 
+**Phase 4: User Engagement** ⚠️ Should Have
+- Participant info lookup with image embeds (Scenario 26)
+
 ### Out of Scope - MVP
 
 **Deferred to Future Versions** (See FUTURE.md)
@@ -148,7 +151,6 @@ vPoll combines three key technologies to deliver automated tournament management
 - ❌ Live vote count updates (Scenario 22)
 - ❌ User DM notifications (Scenario 28)
 - ❌ Bracket image/PDF generation (Scenario 27)
-- ❌ Participant reference link lookup commands (Scenario 26)
 - ❌ Thread/channel organization (Scenario 30 - admin must pre-create)
 - ❌ Custom bracket sizes (only 64-participant supported)
 - ❌ Double elimination or other tournament formats
@@ -1394,17 +1396,28 @@ Auto Round Scheduling | 3 days
 
 ---
 
-#### Scenario 26: Participant Reference Link Lookup (Deferred to Future)
+#### Scenario 26: Participant Reference Link Lookup
 
 **Actor:** Server Members (Discord)
-**Goal:** View reference link for specific participant
+**Goal:** View information and reference link for specific participant
 
-**Intended Command:**
+**Command:**
 ```
-/tournament participant <participant-name>
+/participant info <participant-name>
 ```
 
-**Intended Response:**
+**Flow:**
+1. User runs command with participant name (fuzzy matching supported)
+2. vPoll searches Participants tab for matching name
+3. vPoll retrieves participant data:
+   - Rank/Seed
+   - Full name
+   - Notes (Column C)
+   - Reference Link (Column D)
+4. vPoll checks if Reference Link is a direct image URL (.jpg, .png, .gif, .webp)
+5. vPoll posts response with embed
+
+**Response Format (with image link):**
 ```
 🔍 Participant Info
 
@@ -1414,20 +1427,49 @@ Science Officer aboard USS Enterprise. Known for logic and iconic Vulcan salute.
 
 📖 Reference: https://memory-alpha.fandom.com/wiki/Spock
 🌟 Seed: 1
-🏆 Tournament Record: 4-0 (45 total votes)
+
+[Embedded image if reference link is direct image URL]
 ```
 
-**MVP Status:** ❌ Not Implemented
+**Response Format (with tournament record - if tournament started):**
+```
+🔍 Participant Info
 
-**Deferred to Future:** This feature is valuable but not critical for MVP. Deferred to FUTURE.md.
+**(1) Spock (TOS/TAS/Films/SNW)**
 
-**Why Deferred:**
-- Adds command complexity
-- Reference links already shown in Match Preview Posts (Scenario 21)
-- Users can view Participants tab in Google Sheets directly
-- Lower priority than core tournament flow
+Science Officer aboard USS Enterprise. Known for logic and iconic Vulcan salute.
 
-**Workaround:** Users can view Participants tab in Google Sheets to see all reference links.
+📖 Reference: https://memory-alpha.fandom.com/wiki/Spock
+🌟 Seed: 1
+🏆 Tournament Record: 4-0 (45 total votes across 4 matches)
+```
+
+**Image Detection:**
+- If Reference Link ends with image extension (.jpg, .jpeg, .png, .gif, .webp, .bmp), embed image directly in Discord
+- If Reference Link is a webpage URL, show as clickable link only
+- If Reference Link is empty, omit reference section
+
+**Fuzzy Matching:**
+- Partial name matches work (e.g., "Spock" matches "Spock (TOS/TAS/Films/SNW)")
+- Case-insensitive search
+- If multiple matches found, show list of options
+- If no match found, suggest closest match
+
+**Permission Level:** Available to all users (not admin-only)
+
+**Why This Matters:**
+- Helps voters make informed decisions
+- Provides context for unfamiliar participants
+- Visual aid with embedded images increases engagement
+- Accessible during and outside of voting periods
+
+**Success Criteria:**
+- Command responds within 2 seconds
+- Fuzzy matching finds participants with partial names
+- Images display correctly for direct image URLs
+- Works in any channel/thread where bot has access
+
+**MVP Status:** ✅ Moved to MVP Scope (user request 2025-10-22)
 
 ---
 
