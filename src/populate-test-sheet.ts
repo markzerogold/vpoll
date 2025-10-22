@@ -194,10 +194,10 @@ async function populateSheet(spreadsheetId: string) {
     // 3. Regions tab
     console.log('Populating Regions tab...');
     const regionsData = [
-      // Row 1: Generic region headers
-      ['Rank', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
-      // Row 2: Customizable region names (user can edit these)
-      ['', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion'],
+      // Row 1: Generic region headers (Column A is blank)
+      ['', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
+      // Row 2: "Rank" header + Customizable region names
+      ['Rank', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion'],
     ];
 
     // Distribute 64 participants across 4 regions (16 each)

@@ -292,8 +292,8 @@ Setup Phase (Scenarios 1-9)
 **Flow:**
 1. Regions tab automatically populates based on Participants tab rankings
 2. Admin reviews distribution:
-   - Row 1 contains generic headers: Rank, Region 1, Region 2, Region 3, Region 4
-   - Row 2 contains customizable region names (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
+   - Row 1 contains generic headers: (blank), Region 1, Region 2, Region 3, Region 4
+   - Row 2 contains "Rank" header + customizable region names (e.g., "Rank", "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
    - Rows 3-18 contain participant distribution:
      - Rank 1 → Region 1 (Column B)
      - Rank 2 → Region 2 (Column C)
@@ -2247,17 +2247,17 @@ Celebratory GIF            | true
 **Purpose:** Show participant distribution across 4 tournament regions
 
 **Header Structure:**
-- **Row 1 (Generic Headers):** Rank, Region 1, Region 2, Region 3, Region 4 - These remain constant across all tournaments
-- **Row 2 (Customizable Region Names):** Admin customizes these per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
+- **Row 1 (Generic Headers):** (blank), Region 1, Region 2, Region 3, Region 4 - Column headers remain constant across all tournaments
+- **Row 2 (Rank + Region Names):** "Rank", plus customizable region names per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
 - **Rows 3-18 (Participant Data):** 16 participants distributed across 4 regions
 
 | Column | Row 1 Header | Row 2 Content | Data Type | Description |
 |--------|--------------|---------------|-----------|-------------|
-| A | Rank | (blank) | Integer (1-16) | Sequential rank within region distribution |
-| B | Region 1 | Custom Name | String | First region participants (customizable name in row 2) |
-| C | Region 2 | Custom Name | String | Second region participants (customizable name in row 2) |
-| D | Region 3 | Custom Name | String | Third region participants (customizable name in row 2) |
-| E | Region 4 | Custom Name | String | Fourth region participants (customizable name in row 2) |
+| A | (blank) | Rank | Integer (1-16) | "Rank" label in row 2, sequential rank values in rows 3-18 |
+| B | Region 1 | Custom Name | String | Generic "Region 1" label in row 1, customizable name in row 2, participants in rows 3-18 |
+| C | Region 2 | Custom Name | String | Generic "Region 2" label in row 1, customizable name in row 2, participants in rows 3-18 |
+| D | Region 3 | Custom Name | String | Generic "Region 3" label in row 1, customizable name in row 2, participants in rows 3-18 |
+| E | Region 4 | Custom Name | String | Generic "Region 4" label in row 1, customizable name in row 2, participants in rows 3-18 |
 
 **Distribution Pattern:**
 - Rank 1 → Region 1 (Column B, Row 3)
@@ -2284,9 +2284,9 @@ Celebratory GIF            | true
 
 **Example:**
 ```
-Rank     | Region 1   | Region 2        | Region 3             | Region 4
+         | Region 1   | Region 2        | Region 3             | Region 4
 ---------|------------|-----------------|----------------------|------------------
-         | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
+Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
 1        | Spock      | Picard          | Data                 | Worf
 2        | Janeway    | Sisko           | Kirk                 | Seven of Nine
 3        | Riker      | O'Brien         | Quark                | Odo
