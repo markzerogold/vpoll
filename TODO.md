@@ -142,6 +142,19 @@ This file tracks all pending tasks and implementation work for the vPoll project
 
 ## Deployment & Scaling Planning
 
+- [ ] **Learn GitHub for deployment and collaboration**
+  - Understand GitHub basics: repositories, branches, commits, pull requests
+  - Learn how to push local git repository to GitHub
+  - Understand GitHub Actions for CI/CD (automated testing, deployment)
+  - Learn about GitHub releases and versioning
+  - Understand how to collaborate with others (if project becomes public)
+  - Explore GitHub hosting options for bot deployment:
+    - GitHub Actions for scheduled tasks
+    - Integration with cloud hosting providers
+    - Secrets management for API keys and tokens
+  - Review GitHub's free tier vs paid features
+  - Learn GitHub Pages for documentation hosting (if needed)
+
 - [ ] **Define MVP (Minimum Viable Product) features**
   - Identify core essential features for first working version
   - Review all 27 scenarios and mark as MVP vs. future enhancement
