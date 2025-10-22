@@ -86,6 +86,27 @@ This file tracks all pending tasks and implementation work for the vPoll project
 - [ ] Validate all required config values are present
 - [ ] Handle optional config values (defaults)
 
+## Deployment & Scaling Planning
+
+- [ ] **Brainstorm deployment architecture** - How will the bot work when deployed?
+  - Initial use case: Private bot for one Discord server with friends
+  - Public bot considerations:
+    - Multi-server support architecture
+    - Google Sheets API quota limits and costs
+    - Service account scalability (one service account vs. per-server accounts)
+    - Database hosting and costs (user preferences, tournament states)
+    - Bot hosting costs (VPS, cloud functions, etc.)
+    - Rate limiting and anti-abuse measures
+    - Privacy and data storage compliance
+    - Support/maintenance burden
+  - Cost implications analysis:
+    - Google Cloud API pricing
+    - Database hosting (PostgreSQL, MongoDB, etc.)
+    - Bot hosting infrastructure
+    - Storage for bracket images/PDFs
+    - Bandwidth costs
+  - Scaling thresholds: At what point does private → public make sense?
+
 ## Future Features (Deferred)
 
 See `future.txt` for features planned for later versions:
