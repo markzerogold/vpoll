@@ -126,7 +126,7 @@ This allows admins to specify which tournament to start when multiple tournament
 - Documentation should explain this is an optional restriction
 - Server Administrator can still install/configure bot regardless of TH role setting
 
-### Automatic Thread/Channel Creation (Scenario 29)
+### Automatic Thread/Channel Creation (Scenario 30)
 **Current State:** MVP requires admin to manually pre-create all threads/channels and provide IDs in Config tab. vPoll does not auto-create threads or channels.
 
 **Future Enhancement Options:**
