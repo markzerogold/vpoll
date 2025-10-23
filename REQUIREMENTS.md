@@ -1178,7 +1178,9 @@ Live Vote Updates | every 6 hours
 - ❌ Error: "Cannot access sheet. Please share with: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com"
 
 **2. Tab Structure:**
-- ✅ Required tabs exist: Participants, Config, Regions, Bracket, Results
+- ✅ Required tabs exist by name: Participants, Config, Regions, Bracket, Results
+- ℹ️ Tab order does not matter - vPoll finds tabs by name, not position
+- ℹ️ Recommended order: Bracket, Participants, Regions, Config, Results (Bracket first for easy viewer access)
 - ❌ Error: "Missing required tab: [tab name]"
 
 **3. Participants Tab Validation:**
@@ -2143,11 +2145,54 @@ npm run format              # Format code with Prettier
 ### Template Overview
 
 **Template Type:** Google Sheets
-**Required Tabs:** 5 (Participants, Config, Regions, Bracket, Results)
+**Required Tabs:** 5 (Bracket, Participants, Regions, Config, Results)
 **Template Access:** Public view, admin creates copy for each tournament
 **Service Account:** vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com (Editor permission required)
 
-### Tab 1: Participants
+### Tab 1: Bracket
+
+**Range:** Complex formula-driven layout (varies by template design)
+**Purpose:** Visual tournament bracket showing all rounds and matchups
+
+**Structure:**
+- Formula-driven cells display participant names and seeds
+- Vote counts appear after matches complete (pulled from Results tab via formulas)
+- Winner/loser advancement controlled by TRUE/FALSE cells
+
+**Display Format:**
+
+*Before match:*
+```
+(1) Spock (TOS/TAS/Films/SNW)
+```
+
+*After match:*
+```
+45 (1) Spock (TOS/TAS/Films/SNW)
+```
+*(vote count before seed number)*
+
+**vPoll Write Operations:**
+- vPoll writes TRUE to winner's advancement cell
+- vPoll writes FALSE to loser's advancement cell
+- Bracket formulas automatically propagate winners to next round
+
+**Read-Only for vPoll:**
+- vPoll READS participant names and matchups
+- vPoll READS bracket structure to determine matches
+- vPoll does NOT modify participant names or formulas
+
+**User Visibility:**
+- Users view this tab for live bracket visualization
+- Updates in real-time as vPoll writes TRUE/FALSE values
+- Vote counts update automatically via formulas reading Results tab
+
+**Template Maintenance:**
+- Bracket formulas must reference Results tab correctly
+- Modification of formulas may break bracket display
+- Use provided template for consistent structure
+
+### Tab 2: Participants
 
 **Range:** A1:D65 (65 rows including header)
 **Purpose:** Define all 64 tournament participants with rankings and metadata
@@ -2177,7 +2222,59 @@ Rank | Participant Name              | Notes                                    
 64   | Lwaxana Troi (TNG/DS9)        | Daughter of the Fifth House                | https://memory-alpha.fandom.com/wiki/Lwaxana_Troi
 ```
 
-### Tab 2: Config
+### Tab 3: Regions
+
+**Range:** A1:E18 (18 rows including 2 header rows)
+**Purpose:** Show participant distribution across 4 tournament regions
+
+**Header Structure:**
+- **Row 1 (Generic Headers):** (blank), Region 1, Region 2, Region 3, Region 4 - Column headers remain constant across all tournaments
+- **Row 2 (Rank + Region Names):** "Rank", plus customizable region names per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
+- **Rows 3-18 (Participant Data):** 16 participants distributed across 4 regions
+
+| Column | Row 1 Header | Row 2 Content | Data Type | Description |
+|--------|--------------|---------------|-----------|-------------|
+| A | (blank) | Rank | Integer (1-16) | "Rank" label in row 2, sequential rank values in rows 3-18 |
+| B | Region 1 | Custom Name | String | Generic "Region 1" label in row 1, customizable name in row 2, participants in rows 3-18 |
+| C | Region 2 | Custom Name | String | Generic "Region 2" label in row 1, customizable name in row 2, participants in rows 3-18 |
+| D | Region 3 | Custom Name | String | Generic "Region 3" label in row 1, customizable name in row 2, participants in rows 3-18 |
+| E | Region 4 | Custom Name | String | Generic "Region 4" label in row 1, customizable name in row 2, participants in rows 3-18 |
+
+**Distribution Pattern:**
+- Rank 1 → Region 1 (Column B, Row 3)
+- Rank 2 → Region 2 (Column C, Row 3)
+- Rank 3 → Region 3 (Column D, Row 3)
+- Rank 4 → Region 4 (Column E, Row 3)
+- Rank 5 → Region 1 (Column B, Row 4)
+- [Pattern repeats: 16 participants per region]
+
+**Region Name Customization:**
+- Row 2 contains customizable region names (editable)
+- Region names must be unique
+- Column A in row 2 should remain blank
+- Typical examples: "ALPHA", "BETA", "GAMMA", "DELTA" OR "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion"
+
+**Formulas:**
+- Cells B3:E18 contain VLOOKUP formulas referencing Participants tab
+- Automatically populate based on Participants tab Rank column
+- Do not manually edit participant names in this tab
+
+**Formatting:**
+- Both header rows (rows 1-2) are frozen for scrolling visibility
+- Both header rows (rows 1-2) are bold
+
+**Example:**
+```
+         | Region 1   | Region 2        | Region 3             | Region 4
+---------|------------|-----------------|----------------------|------------------
+Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
+1        | Spock      | Picard          | Data                 | Worf
+2        | Janeway    | Sisko           | Kirk                 | Seven of Nine
+3        | Riker      | O'Brien         | Quark                | Odo
+...
+```
+
+### Tab 4: Config
 
 **Range:** A:B (variable rows, key-value pairs)
 **Purpose:** Tournament settings and behavior configuration
@@ -2240,101 +2337,6 @@ Auto Round Scheduling      | 3 days
 Announcements Channel ID   | 9876543210987654321
 Celebratory GIF            | true
 ```
-
-### Tab 3: Regions
-
-**Range:** A1:E18 (18 rows including 2 header rows)
-**Purpose:** Show participant distribution across 4 tournament regions
-
-**Header Structure:**
-- **Row 1 (Generic Headers):** (blank), Region 1, Region 2, Region 3, Region 4 - Column headers remain constant across all tournaments
-- **Row 2 (Rank + Region Names):** "Rank", plus customizable region names per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
-- **Rows 3-18 (Participant Data):** 16 participants distributed across 4 regions
-
-| Column | Row 1 Header | Row 2 Content | Data Type | Description |
-|--------|--------------|---------------|-----------|-------------|
-| A | (blank) | Rank | Integer (1-16) | "Rank" label in row 2, sequential rank values in rows 3-18 |
-| B | Region 1 | Custom Name | String | Generic "Region 1" label in row 1, customizable name in row 2, participants in rows 3-18 |
-| C | Region 2 | Custom Name | String | Generic "Region 2" label in row 1, customizable name in row 2, participants in rows 3-18 |
-| D | Region 3 | Custom Name | String | Generic "Region 3" label in row 1, customizable name in row 2, participants in rows 3-18 |
-| E | Region 4 | Custom Name | String | Generic "Region 4" label in row 1, customizable name in row 2, participants in rows 3-18 |
-
-**Distribution Pattern:**
-- Rank 1 → Region 1 (Column B, Row 3)
-- Rank 2 → Region 2 (Column C, Row 3)
-- Rank 3 → Region 3 (Column D, Row 3)
-- Rank 4 → Region 4 (Column E, Row 3)
-- Rank 5 → Region 1 (Column B, Row 4)
-- [Pattern repeats: 16 participants per region]
-
-**Region Name Customization:**
-- Row 2 contains customizable region names (editable)
-- Region names must be unique
-- Column A in row 2 should remain blank
-- Typical examples: "ALPHA", "BETA", "GAMMA", "DELTA" OR "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion"
-
-**Formulas:**
-- Cells B3:E18 contain VLOOKUP formulas referencing Participants tab
-- Automatically populate based on Participants tab Rank column
-- Do not manually edit participant names in this tab
-
-**Formatting:**
-- Both header rows (rows 1-2) are frozen for scrolling visibility
-- Both header rows (rows 1-2) are bold
-
-**Example:**
-```
-         | Region 1   | Region 2        | Region 3             | Region 4
----------|------------|-----------------|----------------------|------------------
-Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
-1        | Spock      | Picard          | Data                 | Worf
-2        | Janeway    | Sisko           | Kirk                 | Seven of Nine
-3        | Riker      | O'Brien         | Quark                | Odo
-...
-```
-
-### Tab 4: Bracket
-
-**Range:** Complex formula-driven layout (varies by template design)
-**Purpose:** Visual tournament bracket showing all rounds and matchups
-
-**Structure:**
-- Formula-driven cells display participant names and seeds
-- Vote counts appear after matches complete (pulled from Results tab via formulas)
-- Winner/loser advancement controlled by TRUE/FALSE cells
-
-**Display Format:**
-
-*Before match:*
-```
-(1) Spock (TOS/TAS/Films/SNW)
-```
-
-*After match:*
-```
-45 (1) Spock (TOS/TAS/Films/SNW)
-```
-*(vote count before seed number)*
-
-**vPoll Write Operations:**
-- vPoll writes TRUE to winner's advancement cell
-- vPoll writes FALSE to loser's advancement cell
-- Bracket formulas automatically propagate winners to next round
-
-**Read-Only for vPoll:**
-- vPoll READS participant names and matchups
-- vPoll READS bracket structure to determine matches
-- vPoll does NOT modify participant names or formulas
-
-**User Visibility:**
-- Users view this tab for live bracket visualization
-- Updates in real-time as vPoll writes TRUE/FALSE values
-- Vote counts update automatically via formulas reading Results tab
-
-**Template Maintenance:**
-- Bracket formulas must reference Results tab correctly
-- Modification of formulas may break bracket display
-- Use provided template for consistent structure
 
 ### Tab 5: Results
 

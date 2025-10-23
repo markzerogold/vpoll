@@ -122,7 +122,7 @@ async function populateSheet(spreadsheetId: string) {
     let metadata = await sheets.spreadsheets.get({ spreadsheetId });
     const existingSheets = metadata.data.sheets || [];
 
-    const requiredTabs = ['Participants', 'Config', 'Regions', 'Bracket', 'Results'];
+    const requiredTabs = ['Bracket', 'Participants', 'Regions', 'Config', 'Results'];
     const requests: any[] = [];
 
     // Rename or create tabs
