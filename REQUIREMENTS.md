@@ -233,13 +233,43 @@ Setup Phase (Scenarios 1-9)
 
 ### Setup Phase: Google Sheets Preparation
 
+#### Scenario 0: Get Master Template
+
+**Actor:** Anyone (Discord User or Server Admin)
+**Goal:** Obtain the vPoll master template spreadsheet link
+
+**Command:**
+```
+/tournament template
+```
+
+**Flow:**
+1. User runs `/tournament template` in Discord (works in any server where vPoll is installed)
+2. vPoll responds with an embedded message containing:
+   - Direct link to master template spreadsheet
+   - Instructions to make a copy (File → Make a copy)
+   - Service account email for sharing
+   - Next steps for tournament setup
+3. User clicks the link to view or copy the template
+
+**Why This Matters:** Makes it easy for anyone to get started with vPoll without searching documentation. Users can explore the template structure or start creating their own tournament immediately.
+
+**Success Criteria:** User receives template link and instructions within 1 second
+
+---
+
 #### Scenario 1: Fill Out Participants
 
 **Actor:** Server Admin (Google Sheets)
 **Goal:** Define the 64 tournament participants with rankings
 
+**Pre-requisite:** Get the master template
+- In Discord, run `/tournament template` to get the master template link
+- Open the link and click File → Make a copy
+- Rename the copy (e.g., "Star Trek Character Battle 2025")
+
 **Flow:**
-1. Admin makes copy of vPoll template spreadsheet
+1. Admin has a copy of the vPoll template spreadsheet
 2. In Participants tab (rows 1-64), admin fills:
    - Column A: Rank (1-64) - determines seeding order
    - Column B: Participant name (e.g., "Spock (TOS/TAS/Films/SNW)")

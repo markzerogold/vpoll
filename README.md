@@ -40,6 +40,33 @@ A Discord bot for creating and managing polls in your Discord servers.
 
 - `/ping` - Test command to check if the bot is responding
 - `/poll` - Create a poll with custom question and options
+- `/tournament template` - Get the master template spreadsheet to create tournaments
+
+## Tournament Setup
+
+vPoll uses Google Sheets for tournament management. To create a tournament:
+
+1. **Get the master template:**
+   - Run `/tournament template` in Discord, OR
+   - Use this link: https://docs.google.com/spreadsheets/d/1Le5xZjpKjBykwPGZ54sEFfwDmjPtb59JFQh4sZJ7t6k/edit
+
+2. **Make a copy:**
+   - Open the template and click **File → Make a copy**
+   - Rename your copy (e.g., "Star Trek Character Battle 2025")
+
+3. **Fill in your tournament data:**
+   - Participants tab: 64 participants with ranks, names, and optional notes/links
+   - Config tab: Tournament settings (name, poll length, etc.)
+   - Regions tab: Customize your 4 region names
+
+4. **Share with service account:**
+   - Share your copy with: `vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com`
+   - Give **Editor** permission (required for vPoll to update results)
+
+5. **Create tournament in Discord:**
+   - Run `/tournament create <your-sheet-url>` (coming soon)
+
+For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.md) or [REQUIREMENTS.md](REQUIREMENTS.md).
 
 ## Development
 
