@@ -420,9 +420,7 @@ Setup Phase (Scenarios 1-9)
    - **Results Visibility** - When users see results (see Scenario 11)
 
 **Optional Settings:**
-   - Required Voter Role - Discord role ID (config exists but not enforced in MVP)
    - Match Preview Posts - true/false (see Scenario 21)
-   - Live Vote Updates - Frequency (config exists but not enforced in MVP)
    - Auto Round Scheduling - Delay before auto-starting next round (e.g., "3 days", "immediate")
    - Advertising Template - Template for promotion posts (see Scenario 10)
    - Announcements Channel ID - Separate channel for announcements (see Scenario 29)
@@ -2440,9 +2438,7 @@ Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
 | Auto-advance | Boolean | ✅ Yes | true, false | false | Automatically start next round when current completes |
 | Tie Breaker Rule | String | ✅ Yes | "Dice roll" | "Dice roll" | How to resolve tied matches |
 | Results Visibility | String | ✅ Yes | See options below | "after voting" | When users can see results |
-| Required Voter Role | String | ⚠️ Optional | Discord role ID | - | Role required to vote (not enforced in MVP) |
 | Match Preview Posts | Boolean | ⚠️ Optional | true, false | false | Post participant info before polls |
-| Live Vote Updates | String | ⚠️ Optional | See options below | "never" | Frequency of vote count updates (not enforced in MVP) |
 | Auto Round Scheduling | String | ⚠️ Optional | "immediate", "X days", "X hours", blank | blank | Delay before auto-starting next round |
 | Advertising Template | String | ⚠️ Optional | Template with placeholders | - | Format for promotion posts |
 | Announcements Channel ID | String | ⚠️ Optional | Valid Discord channel ID | - | Separate channel for announcements |
@@ -2461,13 +2457,6 @@ Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
 - `"after poll closes"` - After poll duration ends
 - `"at tournament end"` - Only when tournament completes
 - *Note: MVP uses Discord native polls which always show live results*
-
-**Live Vote Updates Valid Values:**
-- `"never"` - No updates (default)
-- `"halfway through poll"` - Post once at 50% duration
-- `"when 1 hour remains"` - Post once 1 hour before close
-- `"every 6 hours"` - Post every 6 hours
-- `"every 12 hours"` - Post every 12 hours
 
 **Example Config Tab:**
 ```
@@ -3219,11 +3208,9 @@ User notifications (Scenario 28) implied multiple concurrent tournaments
 - Auto-advance
 - Tie Breaker Rule
 
-**Optional Settings (8):**
+**Optional Settings (6):**
 - Results Visibility
-- Required Voter Role (not enforced MVP)
 - Match Preview Posts
-- Live Vote Updates (not enforced MVP)
 - Auto Round Scheduling
 - Advertising Template
 - Announcements Channel ID
