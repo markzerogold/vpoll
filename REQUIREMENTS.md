@@ -114,6 +114,122 @@ vPoll combines three key technologies to deliver automated tournament management
 
 ---
 
+## User Personas
+
+vPoll serves three distinct user roles, each with different responsibilities and interaction patterns:
+
+### Persona 1: Discord Admin
+
+**Role:** Server administrator who installs and configures vPoll
+
+**Responsibilities:**
+- Install vPoll bot on Discord server
+- Configure bot permissions (Send Messages, Create Polls, Manage Channels)
+- Add vPoll to tournament channel(s)
+- May or may not be the Tournament Master
+
+**Technical Level:** Moderate - Comfortable with Discord server settings and bot installation
+
+**Key Actions:**
+- Invite vPoll to server via OAuth2 link
+- Grant necessary Discord permissions
+- Verify bot can post in designated channels
+
+**Pain Points:**
+- Ensuring correct permissions are set
+- Understanding which channels vPoll needs access to
+
+---
+
+### Persona 2: Tournament Master (TM)
+
+**Role:** Person who creates and manages tournament brackets
+
+**Responsibilities:**
+- Create tournament Google Sheet from template
+- Fill in 64 participants with rankings, notes, and reference links
+- Configure tournament settings (poll length, batches, region names, etc.)
+- Share sheet with vPoll service account
+- Create tournament in Discord (`/tournament create`)
+- Start tournament and manage progression
+- Monitor results and troubleshoot issues
+
+**Technical Level:** Moderate - Comfortable with Google Sheets and Discord commands
+
+**Key Actions:**
+- Copy master template and customize for their tournament
+- Run `/tournament template` to get template link
+- Run `/tournament create <sheet-url>` to validate and load tournament
+- Run `/tournament start` to begin Round 1
+- Run `/tournament next-round` for manual advancement (if auto-advance disabled)
+- Run `/tournament pause`, `/tournament resume`, `/tournament cancel` as needed
+
+**Pain Points:**
+- Finding and understanding the template structure
+- Correctly sharing sheet with service account (Editor permission)
+- Understanding configuration options
+- Troubleshooting validation errors
+
+**Note:** The TM may be the Discord Admin, but doesn't have to be. Any server member with appropriate permissions can be a TM.
+
+---
+
+### Persona 3: Discord User (Voter)
+
+**Role:** Server member who participates in tournaments by voting
+
+**Responsibilities:**
+- Vote in tournament polls
+- View live bracket in Google Sheets
+- Ask vPoll for tournament information
+- Follow tournament progression
+
+**Technical Level:** Low - Basic Discord usage
+
+**Key Actions:**
+- Click poll options in Discord to vote
+- Run `/tournament bracket` to get Google Sheets link
+- Run `/tournament status` to see active polls
+- Run `/tournament results` to view recent match outcomes
+- Run `/participant info <name>` to learn about participants
+
+**Pain Points:**
+- Finding the bracket link
+- Understanding tournament rules and progression
+- Knowing when new polls are available
+
+**Note:** This persona has the least technical burden - voting should be as simple as clicking a poll option.
+
+---
+
+### Persona 4: vPoll Bot (Automated)
+
+**Role:** Automated system that orchestrates tournaments
+
+**Responsibilities:**
+- Validate tournament sheets
+- Create and post Discord polls at scheduled times
+- Track poll results when polls close
+- Update Google Sheets with results
+- Advance bracket based on winners
+- Post announcements and status updates
+- Handle tiebreakers
+
+**Technical Level:** N/A (Automated)
+
+**Key Actions:**
+- Read tournament data from Google Sheets
+- Write results to Google Sheets Results tab
+- Update Bracket tab TRUE/FALSE cells for winner advancement
+- Post Discord poll messages
+- Read Discord poll results
+- Calculate and execute tiebreakers
+- Post match result announcements
+
+**Note:** This "persona" represents the automated behavior of vPoll. Most scenarios involving vPoll are triggered by other personas' actions or time-based events.
+
+---
+
 ## Scope & Priorities
 
 ### In Scope - MVP (Private Bot)
@@ -235,7 +351,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 0: Get Master Template
 
-**Actor:** Anyone (Discord User or Server Admin)
+**Actor:** Anyone (Discord User, TM, or Discord Admin)
 **Goal:** Obtain the vPoll master template spreadsheet link
 
 **Command:**
@@ -260,7 +376,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 1: Fill Out Participants
 
-**Actor:** Server Admin (Google Sheets)
+**Actor:** Tournament Master (TM)
 **Goal:** Define the 64 tournament participants with rankings
 
 **Pre-requisite:** Get the master template
@@ -284,7 +400,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 2: Configure Tournament Settings
 
-**Actor:** Server Admin (Google Sheets)
+**Actor:** Tournament Master (TM)
 **Goal:** Set tournament rules and behavior
 
 **Flow:**
@@ -316,7 +432,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 3: Verify Region Distribution
 
-**Actor:** Server Admin (Google Sheets)
+**Actor:** Tournament Master (TM)
 **Goal:** Review how participants are distributed across 4 regions
 
 **Flow:**
@@ -342,7 +458,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 4: Share Sheet with vPoll Service Account
 
-**Actor:** Server Admin (Google Sheets)
+**Actor:** Tournament Master (TM)
 **Goal:** Grant vPoll permission to read/write tournament data
 
 **Flow:**
@@ -359,7 +475,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 5: Enable Public Viewing
 
-**Actor:** Server Admin (Google Sheets)
+**Actor:** Tournament Master (TM)
 **Goal:** Allow Discord users to view bracket without Google account
 
 **Flow:**
@@ -377,7 +493,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 6: Add Bot to Discord Server
 
-**Actor:** Server Admin (Discord)
+**Actor:** Discord Admin
 **Goal:** Install vPoll bot with required permissions
 
 **Flow:**
@@ -401,7 +517,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 7: Create Tournament from Google Sheet
 
-**Actor:** Server Admin (Discord)
+**Actor:** Tournament Master (TM)
 **Goal:** Load tournament data into vPoll
 
 **Command:**
@@ -442,7 +558,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 8: Start Tournament and Launch First Round
 
-**Actor:** Server Admin (Discord)
+**Actor:** Tournament Master (TM)
 **Goal:** Begin tournament and create first round polls
 
 **Command:**
@@ -514,7 +630,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 10: Generate Advertising Post
 
-**Actor:** Server Admin (Discord)
+**Actor:** Tournament Master (TM)
 **Goal:** Create formatted promotion post for other channels
 
 **Command:**
@@ -556,7 +672,7 @@ May the best win!
 
 #### Scenario 11: Users Vote in Discord Polls
 
-**Actor:** Server Members (Discord)
+**Actor:** Discord User (Voter)
 **Goal:** Cast votes in tournament matches
 
 **Flow:**
@@ -788,7 +904,7 @@ View full results: [Google Sheets link]
 
 #### Scenario 15: Request Tournament Results (Multiple Formats)
 
-**Actor:** Server Admin or Members (Discord)
+**Actor:** Tournament Master (TM) or Discord User (Voter)
 **Goal:** View current tournament progress and results
 
 **Available Commands (all users have access):**
@@ -857,7 +973,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 16: Manually Post Winner Announcement
 
-**Actor:** Server Admin (Discord)
+**Actor:** Tournament Master (TM)
 **Goal:** Re-post winner announcement or post it manually
 
 **Command:**
@@ -887,7 +1003,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 17: User Access to Results (Clarification)
 
-**Actor:** Server Members (Discord)
+**Actor:** Discord User (Voter)
 **Goal:** Access tournament information without admin permissions
 
 **Context:** This scenario clarifies that regular users have the SAME access to result commands as admins.
@@ -923,7 +1039,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 18: Pause and Resume Tournament
 
-**Actor:** Server Admin (Discord)
+**Actor:** Tournament Master (TM)
 **Goal:** Temporarily halt tournament progression without canceling
 
 **Pause Command:**
@@ -985,7 +1101,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 19: Cancel Tournament
 
-**Actor:** Server Admin (Discord)
+**Actor:** Tournament Master (TM)
 **Goal:** Permanently end tournament and prevent further progression
 
 **Command:**
@@ -1058,7 +1174,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 20: Required Voter Role (Config Only - Not Enforced)
 
-**Actor:** Server Admin (Google Sheets Config)
+**Actor:** Tournament Master (TM)
 **Goal:** Configure role requirement for voting
 
 **Config Tab Setting:**
@@ -1433,7 +1549,7 @@ Auto Round Scheduling | 3 days
 
 #### Scenario 26: Participant Reference Link Lookup
 
-**Actor:** Server Members (Discord)
+**Actor:** Discord User (Voter)
 **Goal:** View information and reference link for specific participant
 
 **Command:**
@@ -1510,7 +1626,7 @@ Science Officer aboard USS Enterprise. Known for logic and iconic Vulcan salute.
 
 #### Scenario 27: Bracket Image/PDF Generation (Deferred to Future)
 
-**Actor:** Server Admin or Members (Discord)
+**Actor:** Tournament Master (TM) or Discord User (Voter)
 **Goal:** Generate shareable bracket visualization as image or PDF
 
 **Intended Command:**
@@ -1560,7 +1676,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 28: User DM Notifications (Deferred to Future)
 
-**Actor:** Server Members (Discord)
+**Actor:** Discord User (Voter)
 **Goal:** Receive direct message notifications when new polls go live
 
 **Intended Commands:**
@@ -1608,7 +1724,7 @@ View the bracket here: [Google Sheets link]
 
 #### Scenario 29: Announcements Channel Configuration
 
-**Actor:** Server Admin (Google Sheets Config)
+**Actor:** Tournament Master (TM)
 **Goal:** Post tournament announcements to separate channel from polls
 
 **Config Tab Setting:**
@@ -1653,7 +1769,7 @@ Announcements Channel ID | 123456789012345678
 
 #### Scenario 30: Channel/Thread Organization (Admin Pre-creates - MVP)
 
-**Actor:** Server Admin (Discord + Google Sheets Config)
+**Actor:** Tournament Master (TM)
 **Goal:** Organize tournament polls across channels and threads
 
 **Intended Config Options:**
