@@ -125,28 +125,36 @@ async function populateSheet(spreadsheetId: string) {
     const requiredTabs = ['Bracket', 'Results', 'Participants', 'Regions', 'Config', 'Instructions'];
     const requests: any[] = [];
 
+    // Check which tabs already exist by name
+    const existingTabNames = new Set(existingSheets.map(s => s.properties?.title));
+
     // Rename or create tabs
     requiredTabs.forEach((tabName, index) => {
       if (existingSheets[index]) {
-        // Rename existing tab
-        requests.push({
-          updateSheetProperties: {
-            properties: {
-              sheetId: existingSheets[index].properties?.sheetId,
-              title: tabName,
+        const currentName = existingSheets[index].properties?.title;
+        // Only rename if the name is different
+        if (currentName !== tabName) {
+          requests.push({
+            updateSheetProperties: {
+              properties: {
+                sheetId: existingSheets[index].properties?.sheetId,
+                title: tabName,
+              },
+              fields: 'title',
             },
-            fields: 'title',
-          },
-        });
+          });
+        }
       } else {
-        // Create new tab
-        requests.push({
-          addSheet: {
-            properties: {
-              title: tabName,
+        // Create new tab only if it doesn't already exist
+        if (!existingTabNames.has(tabName)) {
+          requests.push({
+            addSheet: {
+              properties: {
+                title: tabName,
+              },
             },
-          },
-        });
+          });
+        }
       }
     });
 
