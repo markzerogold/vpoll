@@ -267,8 +267,8 @@ vPoll serves three distinct user roles, each with different responsibilities and
 **Deferred to Future Versions** (See FUTURE.md)
 - ❌ Multi-tournament concurrent support
 - ❌ Public bot deployment (multi-server architecture)
-- ❌ Required voter role enforcement (Scenario 20 - config exists but not enforced)
-- ❌ Live vote count updates (Scenario 22)
+- ❌ Required voter role enforcement (Scenario 20 - use Discord channel permissions instead)
+- ❌ Live vote count updates (Scenario 22 - Discord polls show live counts natively)
 - ❌ User DM notifications (Scenario 28)
 - ❌ Bracket image/PDF generation (Scenario 27)
 - ❌ Thread/channel organization (Scenario 30 - admin must pre-create)
@@ -695,7 +695,7 @@ May the best win!
 
 **Success Criteria:** Users can vote without errors, votes are counted by Discord
 
-**MVP Limitation:** Cannot enforce role restrictions on voting (anyone in channel can vote). "Required Voter Role" config exists but is not enforced.
+**MVP Limitation:** Cannot enforce role restrictions on voting (anyone in channel can vote). Use Discord's channel permissions to control who can access the tournament channel. See Scenario 20 for workaround.
 
 ---
 
@@ -1174,36 +1174,34 @@ View the bracket here: [Google Sheets link]
 
 ### Advanced Features
 
-#### Scenario 20: Required Voter Role (Config Only - Not Enforced)
+#### Scenario 20: Required Voter Role (Deferred to Future)
 
 **Actor:** Tournament Host (TH)
-**Goal:** Configure role requirement for voting
+**Goal:** Restrict tournament voting to users with a specific Discord role
 
-**Config Tab Setting:**
-```
-Required Voter Role | 123456789012345678
-```
+**Status:** ⚠️ **DEFERRED** - Not included in MVP
 
-**MVP Behavior:**
-- Config option exists and can be set
-- vPoll reads this value during tournament creation
-- **NOT ENFORCED:** vPoll does not restrict poll access based on role
-- Anyone in the channel can vote (Discord native poll limitation)
-
-**Why Not Enforced:**
+**Why Deferred:**
 Discord native polls cannot be restricted to specific roles. Enforcement would require:
-- Custom voting implementation (reactions, buttons, or forms)
-- Vote validation after-the-fact
-- Or channel permission management (different approach)
+- Custom voting implementation (reactions, buttons, or forms) instead of native polls
+- Vote validation after-the-fact (removing invalid votes)
+- Or channel permission management (locking channel to role holders)
 
-**Deferred to Future:** Full enforcement mechanism in FUTURE.md (requires replacing Discord native polls with custom voting system)
+All of these approaches add significant complexity and require major architectural changes.
 
-**Documentation Note:** Template and docs will note this is a planned feature for future versions.
+**MVP Approach:**
+- **No config setting** for Required Voter Role
+- All server members with channel access can vote
+- Tournament Hosts should use Discord's channel permissions to restrict who can see/access the tournament channel
 
-**Success Criteria:**
-- Config value can be set without errors
-- vPoll reads value but does not act on it
-- No errors occur if role ID is invalid (ignored for MVP)
+**Future Implementation:**
+See FUTURE.md "Role-Based Vote Enforcement During Voting" for planned implementation options.
+
+**Workaround for MVP:**
+Tournament Hosts can manually restrict voting by:
+1. Creating a private channel only visible to users with specific role
+2. Posting tournament polls in that restricted channel
+3. vPoll respects existing channel permissions
 
 ---
 
@@ -1271,43 +1269,38 @@ Poll starting in 1 minute...
 
 ---
 
-#### Scenario 22: Live Vote Count Updates (Config Only - Not Implemented)
+#### Scenario 22: Live Vote Count Updates (Deferred to Future)
 
 **Actor:** vPoll (Automated)
-**Goal:** Post periodic vote count updates during active polls
+**Goal:** Post periodic vote count updates to announcements channel during active polls
 
-**Config Tab Setting:**
-```
-Live Vote Updates | every 6 hours
-```
+**Status:** ⚠️ **DEFERRED** - Not included in MVP
 
-**Options:**
-- "never" - No updates (default)
-- "halfway through poll" - Post once at 50% of poll duration
-- "when 1 hour remains" - Post once 1 hour before close
-- "every 6 hours" - Post every 6 hours
-- "every 12 hours" - Post every 12 hours
+**Why Deferred:**
+- Discord native polls already show real-time vote counts to all users who can see the poll
+- Additional update posts would be redundant in the same channel
+- Adds implementation complexity for minimal MVP value
 
-**MVP Behavior:**
-- Config option exists and can be set
-- vPoll reads this value during tournament creation
-- **NOT IMPLEMENTED:** vPoll does not post vote count updates
-- Discord polls already show live vote counts natively
+**MVP Approach:**
+- **No config setting** for Live Vote Updates
+- Users see live vote counts directly in Discord native polls
+- No separate vote count announcements posted
 
-**Why Not Implemented for MVP:**
-- Discord native polls already show real-time vote counts to all users
-- Additional update posts would be redundant
-- Adds complexity for minimal value
-
-**Deferred to Future:** Could be valuable if:
-- Posting updates to separate announcements channel
+**Future Implementation:**
+See FUTURE.md "Real-time Vote Tracking and Display" for planned features:
+- Posting vote updates to separate announcements channel
+- Including additional analytics (vote velocity, participation rate, trending)
 - Sending DM notifications to subscribed users
-- Providing additional analytics (vote velocity, participation rate, etc.)
+- Generating vote count visualizations (charts/graphs)
 
-**Success Criteria:**
-- Config value can be set without errors
-- vPoll reads value but does not act on it
-- No errors occur (silently ignored for MVP)
+**Why This Could Be Valuable (Future):**
+- Updates in announcements channel don't ping everyone in main poll channel
+- Historical record of vote progression
+- Analytics for tournament organizers
+- Hype-building with periodic updates showing close races
+
+**MVP Alternative:**
+Users can simply view the Discord poll to see current vote counts at any time.
 
 ---
 
@@ -2759,15 +2752,15 @@ Setup Commands:
 
 #### Role Restriction Expectations
 
-**Risk:** Users expect Required Voter Role to be enforced (config exists but not enforced)
+**Risk:** Users want to restrict voting to specific roles but MVP doesn't support this
 **Risk Level:** 🟡 Medium
 **Impact:** User disappointment, tournaments with unwanted voters
 
 **Mitigation:**
-- Clear documentation: "This feature is planned for future versions"
-- Config tab includes note: "Not enforced in current version"
-- Error message if users ask why role isn't enforced
-- Alternative: Use Discord channel permissions to restrict access
+- Clear documentation in Scenario 20 explaining the manual workaround
+- Instructions tab explains Discord channel permission alternative
+- Future feature documented in FUTURE.md for transparency
+- Tournament Hosts can use Discord's built-in channel permissions to control access
 
 ### Scaling Risks (Future - Public Bot)
 
@@ -2980,33 +2973,33 @@ Auto Round Scheduling | 3 days
 
 ### Decision 4: Required Voter Role Implementation (2025-10-22)
 
-**Status:** ⚠️ Partially Resolved (Config Only - Not Enforced)
+**Status:** ✅ Resolved (Feature Deferred to Future)
 **Related Scenarios:** 20
 
 **Context:**
 Discord native polls cannot restrict voting to specific roles (API limitation)
 
 **Decision:**
-**MVP:** Config option exists but is NOT enforced
-- Users can set "Required Voter Role" in Config tab
-- vPoll reads value but takes no action
+**MVP:** NO config option for Required Voter Role
+- Config setting removed from template (was confusing since it wasn't enforced)
 - Anyone in channel can vote (Discord native poll behavior)
+- Tournament Hosts use Discord's channel permissions as workaround
 
-**Future Options for Full Enforcement:**
-1. **Channel Permissions Approach:** Restrict entire channel to specific role (different from per-poll restriction)
+**Manual Workaround (Documented in Scenario 20):**
+1. Create private channel visible only to users with specific role
+2. Post tournament polls in that restricted channel
+3. vPoll respects existing channel permissions
+
+**Future Options for Automated Enforcement:**
+1. **Channel Permissions Approach:** vPoll automatically restricts channel to specific role
 2. **Custom Voting Approach:** Replace Discord native polls with button/reaction voting, validate roles
 3. **Post-Vote Validation:** Check voter roles after poll closes, invalidate unauthorized votes (complex, poor UX)
 
 **Rationale:**
-- Enforcing role restrictions requires replacing Discord native polls (major scope increase)
-- MVP prioritizes core tournament flow over access control
-- Channel permissions provide workaround for most use cases
-- Clear documentation prevents user confusion
-
-**Documentation Requirements:**
-- Config tab note: "Not enforced in current version - planned for future"
-- Setup guide: "To restrict voting, use Discord channel permissions"
-- FAQ: Explain limitation and workarounds
+- Config setting that does nothing creates poor UX and user confusion
+- MVP prioritizes core tournament flow over access control automation
+- Discord's built-in channel permissions provide adequate workaround
+- Future feature can add automated channel restriction or custom voting
 
 **Future Decision Point:**
 If user demand is high, evaluate custom voting implementation (see FUTURE.md)
