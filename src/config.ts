@@ -6,7 +6,7 @@ export const config = {
   token: process.env.DISCORD_TOKEN || '',
   clientId: process.env.CLIENT_ID || '',
   guildId: process.env.GUILD_ID || '', // Optional: for development guild-specific commands
-  masterTemplateUrl: process.env.MASTER_TEMPLATE_URL || 'https://docs.google.com/spreadsheets/d/1Le5xZjpKjBykwPGZ54sEFfwDmjPtb59JFQh4sZJ7t6k/edit',
+  masterTemplateUrl: process.env.MASTER_TEMPLATE_URL || 'https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit',
 };
 
 // Validate required environment variables

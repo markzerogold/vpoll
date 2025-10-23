@@ -48,7 +48,7 @@ vPoll uses Google Sheets for tournament management. To create a tournament:
 
 1. **Get the master template:**
    - Run `/tournament template` in Discord, OR
-   - Use this link: https://docs.google.com/spreadsheets/d/1Le5xZjpKjBykwPGZ54sEFfwDmjPtb59JFQh4sZJ7t6k/edit
+   - Use this link: https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit
 
 2. **Make a copy:**
    - Open the template and click **File → Make a copy**
