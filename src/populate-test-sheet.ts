@@ -385,6 +385,28 @@ async function populateSheet(spreadsheetId: string) {
               },
             },
           },
+          // Auto-resize Regions tab columns
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId: sheetIdMap['Regions'],
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 5,
+              },
+            },
+          },
+          // Auto-resize Bracket tab columns
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId: sheetIdMap['Bracket'],
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 13,
+              },
+            },
+          },
         ],
       },
     });
