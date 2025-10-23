@@ -255,6 +255,7 @@ vPoll serves three distinct user roles, each with different responsibilities and
 
 **Phase 3: Advanced Configuration** ⚠️ Should Have
 - Auto round scheduling (Scenario 25)
+- Thread/channel organization - manual setup (Scenario 30)
 
 ### Out of Scope - MVP
 
@@ -268,7 +269,7 @@ vPoll serves three distinct user roles, each with different responsibilities and
 - ❌ User DM notifications (Scenario 28)
 - ❌ Bracket image/PDF generation (Scenario 27)
 - ❌ Announcements channel (Scenario 29 - all posts go to primary poll channel)
-- ❌ Thread/channel organization (Scenario 30 - admin must pre-create)
+- ❌ Automatic thread/channel creation (Scenario 30 - admin must pre-create, vPoll uses existing)
 - ❌ Advertising template generation (Scenario 10 - hosts manually write promotional posts)
 - ❌ Custom bracket sizes (only 64-participant supported)
 - ❌ Double elimination or other tournament formats
