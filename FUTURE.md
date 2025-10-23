@@ -63,6 +63,34 @@ This allows admins to specify which tournament to start when multiple tournament
 
 ## Bot Permissions & Automation
 
+### Tournament Master Role Restriction
+**Current State:** MVP allows any server member with slash command permissions to create and run tournaments using `/tournament create` and related commands.
+
+**Future Enhancement:** Add optional "Required Tournament Master Role" setting that restricts tournament creation and management to users with a specific Discord role.
+
+**Implementation:**
+- New config option (bot-level or per-server): `REQUIRED_TM_ROLE` (Discord role ID)
+- When set, vPoll checks if user has the role before allowing:
+  - `/tournament create`
+  - `/tournament start`
+  - `/tournament pause`
+  - `/tournament resume`
+  - `/tournament cancel`
+  - `/tournament next-round`
+- Users without the role receive error message: "You need the [Role Name] role to manage tournaments on this server"
+
+**Benefits:**
+- Gives server admins control over who can create tournaments
+- Prevents tournament spam or unauthorized tournaments
+- Useful for larger communities with designated tournament organizers
+- Maintains flexibility: if not configured, any member can still create tournaments (MVP behavior)
+
+**Considerations:**
+- Role check must happen server-side (bot validates role membership)
+- Clear error messaging to help users understand why they're blocked
+- Documentation should explain this is an optional restriction
+- Server Administrator can still install/configure bot regardless of TM role setting
+
 ### Automatic Thread/Channel Creation (Scenario 29)
 **Current State:** MVP requires admin to manually pre-create all threads/channels and provide IDs in Config tab. vPoll does not auto-create threads or channels.
 
