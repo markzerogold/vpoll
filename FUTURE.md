@@ -48,10 +48,45 @@ This allows admins to specify which tournament to start when multiple tournament
 
 **Considerations:** May not be technically possible with Discord native polls (polls are built-in Discord feature with limited bot control). Would likely require custom voting implementation using buttons/reactions instead of native polls, which is a major architectural change.
 
+## Visualization & Sharing
+
+### Bracket Image/PDF Generation (Scenario 27)
+**Current State:** Users view the live bracket by opening the Google Sheets link. No static image or PDF export is available.
+
+**Future Enhancement:** Generate shareable bracket visualization as image or PDF file.
+
+**Implementation Options:**
+- **Option 1: On-Demand Generation** - User runs `/tournament bracket-image` and vPoll generates current bracket state as PNG/PDF
+- **Option 2: Automatic Updates** - vPoll automatically generates and posts updated bracket image after each round completes
+- **Option 3: External Service** - Integrate with service like Challonge or Battlefy for bracket visualization
+
+**Benefits:**
+- Shareable on social media (Twitter, Instagram, Reddit)
+- Easier to view on mobile devices
+- Can be posted in Discord channels without requiring users to open Google Sheets
+- Creates archival snapshots of tournament progression
+
+**Considerations:**
+- Image generation requires complex rendering (could use libraries like Puppeteer, Canvas, or Sharp)
+- PDF generation adds additional dependencies
+- File size and Discord upload limits (8MB for most servers, 25MB for boosted)
+- Google Sheets already provides live visualization, so this is a "nice-to-have" rather than essential
+- Complexity vs value tradeoff for MVP
+
+**Technical Requirements:**
+- Bracket layout engine to position participants/matches
+- Image rendering library (Canvas API, Puppeteer for screenshots, or SVG)
+- PDF generation library (if PDF support desired)
+- Discord file upload handling
+
+**Deferred Because:** Google Sheets provides adequate live bracket visualization for MVP. Image/PDF generation is a valuable enhancement but not critical for core tournament functionality.
+
+---
+
 ## User Engagement Features
 
-### Advanced User Notification Subscriptions (Scenario 27)
-**Current State:** Scenario 27 describes users subscribing to "tournaments they're following" which implies multi-tournament support.
+### Advanced User Notification Subscriptions (Scenario 28)
+**Current State:** Scenario 28 describes users subscribing to "tournaments they're following" and receiving DM notifications, which implies multi-tournament support.
 
 **Future Enhancement:** Full-featured notification system allowing users to:
 - Subscribe to multiple tournaments across different servers (public bot)
