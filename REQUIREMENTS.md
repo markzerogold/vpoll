@@ -2175,7 +2175,7 @@ npm run format              # Format code with Prettier
 ### Template Overview
 
 **Template Type:** Google Sheets
-**Required Tabs:** 5 (Bracket, Participants, Regions, Config, Results)
+**Required Tabs:** 6 (Bracket, Results, Participants, Regions, Config, Instructions)
 **Template Access:** Public view, admin creates copy for each tournament
 **Service Account:** vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com (Editor permission required)
 

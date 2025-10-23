@@ -122,7 +122,7 @@ async function populateSheet(spreadsheetId: string) {
     let metadata = await sheets.spreadsheets.get({ spreadsheetId });
     const existingSheets = metadata.data.sheets || [];
 
-    const requiredTabs = ['Bracket', 'Participants', 'Regions', 'Config', 'Results'];
+    const requiredTabs = ['Bracket', 'Results', 'Participants', 'Regions', 'Config', 'Instructions'];
     const requests: any[] = [];
 
     // Rename or create tabs
@@ -172,6 +172,119 @@ async function populateSheet(spreadsheetId: string) {
 
     // Prepare data for batch update
     const batchData = [];
+
+    // 0. Instructions tab
+    console.log('Populating Instructions tab...');
+    const instructionsData = [
+      ['🏆 VPOLL TOURNAMENT SETUP GUIDE 🏆'],
+      [''],
+      ['QUICK START CHECKLIST'],
+      ['☐ 1. Fill in Participants tab (64 participants with ranks, names, notes, links)'],
+      ['☐ 2. Configure tournament settings in Config tab'],
+      ['☐ 3. Customize region names in Regions tab (Row 2)'],
+      ['☐ 4. Share this sheet with service account (see below)'],
+      ['☐ 5. Run /tournament create <sheet-url> in Discord'],
+      ['☐ 6. Run /tournament start when ready to begin'],
+      [''],
+      ['📋 ORDER OF OPERATIONS'],
+      [''],
+      ['Phase 1: Setup (Google Sheets)'],
+      ['  1. Fill Participants tab - All 64 participants with unique ranks 1-64'],
+      ['  2. Fill Config tab - Required: Tournament Name, Poll Length, Discord Channel ID'],
+      ['  3. Customize Regions tab - Edit region names in Row 2 (e.g., ALPHA, BETA, GAMMA, DELTA)'],
+      ['  4. Share sheet - Give EDITOR permission to: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com'],
+      [''],
+      ['Phase 2: Create Tournament (Discord)'],
+      ['  5. Run: /tournament create <your-sheet-url>'],
+      ['  6. vPoll validates sheet and confirms tournament is ready'],
+      [''],
+      ['Phase 3: Start Tournament (Discord)'],
+      ['  7. Run: /tournament start'],
+      ['  8. vPoll creates first round polls based on Poll Batches setting'],
+      ['  9. Users vote using Discord native polls'],
+      [''],
+      ['Phase 4: Tournament Runs Automatically'],
+      ['  10. Polls close after Poll Length hours'],
+      ['  11. vPoll writes results to Results tab and updates Bracket'],
+      ['  12. Next round starts automatically (if Auto Round Scheduling enabled) or manually with /tournament next-round'],
+      ['  13. Repeat until champion is crowned after 6 rounds'],
+      [''],
+      ['🤖 VPOLL COMMANDS'],
+      [''],
+      ['Setup Commands:'],
+      ['  /tournament template - Get link to this master template'],
+      ['  /tournament create <sheet-url> - Validate sheet and create tournament'],
+      [''],
+      ['Tournament Control:'],
+      ['  /tournament start - Begin Round 1 (creates first polls)'],
+      ['  /tournament next-round - Manually advance to next round (if auto-advance disabled)'],
+      ['  /tournament pause - Pause tournament (stops auto-advancement)'],
+      ['  /tournament resume - Resume paused tournament'],
+      ['  /tournament cancel - Cancel tournament (requires confirmation)'],
+      [''],
+      ['Information Commands:'],
+      ['  /tournament status - View current tournament state and active polls'],
+      ['  /tournament bracket - Get link to live Google Sheets bracket'],
+      ['  /tournament results - View recent match results'],
+      ['  /participant info <name> - Look up participant notes and reference link'],
+      [''],
+      ['⚙️ KEY CONFIG SETTINGS'],
+      [''],
+      ['Poll Length - How long each poll stays open (e.g., "24 hours", "48 hours")'],
+      ['Poll Batches - How many polls to create at once:'],
+      ['  • "full round" - All matches in round (32 polls in R1)'],
+      ['  • "one per region" - 1 match per region (4 polls)'],
+      ['  • "sequential" - 1 poll at a time'],
+      [''],
+      ['Auto-advance - Automatically start next round when previous completes (true/false)'],
+      ['Auto Round Scheduling - Delay before auto-starting next round ("immediate", "3 days", blank = disabled)'],
+      ['Tie Breaker - How to resolve tied polls ("Dice roll", "Higher seed wins", "Revote")'],
+      [''],
+      ['🔧 TROUBLESHOOTING'],
+      [''],
+      ['Error: "Cannot access sheet"'],
+      ['  → Share sheet with service account (vpoll-sheets-access@...) with EDITOR permission'],
+      [''],
+      ['Error: "Missing required tab"'],
+      ['  → Check all 6 tabs exist: Instructions, Bracket, Participants, Regions, Config, Results'],
+      [''],
+      ['Error: "Participants tab has duplicate ranks"'],
+      ['  → Ensure Column A has unique ranks 1-64 (no duplicates, no gaps)'],
+      [''],
+      ['Error: "Discord Channel ID is invalid"'],
+      ['  → Right-click channel in Discord → Copy Channel ID, paste in Config tab'],
+      ['  → Ensure vPoll bot has access to that channel'],
+      [''],
+      ['Polls not appearing in Discord'],
+      ['  → Check Discord Channel ID in Config tab matches your intended channel'],
+      ['  → Verify bot has "Send Messages" and "Create Polls" permissions'],
+      [''],
+      ['📚 DOCUMENTATION'],
+      [''],
+      ['Full documentation: github.com/yourrepo/vpoll/blob/main/REQUIREMENTS.md'],
+      ['Test sheet guide: github.com/yourrepo/vpoll/blob/main/TEST_SHEET_GENERATION.md'],
+      [''],
+      ['🔗 SERVICE ACCOUNT'],
+      [''],
+      ['Email: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com'],
+      ['Permission: Editor (REQUIRED - Viewer will not work)'],
+      ['Why: vPoll needs to write match results to Results tab and update Bracket formulas'],
+      [''],
+      ['💡 TIPS'],
+      [''],
+      ['• You can reorder tabs - vPoll finds them by name, not position'],
+      ['• Bracket tab should be first for easy viewing by tournament participants'],
+      ['• Use Notes column (C) in Participants to add context for voters'],
+      ['• Use Reference Link column (D) for character images or wiki pages'],
+      ['• Test with a small Discord channel first before announcing publicly'],
+      ['• Make sheet publicly viewable ("Anyone with link → Viewer") so participants can follow along'],
+      [''],
+      ['✨ Ready to start? Fill in Participants, Config, and Regions tabs, then run /tournament create!'],
+    ];
+    batchData.push({
+      range: 'Instructions!A1:A110',
+      values: instructionsData.map(row => [row[0]]), // Single column
+    });
 
     // 1. Participants tab
     console.log('Populating Participants tab...');
@@ -350,6 +463,75 @@ async function populateSheet(spreadsheetId: string) {
               range: { sheetId: sheetIdMap['Results'], startRowIndex: 0, endRowIndex: 1 },
               cell: { userEnteredFormat: { textFormat: { bold: true } } },
               fields: 'userEnteredFormat.textFormat.bold',
+            },
+          },
+          // Format Instructions tab - Bold title (row 1)
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 0, endRowIndex: 1 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 14 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          // Format Instructions tab - Bold section headers
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 2, endRowIndex: 3 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 10, endRowIndex: 11 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 33, endRowIndex: 34 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 48, endRowIndex: 49 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 68, endRowIndex: 69 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 74, endRowIndex: 75 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          {
+            repeatCell: {
+              range: { sheetId: sheetIdMap['Instructions'], startRowIndex: 79, endRowIndex: 80 },
+              cell: { userEnteredFormat: { textFormat: { bold: true, fontSize: 12 } } },
+              fields: 'userEnteredFormat.textFormat',
+            },
+          },
+          // Auto-resize Instructions tab column
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId: sheetIdMap['Instructions'],
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 1,
+              },
             },
           },
           // Auto-resize Config tab columns for better readability
