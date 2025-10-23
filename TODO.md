@@ -2,8 +2,8 @@
 
 This file tracks all pending tasks and implementation work for the vPoll project.
 
-**Last Updated:** 2025-10-22
-**Status:** Requirements finalized, implementation planning phase
+**Last Updated:** 2025-10-23
+**Status:** Requirements finalized, aligned with FUTURE.md scope definitions
 
 ---
 
@@ -249,31 +249,32 @@ This file tracks all pending tasks and implementation work for the vPoll project
   - Handle manual override (cancel scheduled launch)
   - Handle pause interaction (suspend countdown)
   - **NOTE:** Scheduling lost on bot restart (documented risk)
-- [ ] Match preview posts (Scenario 21)
-  - Read Notes (Column C) and Reference Link (Column D) from Participants
-  - Post preview 60 seconds before poll
-  - For batches: All previews → wait 60s → all polls
-- [ ] Announcements channel (Scenario 29)
-  - Read "Announcements Channel ID" from Config
-  - Post tournament/round announcements to separate channel
-  - Fall back to primary channel if not configured
-- [ ] Advertising post generation (Scenario 10)
-  - Read "Advertising Template" from Config
-  - Replace placeholders ({tournament_name}, {description}, etc.)
-  - Post ephemeral message (admin only)
-  - Admin copies/pastes to desired channels
+- [ ] Thread/channel organization support (Scenario 30 - manual setup)
+  - Admin pre-creates Discord channels and threads
+  - Bot validates channel IDs during tournament creation
+  - Bot posts to configured channels/threads
+  - **NOTE:** Auto-creation of channels/threads is deferred (see FUTURE.md)
 
 ### Phase 4: Deferred Features (OUT OF SCOPE - MVP)
 
-**See FUTURE.md for details**
+**See FUTURE.md for comprehensive details on all deferred features**
 
-- [ ] Multi-tournament concurrent support (Decision 9)
-- [ ] Required voter role enforcement (Decision 4 - not technically feasible with native polls)
-- [ ] Live vote count updates (Scenario 22 - high API cost)
-- [ ] User DM notifications (Scenario 28 - requires database)
-- [ ] Bracket image/PDF generation (Scenario 27 - rendering complexity)
-- [ ] Participant reference link lookup (Scenario 26 - low priority)
-- [ ] Thread/channel auto-creation (Scenario 30 - admin pre-creates for MVP)
+Brief summary of major deferred features:
+- Multi-tournament concurrent support (Decision 9)
+- Match preview posts (Scenario 21)
+- Participant info lookup command (Scenario 26)
+- Bracket image/PDF generation (Scenario 27)
+- User DM notifications (Scenario 28)
+- Announcements channel (Scenario 29)
+- Automatic thread/channel creation (Scenario 30)
+- Advertising template generation (Scenario 10)
+- Live vote count updates (Scenario 22)
+- Required voter role enforcement (Scenario 20)
+- Vote confirmation messages
+- Real-time vote tracking
+- Historical statistics
+- Reseeding options
+- Tournament host role restriction
 
 ---
 
@@ -487,4 +488,4 @@ See `FUTURE.md` for features planned for later versions:
 
 ---
 
-Last updated: 2025-10-22
+Last updated: 2025-10-23
