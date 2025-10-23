@@ -255,12 +255,6 @@ vPoll serves three distinct user roles, each with different responsibilities and
 
 **Phase 3: Advanced Configuration** ⚠️ Should Have
 - Auto round scheduling (Scenario 25)
-- Match preview posts (Scenario 21)
-- Announcements channel (Scenario 29)
-- Advertising post generation (Scenario 10)
-
-**Phase 4: User Engagement** ⚠️ Should Have
-- Participant info lookup with image embeds (Scenario 26)
 
 ### Out of Scope - MVP
 
@@ -269,9 +263,13 @@ vPoll serves three distinct user roles, each with different responsibilities and
 - ❌ Public bot deployment (multi-server architecture)
 - ❌ Required voter role enforcement (Scenario 20 - use Discord channel permissions instead)
 - ❌ Live vote count updates (Scenario 22 - Discord polls show live counts natively)
+- ❌ Match preview posts (Scenario 21 - voters can view Google Sheets for participant info)
+- ❌ Participant info lookup command (Scenario 26 - voters can view Google Sheets directly)
 - ❌ User DM notifications (Scenario 28)
 - ❌ Bracket image/PDF generation (Scenario 27)
+- ❌ Announcements channel (Scenario 29 - all posts go to primary poll channel)
 - ❌ Thread/channel organization (Scenario 30 - admin must pre-create)
+- ❌ Advertising template generation (Scenario 10 - hosts manually write promotional posts)
 - ❌ Custom bracket sizes (only 64-participant supported)
 - ❌ Double elimination or other tournament formats
 
@@ -420,10 +418,7 @@ Setup Phase (Scenarios 1-9)
    - **Results Visibility** - When users see results (see Scenario 11)
 
 **Optional Settings:**
-   - Match Preview Posts - true/false (see Scenario 21)
    - Auto Round Scheduling - Delay before auto-starting next round (e.g., "3 days", "immediate")
-   - Advertising Template - Template for promotion posts (see Scenario 10)
-   - Announcements Channel ID - Separate channel for announcements (see Scenario 29)
    - Celebratory GIF - true/false - Include random GIF in winner announcement
 
 **Why This Matters:** These settings control entire tournament behavior without requiring code changes.
@@ -630,7 +625,7 @@ Setup Phase (Scenarios 1-9)
 
 ### Tournament Operations: Voting & Results
 
-#### Scenario 10: Generate Advertising Post
+#### Scenario 10: Generate Advertising Post (Deferred to Future)
 
 **Actor:** Tournament Host (TH)
 **Goal:** Create formatted promotion post for other channels
@@ -1205,7 +1200,7 @@ Tournament Hosts can manually restrict voting by:
 
 ---
 
-#### Scenario 21: Match Preview Posts
+#### Scenario 21: Match Preview Posts (Deferred to Future)
 
 **Actor:** vPoll (Automated)
 **Goal:** Post participant information before polls to help voters
@@ -1542,7 +1537,7 @@ Auto Round Scheduling | 3 days
 
 ---
 
-#### Scenario 26: Participant Reference Link Lookup
+#### Scenario 26: Participant Reference Link Lookup (Deferred to Future)
 
 **Actor:** Discord User (Voter)
 **Goal:** View information and reference link for specific participant
@@ -1717,7 +1712,7 @@ View the bracket here: [Google Sheets link]
 
 ---
 
-#### Scenario 29: Announcements Channel Configuration
+#### Scenario 29: Announcements Channel Configuration (Deferred to Future)
 
 **Actor:** Tournament Host (TH)
 **Goal:** Post tournament announcements to separate channel from polls
@@ -2431,10 +2426,7 @@ Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
 | Auto-advance | Boolean | ✅ Yes | true, false | false | Automatically start next round when current completes |
 | Tie Breaker Rule | String | ✅ Yes | "Dice roll" | "Dice roll" | How to resolve tied matches |
 | Results Visibility | String | ✅ Yes | See options below | "after voting" | When users can see results |
-| Match Preview Posts | Boolean | ⚠️ Optional | true, false | false | Post participant info before polls |
 | Auto Round Scheduling | String | ⚠️ Optional | "immediate", "X days", "X hours", blank | blank | Delay before auto-starting next round |
-| Advertising Template | String | ⚠️ Optional | Template with placeholders | - | Format for promotion posts |
-| Announcements Channel ID | String | ⚠️ Optional | Valid Discord channel ID | - | Separate channel for announcements |
 | Celebratory GIF | Boolean | ⚠️ Optional | true, false | false | Include random GIF in winner announcement |
 
 **Poll Batches Valid Values:**
@@ -3201,12 +3193,8 @@ User notifications (Scenario 28) implied multiple concurrent tournaments
 - Auto-advance
 - Tie Breaker Rule
 
-**Optional Settings (6):**
-- Results Visibility
-- Match Preview Posts
+**Optional Settings (2):**
 - Auto Round Scheduling
-- Advertising Template
-- Announcements Channel ID
 - Celebratory GIF
 
 **Validation Behavior:**
