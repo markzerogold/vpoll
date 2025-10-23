@@ -83,6 +83,215 @@ This allows admins to specify which tournament to start when multiple tournament
 
 ---
 
+## Content & Communication
+
+### Match Preview Posts (Scenario 21)
+**Current State:** MVP provides no automated pre-poll participant information. Voters must manually open the Google Sheets Participants tab to view notes and reference links before voting.
+
+**Future Enhancement:** Automatically post participant information 60 seconds before each poll goes live, helping voters make informed decisions without leaving Discord.
+
+**Implementation Options:**
+- **Option 1: Simple Text Preview** - Post plain text with participant names, seeds, notes, and reference links
+- **Option 2: Rich Embeds** - Use Discord embeds with formatted participant info, thumbnail images (if reference links point to images), and clickable links
+- **Option 3: Scheduled Threads** - Create temporary threads for each matchup with full participant details and discussion
+
+**Example Preview Message:**
+```
+🎯 **Upcoming Match** - Spock vs. Kirk
+
+**#1 Spock** (Region: Alpha Quadrant)
+📝 Logical Vulcan science officer, first officer of USS Enterprise
+🔗 https://memory-alpha.fandom.com/wiki/Spock
+
+**#16 James T. Kirk** (Region: Alpha Quadrant)
+📝 Bold captain of USS Enterprise, known for creative solutions
+🔗 https://memory-alpha.fandom.com/wiki/James_T._Kirk
+
+Poll opens in 60 seconds! 🗳️
+```
+
+**Benefits:**
+- Improves voter engagement by providing context directly in Discord
+- Reduces friction (voters don't need to switch to Google Sheets)
+- Creates anticipation with countdown timer
+- Allows voters to discuss matchups before voting opens
+- Reference links become clickable and immediately accessible
+
+**Considerations:**
+- Adds extra Discord messages (may clutter channel if not using threads)
+- 60-second delay before each poll adds time to tournament duration
+- Requires fetching participant data from Google Sheets before posting polls
+- Image embedding (if reference link is an image) requires additional logic
+- May hit Discord rate limits if posting many preview messages rapidly
+
+**Technical Requirements:**
+- Read Participants tab data before posting polls
+- Schedule preview post 60 seconds before poll creation
+- Handle missing notes/links gracefully (don't post blank fields)
+- Optional: Detect image URLs and embed as thumbnails
+- Config setting: `Match Preview Posts` (boolean, default: false)
+
+**Deferred Because:** Voters can view participant info in Google Sheets. Preview posts are a nice enhancement but not critical for MVP functionality. Adds complexity to poll scheduling and increases Discord API usage.
+
+---
+
+### Participant Info Lookup Command (Scenario 26)
+**Current State:** Voters must manually open Google Sheets and search the Participants tab to find information about a specific participant.
+
+**Future Enhancement:** `/participant info <name>` command allows voters to instantly look up participant details directly in Discord.
+
+**Implementation:**
+```
+Command: /participant info <participant-name>
+Example: /participant info Spock
+```
+
+**Response Format:**
+```
+📊 **Participant Info: Spock**
+
+🏆 **Seed:** #1
+🌍 **Region:** Alpha Quadrant
+📝 **Notes:** Logical Vulcan science officer, first officer of USS Enterprise
+🔗 **Reference:** https://memory-alpha.fandom.com/wiki/Spock
+
+**Tournament Status:**
+✅ Advanced to Round 3 (Elite Eight)
+📈 Record: 2-0 (defeated Khan #16, McCoy #8)
+🗳️ Total Votes Received: 127 votes
+```
+
+**Benefits:**
+- Quick access to participant info without leaving Discord
+- Shows current tournament status (wins, losses, vote totals)
+- Helps voters research participants before voting
+- Useful during live polls when voters want context
+- Displays reference links as clickable URLs
+
+**Considerations:**
+- Requires fuzzy name matching (users may misspell names)
+- Must handle participants with similar names
+- Needs access to Results tab to show tournament progress
+- Potential for command spam during active voting
+- May encourage voters to look up info only for participants they recognize (confirmation bias)
+
+**Technical Requirements:**
+- Slash command with autocomplete for participant names
+- Read Participants tab for seed, notes, reference link
+- Read Results tab to calculate wins/losses/vote totals
+- Fuzzy string matching for name lookups
+- Handle "not found" errors gracefully
+
+**Deferred Because:** Google Sheets provides complete participant information in a well-organized format. Command is convenient but not essential for MVP. Adds complexity to bot command structure.
+
+---
+
+### Announcements Channel (Scenario 29)
+**Current State:** MVP posts all tournament content (polls, results, winner announcements) to a single primary channel specified in Config tab (`Discord Channel ID`).
+
+**Future Enhancement:** Separate announcements channel for tournament updates, keeping the primary channel focused on active polls and voting.
+
+**Implementation:**
+- New config setting: `Announcements Channel ID` (optional Discord channel ID)
+- If set, vPoll posts tournament announcements to this channel
+- If blank, falls back to primary poll channel (MVP behavior)
+
+**Message Routing:**
+| Message Type | Primary Channel | Announcements Channel |
+|--------------|-----------------|----------------------|
+| Active polls | ✅ Posted here | ❌ Not posted |
+| Poll results | ✅ Posted here | ✅ Posted here |
+| Round start announcements | ✅ Posted here | ✅ Posted here |
+| Winner announcement | ✅ Posted here | ✅ Posted here |
+| Tournament status updates | ❌ Not posted | ✅ Posted here |
+| Error messages | ✅ Posted here | ❌ Not posted |
+
+**Benefits:**
+- Keeps primary channel clean and focused on active voting
+- Announcements channel becomes tournament "news feed"
+- Voters can mute announcements channel but stay subscribed to polls
+- Useful for high-volume tournaments with frequent updates
+- Allows different channel permissions (e.g., read-only announcements)
+
+**Considerations:**
+- Requires bot to have Send Messages permission in two channels
+- May confuse voters if announcements and polls are separated
+- Some messages (like results) might be duplicated across channels
+- Tournament Host must pre-create and configure both channels
+- Not useful for small/simple tournaments
+
+**Technical Requirements:**
+- Config setting: `Announcements Channel ID` (string, optional)
+- Update message posting logic to check config and route appropriately
+- Validate both channel IDs during tournament creation
+- Handle case where announcements channel is deleted mid-tournament
+- Documentation explaining which messages go where
+
+**Deferred Because:** Single-channel posting is simpler and adequate for MVP. Most tournaments don't need separate announcement channels. Adds complexity to message routing logic.
+
+---
+
+### Advertising Template Generation (Scenario 10)
+**Current State:** MVP provides master template spreadsheet URL via `/tournament template` command. Tournament Hosts manually write promotional posts to advertise their tournaments.
+
+**Future Enhancement:** Config setting with template string containing placeholders that vPoll automatically fills in to generate shareable promotional posts.
+
+**Implementation:**
+- Config setting: `Advertising Template` (string with placeholders)
+- Command: `/tournament promo` generates filled-in promotional message
+- Placeholders: `{tournament_name}`, `{description}`, `{start_date}`, `{participants_count}`, `{bracket_link}`, `{channel_link}`
+
+**Example Template:**
+```
+🏆 **{tournament_name}** is starting {start_date}!
+
+{description}
+
+🎯 {participants_count} participants competing across 4 regions
+📊 View live bracket: {bracket_link}
+🗳️ Vote here: {channel_link}
+
+May the best character win! 🖖
+```
+
+**Generated Output:**
+```
+🏆 **Star Trek Character Battle** is starting January 15, 2025!
+
+Vote for your favorite Star Trek characters in this epic tournament! From Captains to Engineers, Vulcans to Klingons - who will reign supreme?
+
+🎯 64 participants competing across 4 regions
+📊 View live bracket: https://docs.google.com/spreadsheets/d/abc123/edit
+🗳️ Vote here: https://discord.com/channels/123/456
+
+May the best character win! 🖖
+```
+
+**Benefits:**
+- Saves Tournament Hosts time writing promotional posts
+- Ensures consistent branding across tournaments
+- Automatically includes correct links and details
+- Hosts can customize template per tournament or use defaults
+- Easy to share on social media, other Discord servers, forums
+
+**Considerations:**
+- Template syntax must be user-friendly for non-technical hosts
+- Placeholder replacement requires careful escaping/validation
+- Not all hosts want automated promotional messages (some prefer custom)
+- Config tab template field could become very long
+- Limited usefulness if tournament is server-internal only
+
+**Technical Requirements:**
+- Config setting: `Advertising Template` (string, optional, multi-line)
+- `/tournament promo` slash command
+- Template parsing and placeholder replacement logic
+- Generate Discord channel links from channel IDs
+- Copy-to-clipboard or post-as-message options
+
+**Deferred Because:** Tournament Hosts can manually write promotional posts. Template generation is a convenience feature but not essential for running tournaments. Adds complexity to config and command structure.
+
+---
+
 ## User Engagement Features
 
 ### Advanced User Notification Subscriptions (Scenario 28)
