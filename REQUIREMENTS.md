@@ -118,9 +118,9 @@ vPoll combines three key technologies to deliver automated tournament management
 
 vPoll serves three distinct user roles, each with different responsibilities and interaction patterns:
 
-### Persona 1: Discord Admin
+### Persona 1: Server Administrator
 
-**Role:** Server administrator who installs and configures vPoll
+**Role:** Discord server administrator who installs and configures vPoll
 
 **Responsibilities:**
 - Install vPoll bot on Discord server
@@ -170,7 +170,11 @@ vPoll serves three distinct user roles, each with different responsibilities and
 - Understanding configuration options
 - Troubleshooting validation errors
 
-**Note:** The TM may be the Discord Admin, but doesn't have to be. Any server member with appropriate permissions can be a TM.
+**Note:** The TM does NOT need to be a Server Administrator. Any server member can create and run tournaments, as long as:
+- They have access to the tournament channel(s) where vPoll will post polls
+- They have permission to use slash commands in those channels
+- They can create and share Google Sheets
+- The server has vPoll bot installed (done by Server Administrator)
 
 ---
 
@@ -351,7 +355,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 0: Get Master Template
 
-**Actor:** Anyone (Discord User, TM, or Discord Admin)
+**Actor:** Anyone (Discord User, TM, or Server Administrator)
 **Goal:** Obtain the vPoll master template spreadsheet link
 
 **Command:**
@@ -493,7 +497,7 @@ Setup Phase (Scenarios 1-9)
 
 #### Scenario 6: Add Bot to Discord Server
 
-**Actor:** Discord Admin
+**Actor:** Server Administrator
 **Goal:** Install vPoll bot with required permissions
 
 **Flow:**
