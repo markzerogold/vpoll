@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import * as path from 'path';
+import { generateCompleteBracket, BracketCell } from './generate-bracket';
 
 /**
  * Populate an existing Google Sheet with tournament test data
@@ -172,6 +173,29 @@ async function populateSheet(spreadsheetId: string) {
       sheetIdMap[title] = sheetId;
     });
 
+    // Expand Bracket tab grid to accommodate all columns (need up to column AE = 31 columns)
+    console.log('Expanding Bracket tab grid dimensions...');
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          {
+            updateSheetProperties: {
+              properties: {
+                sheetId: sheetIdMap['Bracket'],
+                gridProperties: {
+                  rowCount: 100,
+                  columnCount: 35, // A-Z = 26, need up to AE = 31, add buffer = 35
+                },
+              },
+              fields: 'gridProperties(rowCount,columnCount)',
+            },
+          },
+        ],
+      },
+    });
+    console.log('✅ Bracket tab expanded to 100 rows × 35 columns\n');
+
     // Prepare data for batch update
     const batchData = [];
 
@@ -330,25 +354,16 @@ async function populateSheet(spreadsheetId: string) {
       values: regionsData,
     });
 
-    // 4. Bracket tab
+    // 4. Bracket tab - Generate full formula-driven bracket
     console.log('Populating Bracket tab...');
+    // We'll populate the bracket in a separate step after initial data
+    // to ensure proper formula references
+    // For now, just add a placeholder note
     const bracketData = [
-      ['STAR TREK CHARACTER BATTLE 2025'],
-      [''],
-      ['Round 1', 'Round 2', 'Sweet 16', 'Elite 8', 'FINAL FOUR', '', 'CHAMPIONSHIP', '', 'FINAL FOUR', 'Elite 8', 'Sweet 16', 'Round 2', 'Round 1'],
-      [''],
-      ['FEDERATION REGION', '', '', '', '', '', '', '', '', '', '', '', 'KLINGON EMPIRE REGION'],
-      [''],
-      ['Match 1: (1) vs (16)', '', '', '', '', '', '', '', '', '', '', '', 'Match 1: (2) vs (15)'],
-      [''],
-      ['NOTE: This is a simplified bracket visualization.'],
-      ['Full bracket formulas would reference the Results tab.'],
-      [''],
-      ['ROMULAN STAR EMPIRE REGION', '', '', '', '', '', '', '', '', '', '', '', 'DOMINION REGION'],
-      ['Match 1: (3) vs (14)', '', '', '', '', '', '', '', '', '', '', '', 'Match 1: (4) vs (13)'],
+      ['Bracket formulas will be added in next step...'],
     ];
     batchData.push({
-      range: 'Bracket!A1:M13',
+      range: 'Bracket!A1',
       values: bracketData,
     });
 
@@ -388,6 +403,99 @@ async function populateSheet(spreadsheetId: string) {
         data: batchData,
       },
     });
+
+    // Generate and populate bracket formulas
+    console.log('Generating bracket formulas...');
+    const bracketCells = generateCompleteBracket();
+
+    // Group cells by type for batch operations
+    const formulaCells: any[] = [];
+    const valueCells: any[] = [];
+    const checkboxCells: any[] = [];
+
+    bracketCells.forEach(cell => {
+      const cellAddress = `Bracket!${cell.col}${cell.row}`;
+
+      if (cell.isCheckbox) {
+        // Checkbox cells need special data validation
+        checkboxCells.push({
+          range: cellAddress,
+          value: cell.value ?? false
+        });
+      } else if (cell.formula) {
+        formulaCells.push({
+          range: cellAddress,
+          values: [[cell.formula]]
+        });
+      } else if (cell.value !== undefined) {
+        valueCells.push({
+          range: cellAddress,
+          values: [[cell.value]]
+        });
+      }
+    });
+
+    // Write formulas and values
+    if (formulaCells.length > 0 || valueCells.length > 0) {
+      await sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          valueInputOption: 'USER_ENTERED',
+          data: [...formulaCells, ...valueCells],
+        },
+      });
+      console.log(`✅ Wrote ${formulaCells.length} formulas and ${valueCells.length} values`);
+    }
+
+    // Add checkbox data validation for checkbox cells
+    if (checkboxCells.length > 0) {
+      const checkboxRequests = checkboxCells.map(cell => {
+        // Parse cell address like "Bracket!A2" or "Bracket!AB15"
+        const match = cell.range.match(/^Bracket!([A-Z]+)(\d+)$/);
+        if (!match) {
+          console.warn(`Invalid cell address: ${cell.range}`);
+          return null;
+        }
+
+        const colLetters = match[1];
+        const rowNum = parseInt(match[2]);
+
+        // Convert column letters to index (A=0, B=1, ..., AA=26, AB=27)
+        let colIndex = 0;
+        for (let i = 0; i < colLetters.length; i++) {
+          colIndex = colIndex * 26 + (colLetters.charCodeAt(i) - 65 + 1);
+        }
+        colIndex -= 1; // Make it 0-indexed
+
+        return {
+          setDataValidation: {
+            range: {
+              sheetId: sheetIdMap['Bracket'],
+              startRowIndex: rowNum - 1,
+              endRowIndex: rowNum,
+              startColumnIndex: colIndex,
+              endColumnIndex: colIndex + 1,
+            },
+            rule: {
+              condition: {
+                type: 'BOOLEAN',
+              },
+              showCustomUi: true,
+            },
+          },
+        };
+      }).filter(req => req !== null);
+
+      if (checkboxRequests.length > 0) {
+        await sheets.spreadsheets.batchUpdate({
+          spreadsheetId,
+          requestBody: {
+            requests: checkboxRequests,
+          },
+        });
+        console.log(`✅ Added ${checkboxRequests.length} checkbox validations`);
+      }
+    }
 
     // Format headers and columns
     console.log('Applying formatting...');
