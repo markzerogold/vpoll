@@ -9,6 +9,18 @@ vPoll is a Discord bot for running tournament-style voting competitions (e.g., "
 - **Google Sheets API v4** for tournament data management and results tracking
 - **64-participant single elimination** tournament structure with 4 customizable regions
 
+## 📚 Documentation Structure
+
+All project documentation is organized in `/docs` for better context management:
+
+- **Requirements:** @docs/requirements/README.md
+- **Technical Specs:** @docs/technical/TECHNICAL_SPEC.md
+- **Implementation:** @docs/implementation/TODO.md
+- **Future Features:** @docs/reference/FUTURE.md
+- **Test Sheet Setup:** @docs/reference/TEST_SHEET_GENERATION.md
+
+Use `@docs/requirements/[section].md` to load specific requirement sections (85% context savings vs full file).
+
 ## Google Sheets Template Structure
 
 All tournaments use a Google Sheets template with 5 tabs:
