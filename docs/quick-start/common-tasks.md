@@ -122,6 +122,20 @@ Reads from master template to verify:
 - API permissions
 - Sheet structure
 
+### Apply Bracket Borders
+
+```bash
+npm run apply-borders
+```
+
+Applies proper border formatting to test bracket sheet:
+- Copies border patterns from example sheet
+- Handles row offset for bottom bracket half
+- Adds region name borders
+- Autosizes columns and disables text wrapping
+
+**See:** [BRACKET_BORDER_UPDATES.md](../../BRACKET_BORDER_UPDATES.md) for implementation details
+
 ### Manual Testing Workflow
 
 1. **Start dev mode** (auto-reload on changes):

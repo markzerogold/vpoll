@@ -70,11 +70,20 @@ For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.
 
 ## Development
 
+### Build and Run
 - `npm run dev` - Run in development mode with hot reload
 - `npm run build` - Compile TypeScript to JavaScript
+- `npm run start` - Run compiled bot in production mode
+
+### Code Quality
 - `npm run lint` - Check code style
 - `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Prettier
+
+### Testing and Utilities
+- `npm run test-sheets` - Test Google Sheets API connection
+- `npm run populate-test-sheet <sheet-id>` - Populate a blank sheet with test tournament data
+- `npm run apply-borders` - Apply bracket borders to test sheet (matches example sheet formatting)
 
 ## Project Structure
 
