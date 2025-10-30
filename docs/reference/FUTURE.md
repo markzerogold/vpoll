@@ -2,6 +2,16 @@
 
 This file is a record of deferred features that will be considered for future versions of vPoll. These features have been identified during requirements analysis but are not part of the initial MVP (Minimum Viable Product) release. They may be implemented in subsequent versions based on user feedback, technical feasibility, and resource availability.
 
+## 📚 Detailed Scenario Specifications
+
+For complete technical specifications of deferred features (Scenarios 20-30), see:
+**[deferred-scenarios.md](deferred-scenarios.md)** - 666 lines of detailed requirements
+
+This FUTURE.md file provides **high-level vision and feature categories**.
+The deferred-scenarios.md file provides **detailed scenario specifications and user flows**.
+
+Use `@docs/reference/deferred-scenarios.md` to load specific scenario details on-demand.
+
 ## Tournament Management
 
 ### Reseeding Option

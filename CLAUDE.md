@@ -9,53 +9,41 @@ vPoll is a Discord bot for running tournament-style voting competitions (e.g., "
 - **Google Sheets API v4** for tournament data management and results tracking
 - **64-participant single elimination** tournament structure with 4 customizable regions
 
-## 📚 Documentation Structure
+## 📚 Quick Access Documentation
 
-All project documentation is organized in `/docs` for better context management:
+Load on-demand using `@` syntax for efficient context management:
 
-- **Requirements:** @docs/requirements/README.md
-- **Technical Specs:** @docs/technical/TECHNICAL_SPEC.md
-- **Implementation:** @docs/implementation/TODO.md
+### Getting Started
+- **5-Minute Setup:** @docs/quick-start/setup.md
+- **All Bot Commands:** @docs/quick-start/commands.md
+- **Dev Workflows:** @docs/quick-start/common-tasks.md
+
+### Requirements & Planning
+- **Requirements Index:** @docs/requirements/README.md (85% context savings vs full files)
+- **Current Tasks:** @docs/implementation/todo-phase1.md (Core Tournament Flow)
 - **Future Features:** @docs/reference/FUTURE.md
-- **Test Sheet Setup:** @docs/reference/TEST_SHEET_GENERATION.md
 
-Use `@docs/requirements/[section].md` to load specific requirement sections (85% context savings vs full file).
+### Technical Documentation
+- **Architecture Overview:** @docs/technical/architecture/overview.md
+- **Specifications Index:** @docs/technical/specifications/README.md
+- **Google Sheets Tabs:** @docs/reference/google-sheets/README.md
+- **API References:** @docs/technical/api/README.md
 
-## Google Sheets Template Structure
+### Testing & Reference
+- **Test Sheet Generation:** @docs/reference/TEST_SHEET_GENERATION.md
+- **Discord/Sheets References:** @docs/reference/REFERENCES.md
 
-All tournaments use a Google Sheets template with 5 tabs:
+## Google Sheets Integration
 
-### Participants Tab (A1:D65)
-- Column A: Rank (1-64, determines seeding)
-- Column B: Participant Name
-- Column C: Notes (optional context/description)
-- Column D: Reference Link (optional image/wiki URL)
-
-### Regions Tab (A1:E17)
-- Column A: Rank
-- Columns B-E: 4 region columns (customizable names, 16 participants each)
-- Distribution: Ranks 1-4 → Regions 1-4, Ranks 5-8 → Regions 1-4, etc.
-
-### Config Tab
-Tournament settings (13+ parameters):
-- Tournament Name, Description, Start Date
-- Poll Length (hours), Poll Batches, Discord Channel ID
-- Auto-advance, Tiebreaker, Results Visibility
-- Required Voter Role, Match Preview Posts, Live Vote Updates
-- Auto Round Scheduling, Announcements Channel
-
-### Bracket Tab
-- Formula-driven visual tournament bracket
-- Vote display format: `45 (1) Spock` (votes before seed)
-- TRUE/FALSE winner indicators
-
-### Results Tab (16 columns per match, chronological order)
-Match ID, Round, Region, P1 Name, P1 Seed, P1 Votes, P2 Name, P2 Seed, P2 Votes, Winner, Discord Poll ID, Poll Start Time, Poll End Time, Total Votes, Tiebreaker, Notes
-
-## Service Account
-- Email: vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com
-- Credentials: `keys/vpoll-key.json` (not committed)
+**Service Account (Required):**
+- Email: `vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com`
+- Credentials: `keys/vpoll-key.json` (not committed, in .gitignore)
 - Scope: `https://www.googleapis.com/auth/spreadsheets`
+- Permission: **Editor** access required on tournament sheets
+
+**Template Structure:** 5 tabs (Participants, Regions, Config, Bracket, Results)
+- See @docs/reference/google-sheets/README.md for complete tab specifications
+- Master template: https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit
 
 ## Development Commands
 
@@ -96,51 +84,32 @@ src/
 └── deploy-commands.ts # Script to register commands with Discord API
 ```
 
-## Architecture
+## Architecture Patterns
 
-### Command System
-- Commands are slash commands using `SlashCommandBuilder`
-- Each command file in `src/commands/` must export:
-  - `data`: A `SlashCommandBuilder` instance
-  - `execute`: Async function that takes `ChatInputCommandInteraction`
-- Commands are auto-loaded by `src/index.ts` at startup
-- After creating/modifying commands, run `npm run deploy-commands` to register with Discord
+**Command System:** Slash commands using `SlashCommandBuilder`
+- Files in `src/commands/` export `data` (builder) and `execute` (handler)
+- Auto-loaded at startup, registered via `npm run deploy-commands`
 
-### Event System
-- Event files in `src/events/` export:
-  - `name`: Discord event name (from `Events` enum)
-  - `once`: Boolean - whether to use `.once()` or `.on()`
-  - `execute`: Handler function for the event
-- Events are auto-loaded by `src/index.ts` at startup
+**Event System:** Discord event handlers
+- Files in `src/events/` export `name`, `once`, and `execute`
+- Auto-loaded and attached to bot client
 
-### Bot Client
-- Extended `Client` type includes `commands` collection for command storage
-- Uses `GatewayIntentBits.Guilds` intent (add more as needed)
-- Central interaction handler in `src/index.ts` routes commands to their execute functions
+**Bot Client:** Extended Discord.js Client with commands collection
+- Uses `GatewayIntentBits.Guilds` intent
+- Central interaction router in `src/index.ts`
+
+See @docs/technical/architecture/overview.md for complete architecture details.
 
 ## Adding New Commands
 
-1. Create new file in `src/commands/` (e.g., `mycommand.ts`)
-2. Use existing commands as templates - export `data` and `execute`
-3. Build: `npm run build`
-4. Deploy: `npm run deploy-commands`
-5. Restart bot
+1. Create `src/commands/mycommand.ts` with `data` and `execute` exports
+2. `npm run build` → `npm run deploy-commands` → restart bot
 
-## Environment Setup
+## Environment Variables
 
-Copy `.env.example` to `.env` and fill in:
-- `DISCORD_TOKEN`: Bot token from Discord Developer Portal → Your App → Bot → Token
-- `CLIENT_ID`: Application ID from Discord Developer Portal → Your App → General Information
-- `GUILD_ID`: (Optional) Right-click your server → Copy Server ID. Used for faster command deployment during development (guild commands update instantly vs global commands taking up to 1 hour)
+Copy `.env.example` to `.env` and configure:
+- `DISCORD_TOKEN` - Bot token from Developer Portal
+- `CLIENT_ID` - Application ID
+- `GUILD_ID` - (Optional) Server ID for faster dev deployment
 
-## Discord Bot Permissions
-
-Required bot permissions:
-- Send Messages
-- Embed Links
-- Use Slash Commands
-
-Invite URL format:
-```
-https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=2147485696&scope=bot%20applications.commands
-```
+**Required Bot Permissions:** Send Messages, Embed Links, Use Slash Commands
