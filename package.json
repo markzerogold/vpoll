@@ -18,7 +18,8 @@
     "apply-borders": "ts-node src/fix-bracket-borders.ts",
     "apply-styling": "ts-node src/apply-bracket-styling.ts",
     "enhance-formatting": "ts-node src/enhance-bracket-formatting.ts",
-    "fix-championship-wrap": "ts-node src/fix-championship-wrapping.ts"
+    "fix-championship-wrap": "ts-node src/fix-championship-wrapping.ts",
+    "move-regions": "ts-node src/move-bottom-regions.ts"
   },
   "keywords": [
     "discord",

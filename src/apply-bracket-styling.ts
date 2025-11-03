@@ -162,8 +162,8 @@ async function applyBracketStyling() {
   const regionMerges = [
     { startRow: 15, startCol: 'E', endCol: 'G', rows: 4, region: 'ALPHA' },   // Top left
     { startRow: 15, startCol: 'Y', endCol: 'AA', rows: 4, region: 'GAMMA' },  // Top right
-    { startRow: 31, startCol: 'E', endCol: 'G', rows: 4, region: 'BETA' },    // Bottom left (mapped from 46)
-    { startRow: 31, startCol: 'Y', endCol: 'AA', rows: 4, region: 'DELTA' },  // Bottom right (mapped from 46)
+    { startRow: 47, startCol: 'E', endCol: 'G', rows: 4, region: 'BETA' },    // Bottom left (row 47 to match example structure)
+    { startRow: 47, startCol: 'Y', endCol: 'AA', rows: 4, region: 'DELTA' },  // Bottom right (row 47 to match example structure)
   ];
 
   for (const merge of regionMerges) {
