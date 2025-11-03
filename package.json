@@ -15,7 +15,8 @@
     "deploy-commands": "ts-node src/deploy-commands.ts",
     "test-sheets": "ts-node src/test-sheets.ts",
     "populate-test-sheet": "ts-node src/populate-test-sheet.ts",
-    "apply-borders": "ts-node src/fix-bracket-borders.ts"
+    "apply-borders": "ts-node src/fix-bracket-borders.ts",
+    "apply-styling": "ts-node src/apply-bracket-styling.ts"
   },
   "keywords": [
     "discord",
