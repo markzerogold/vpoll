@@ -104,7 +104,7 @@ async function enhanceBracketFormatting() {
     },
   });
 
-  // Then format O18 (16pt, bold, text wrapping enabled)
+  // Then format O18 (10pt, bold, text wrapping enabled)
   requests.push({
     repeatCell: {
       range: {
@@ -119,7 +119,7 @@ async function enhanceBracketFormatting() {
           wrapStrategy: 'WRAP', // Enable wrapping for column O
           textFormat: {
             bold: true,
-            fontSize: 16,
+            fontSize: 10,  // 10pt to avoid stretching row
           },
           horizontalAlignment: 'CENTER',
           verticalAlignment: 'MIDDLE',
@@ -242,7 +242,7 @@ async function enhanceBracketFormatting() {
   console.log('   ✓ Row 1 frozen');
   console.log('   ✓ Row 1 text bolded (all columns)');
   console.log('   ✓ Championship label updated with formula (=Config!B3&CHAR(10)&"Champion")');
-  console.log('   ✓ Championship label: 16pt, bold, text wraps after tournament name');
+  console.log('   ✓ Championship label: 10pt, bold, text wraps after tournament name');
   console.log('   ✓ Region names: 22pt, bold');
   console.log('   ✓ All columns auto-sized (A-AF)');
   console.log('   ✓ Text wrapping: Column O wraps, all others clip');
