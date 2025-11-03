@@ -91,20 +91,20 @@ async function enhanceBracketFormatting() {
     },
   });
 
-  // 3. UPDATE O18 WITH FORMULA
+  // 3. UPDATE O18 WITH FORMULA (with line break after tournament name)
   console.log('🏆 Updating championship label with formula...');
 
-  // First, update the cell value to use a formula
+  // First, update the cell value to use a formula with line break
   await sheets.spreadsheets.values.update({
     spreadsheetId: TEST_SHEET_ID,
     range: 'Bracket!O18',
     valueInputOption: 'USER_ENTERED',
     requestBody: {
-      values: [['=Config!B3&" Champion"']],
+      values: [['=Config!B3&CHAR(10)&"Champion"']],
     },
   });
 
-  // Then format O18 (16pt, bold)
+  // Then format O18 (16pt, bold, text wrapping enabled)
   requests.push({
     repeatCell: {
       range: {
@@ -116,6 +116,7 @@ async function enhanceBracketFormatting() {
       },
       cell: {
         userEnteredFormat: {
+          wrapStrategy: 'WRAP', // Enable wrapping for column O
           textFormat: {
             bold: true,
             fontSize: 16,
@@ -124,7 +125,7 @@ async function enhanceBracketFormatting() {
           verticalAlignment: 'MIDDLE',
         },
       },
-      fields: 'userEnteredFormat(textFormat,horizontalAlignment,verticalAlignment)',
+      fields: 'userEnteredFormat(wrapStrategy,textFormat,horizontalAlignment,verticalAlignment)',
     },
   });
 
@@ -178,17 +179,18 @@ async function enhanceBracketFormatting() {
     });
   }
 
-  // 6. DISABLE TEXT WRAPPING FOR ALL CELLS
-  console.log('📄 Disabling text wrapping...');
+  // 6. DISABLE TEXT WRAPPING FOR ALL CELLS (except column O)
+  console.log('📄 Disabling text wrapping for most cells...');
 
+  // Disable wrapping for columns A-N (before championship label)
   requests.push({
     repeatCell: {
       range: {
         sheetId,
         startRowIndex: 0,
-        endRowIndex: 1000, // All rows
+        endRowIndex: 1000,
         startColumnIndex: 0,
-        endColumnIndex: 32, // All columns A-AF
+        endColumnIndex: colToIndex('O'), // A through N
       },
       cell: {
         userEnteredFormat: {
@@ -198,6 +200,27 @@ async function enhanceBracketFormatting() {
       fields: 'userEnteredFormat.wrapStrategy',
     },
   });
+
+  // Disable wrapping for columns R-AF (after championship label merged range)
+  requests.push({
+    repeatCell: {
+      range: {
+        sheetId,
+        startRowIndex: 0,
+        endRowIndex: 1000,
+        startColumnIndex: colToIndex('R'),
+        endColumnIndex: 32, // R through AF
+      },
+      cell: {
+        userEnteredFormat: {
+          wrapStrategy: 'CLIP',
+        },
+      },
+      fields: 'userEnteredFormat.wrapStrategy',
+    },
+  });
+
+  // Note: Column O (and merged P, Q) keeps WRAP strategy from step 3
 
   // Execute all formatting requests
   console.log(`\n✨ Executing ${requests.length} formatting requests...`);
@@ -218,11 +241,11 @@ async function enhanceBracketFormatting() {
   console.log('\n📊 Summary:');
   console.log('   ✓ Row 1 frozen');
   console.log('   ✓ Row 1 text bolded (all columns)');
-  console.log('   ✓ Championship label updated with formula (=Config!B3&" Champion")');
-  console.log('   ✓ Championship label: 16pt, bold');
+  console.log('   ✓ Championship label updated with formula (=Config!B3&CHAR(10)&"Champion")');
+  console.log('   ✓ Championship label: 16pt, bold, text wraps after tournament name');
   console.log('   ✓ Region names: 22pt, bold');
   console.log('   ✓ All columns auto-sized (A-AF)');
-  console.log('   ✓ Text wrapping disabled (clip strategy)');
+  console.log('   ✓ Text wrapping: Column O wraps, all others clip');
 }
 
 // Run the script

@@ -17,7 +17,8 @@
     "populate-test-sheet": "ts-node src/populate-test-sheet.ts",
     "apply-borders": "ts-node src/fix-bracket-borders.ts",
     "apply-styling": "ts-node src/apply-bracket-styling.ts",
-    "enhance-formatting": "ts-node src/enhance-bracket-formatting.ts"
+    "enhance-formatting": "ts-node src/enhance-bracket-formatting.ts",
+    "fix-championship-wrap": "ts-node src/fix-championship-wrapping.ts"
   },
   "keywords": [
     "discord",
