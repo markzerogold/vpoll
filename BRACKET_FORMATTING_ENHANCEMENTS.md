@@ -60,7 +60,7 @@ repeatCell: {
 
 **Cell:** O18 (merged with P18:Q18)
 
-**Formula:** `=Config!B1&" Champion"`
+**Formula:** `=Config!B3&" Champion"`
 
 **Before:** Static text "The Greatest"
 
@@ -74,10 +74,15 @@ await sheets.spreadsheets.values.update({
   range: 'Bracket!O18',
   valueInputOption: 'USER_ENTERED',
   requestBody: {
-    values: [['=Config!B1&" Champion"']],
+    values: [['=Config!B3&" Champion"']],
   },
 });
 ```
+
+**Config Tab Structure:**
+- Row 1: Headers ("Setting Name" | "Value")
+- Row 2: Section header
+- Row 3: Tournament Name setting (B3 contains the tournament name)
 
 **Benefit:** Championship label automatically updates when tournament name changes in Config tab
 
@@ -236,19 +241,26 @@ This script:
 
 ## Formula Breakdown
 
-**Championship Label Formula:** `=Config!B1&" Champion"`
+**Championship Label Formula:** `=Config!B3&" Champion"`
 
 **Components:**
-- `Config!B1` - References Tournament Name from Config tab
+- `Config!B3` - References Tournament Name from Config tab (row 3, column B)
 - `&` - Concatenation operator
 - `" Champion"` - Appended text
 
+**Config Tab Structure:**
+```
+Row 1: Setting Name              | Value
+Row 2: --- REQUIRED SETTINGS --- | (empty)
+Row 3: Tournament Name           | Star Trek Character Battle 2025
+```
+
 **Example Values:**
 ```
-Config!B1 = "Star Trek Character Battle 2025"
+Config!B3 = "Star Trek Character Battle 2025"
 O18 displays: "Star Trek Character Battle 2025 Champion"
 
-Config!B1 = "Best Pizza Toppings"
+Config!B3 = "Best Pizza Toppings"
 O18 displays: "Best Pizza Toppings Champion"
 ```
 

@@ -13,14 +13,14 @@ const sheets = google.sheets({ version: 'v4', auth });
 async function verifyFormula() {
   console.log('🔍 Verifying championship label formula...\n');
 
-  // Read Config B1 (Tournament Name)
+  // Read Config B3 (Tournament Name)
   const config = await sheets.spreadsheets.values.get({
     spreadsheetId: TEST_SHEET_ID,
-    range: 'Config!B1',
+    range: 'Config!B3',
   });
 
   const tournamentName = config.data.values?.[0]?.[0] || 'NOT FOUND';
-  console.log('📋 Tournament Name (Config!B1):', tournamentName);
+  console.log('📋 Tournament Name (Config!B3):', tournamentName);
 
   // Read Bracket O18 formula
   const o18Formula = await sheets.spreadsheets.values.get({
@@ -42,7 +42,7 @@ async function verifyFormula() {
   console.log('🏆 Displayed value in Bracket!O18:', displayedValue);
 
   // Verify formula is correct
-  const expectedFormula = '=Config!B1&" Champion"';
+  const expectedFormula = '=Config!B3&" Champion"';
   const expectedValue = `${tournamentName} Champion`;
 
   console.log('\n✅ Verification:');
