@@ -25,7 +25,9 @@
     "verify-borders": "ts-node src/verify-all-borders.ts",
     "fix-championship-clip": "ts-node src/fix-championship-clip.ts",
     "fix-all-borders": "ts-node src/fix-all-bracket-borders.ts",
-    "update-region-colors": "ts-node src/update-region-colors.ts"
+    "update-region-colors": "ts-node src/update-region-colors.ts",
+    "copy-test-borders": "ts-node src/copy-borders-from-test.ts",
+    "update-example-borders": "ts-node src/update-example-borders.ts"
   },
   "keywords": [
     "discord",
