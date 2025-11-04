@@ -83,7 +83,16 @@ For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.
 ### Testing and Utilities
 - `npm run test-sheets` - Test Google Sheets API connection
 - `npm run populate-test-sheet <sheet-id>` - Populate a blank sheet with test tournament data
-- `npm run apply-borders` - Apply bracket borders to test sheet (matches example sheet formatting)
+
+### Bracket Formatting Scripts
+- `npm run apply-styling` - Apply comprehensive bracket styling (colors, merges, text)
+- `npm run enhance-formatting` - Apply formatting enhancements (frozen rows, formulas, auto-sizing)
+- `npm run update-region-colors` - Update region cell colors to custom scheme
+- `npm run copy-test-borders` - Read and preserve borders from test sheet
+- `npm run update-example-borders` - Update example sheet borders from test sheet
+- `npm run fix-all-borders` - Copy all borders from example sheet to test sheet
+
+**Note:** Border scripts have known issues. Manual border correction is recommended. See `BORDER_ISSUE_TODO.md`.
 
 ## Project Structure
 
