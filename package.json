@@ -27,7 +27,10 @@
     "fix-all-borders": "ts-node src/fix-all-bracket-borders.ts",
     "update-region-colors": "ts-node src/update-region-colors.ts",
     "copy-test-borders": "ts-node src/copy-borders-from-test.ts",
-    "update-example-borders": "ts-node src/update-example-borders.ts"
+    "update-example-borders": "ts-node src/update-example-borders.ts",
+    "simulate-tournament": "ts-node src/simulate-tournament.ts",
+    "check-results": "ts-node src/check-results.ts",
+    "check-bracket": "ts-node src/check-bracket-progression.ts"
   },
   "keywords": [
     "discord",

@@ -84,6 +84,13 @@ For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.
 - `npm run test-sheets` - Test Google Sheets API connection
 - `npm run populate-test-sheet <sheet-id>` - Populate a blank sheet with test tournament data
 
+### Tournament Simulation and Testing
+- `npm run simulate-tournament` - Simulate complete tournament with random winners (all 6 rounds)
+- `npm run check-results` - View all results written to Results tab
+- `npm run check-bracket` - Verify bracket checkbox updates and winner progression
+
+**Purpose:** Test bracket formulas, TRUE/FALSE advancement logic, and Results tab population. See `SIMULATION_RESULTS.md` for latest simulation report.
+
 ### Bracket Formatting Scripts
 - `npm run apply-styling` - Apply comprehensive bracket styling (colors, merges, text)
 - `npm run enhance-formatting` - Apply formatting enhancements (frozen rows, formulas, auto-sizing)

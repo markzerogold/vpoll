@@ -9,7 +9,8 @@ import * as path from 'path';
  * - Processes one full round at a time
  */
 
-const SPREADSHEET_ID = '1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o';
+// vPoll bracket test sheet
+const SPREADSHEET_ID = '1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk';
 
 interface Match {
   matchId: string;
@@ -426,9 +427,10 @@ async function processRound(
       r.notes
     ]);
 
+    // Use "Reuslts" tab name (misspelled in test sheet)
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'Results!A:P',
+      range: 'Reuslts!A:P',
       valueInputOption: 'RAW',
       requestBody: {
         values: resultRows,
