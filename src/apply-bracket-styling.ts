@@ -23,13 +23,23 @@ const auth = new google.auth.GoogleAuth({
 const sheets = google.sheets({ version: 'v4', auth });
 
 /**
- * Exact region colors from example sheet
+ * Region colors - custom scheme
  */
 const REGION_COLORS = {
-  ALPHA: { red: 0.81, green: 0.89, blue: 0.95 },   // E15 - Light blue
-  BETA: { red: 0.99, green: 0.9, blue: 0.8 },      // E46 - Light orange
-  GAMMA: { red: 0.85, green: 0.92, blue: 0.83 },   // Y15 - Light green
-  DELTA: { red: 0.9, green: 0.72, blue: 0.69 },    // Y46 - Light salmon/red
+  ALPHA: { red: 0.698, green: 0.133, blue: 0.133 },   // E15 - Firebrick red (#B22222)
+  BETA: { red: 1.0, green: 0.702, blue: 0.0 },        // E47 - Amber (#FFB300)
+  GAMMA: { red: 0.4, green: 0.6, blue: 0.8 },         // Y15 - Light blue (#6699CC)
+  DELTA: { red: 0.6, green: 0.6, blue: 0.6 },         // Y47 - Gray (#999999)
+};
+
+/**
+ * Text colors for regions (white or black based on background for visibility)
+ */
+const REGION_TEXT_COLORS = {
+  ALPHA: { red: 1, green: 1, blue: 1 },   // White text (dark red background)
+  BETA: { red: 0, green: 0, blue: 0 },    // Black text (bright amber background)
+  GAMMA: { red: 0, green: 0, blue: 0 },   // Black text (light blue background)
+  DELTA: { red: 1, green: 1, blue: 1 },   // White text (gray background)
 };
 
 /**
@@ -168,6 +178,7 @@ async function applyBracketStyling() {
 
   for (const merge of regionMerges) {
     const color = REGION_COLORS[merge.region as keyof typeof REGION_COLORS];
+    const textColor = REGION_TEXT_COLORS[merge.region as keyof typeof REGION_TEXT_COLORS];
 
     // Merge cells
     requests.push({
@@ -197,8 +208,9 @@ async function applyBracketStyling() {
           userEnteredFormat: {
             backgroundColor: color,
             textFormat: {
+              foregroundColor: textColor,
               bold: true,
-              fontSize: 12,
+              fontSize: 22,  // Updated to 22pt
             },
             horizontalAlignment: 'CENTER',
             verticalAlignment: 'MIDDLE',
