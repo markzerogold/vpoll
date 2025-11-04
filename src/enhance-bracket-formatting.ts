@@ -91,20 +91,20 @@ async function enhanceBracketFormatting() {
     },
   });
 
-  // 3. UPDATE O18 WITH FORMULA (with line break after tournament name)
+  // 3. UPDATE O18 WITH FORMULA (single line display)
   console.log('🏆 Updating championship label with formula...');
 
-  // First, update the cell value to use a formula with line break
+  // First, update the cell value to use a formula (single line)
   await sheets.spreadsheets.values.update({
     spreadsheetId: TEST_SHEET_ID,
     range: 'Bracket!O18',
     valueInputOption: 'USER_ENTERED',
     requestBody: {
-      values: [['=Config!B3&CHAR(10)&"Champion"']],
+      values: [['=Config!B3&" - Champion"']],
     },
   });
 
-  // Then format O18 (10pt, bold, text wrapping enabled)
+  // Then format O18 (10pt, bold, no text wrapping)
   requests.push({
     repeatCell: {
       range: {
@@ -116,7 +116,7 @@ async function enhanceBracketFormatting() {
       },
       cell: {
         userEnteredFormat: {
-          wrapStrategy: 'WRAP', // Enable wrapping for column O
+          wrapStrategy: 'CLIP', // No wrapping - single line display
           textFormat: {
             bold: true,
             fontSize: 10,  // 10pt to avoid stretching row
@@ -220,7 +220,28 @@ async function enhanceBracketFormatting() {
     },
   });
 
-  // Note: Column O (and merged P, Q) keeps WRAP strategy from step 3
+  // Note: Column O (and merged P, Q) uses CLIP strategy - no wrapping
+
+  // 7. SET UNIFORM ROW HEIGHTS
+  console.log('📏 Setting uniform row heights for all bracket rows...');
+
+  // Set all rows to 21 pixels (standard row height)
+  for (let rowIndex = 0; rowIndex < 65; rowIndex++) {
+    requests.push({
+      updateDimensionProperties: {
+        range: {
+          sheetId,
+          dimension: 'ROWS',
+          startIndex: rowIndex,
+          endIndex: rowIndex + 1,
+        },
+        properties: {
+          pixelSize: 21,  // Standard row height
+        },
+        fields: 'pixelSize',
+      },
+    });
+  }
 
   // Execute all formatting requests
   console.log(`\n✨ Executing ${requests.length} formatting requests...`);
@@ -241,11 +262,12 @@ async function enhanceBracketFormatting() {
   console.log('\n📊 Summary:');
   console.log('   ✓ Row 1 frozen');
   console.log('   ✓ Row 1 text bolded (all columns)');
-  console.log('   ✓ Championship label updated with formula (=Config!B3&CHAR(10)&"Champion")');
-  console.log('   ✓ Championship label: 10pt, bold, text wraps after tournament name');
+  console.log('   ✓ Championship label updated with formula (=Config!B3&" - Champion")');
+  console.log('   ✓ Championship label: 10pt, bold, single-line display (no wrapping)');
   console.log('   ✓ Region names: 22pt, bold');
   console.log('   ✓ All columns auto-sized (A-AF)');
-  console.log('   ✓ Text wrapping: Column O wraps, all others clip');
+  console.log('   ✓ Text wrapping: All columns clip (no wrapping)');
+  console.log('   ✓ All rows set to uniform height (21 pixels)');
 }
 
 // Run the script
