@@ -23,7 +23,8 @@
     "fix-border-gaps": "ts-node src/fix-border-gaps.ts",
     "fix-middle-gaps": "ts-node src/fix-middle-border-gaps.ts",
     "verify-borders": "ts-node src/verify-all-borders.ts",
-    "fix-championship-clip": "ts-node src/fix-championship-clip.ts"
+    "fix-championship-clip": "ts-node src/fix-championship-clip.ts",
+    "fix-all-borders": "ts-node src/fix-all-bracket-borders.ts"
   },
   "keywords": [
     "discord",
