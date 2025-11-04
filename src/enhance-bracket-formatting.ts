@@ -100,7 +100,7 @@ async function enhanceBracketFormatting() {
     range: 'Bracket!O18',
     valueInputOption: 'USER_ENTERED',
     requestBody: {
-      values: [['=Config!B3&" - Champion"']],
+      values: [['=Config!B3&" Champion"']],
     },
   });
 
@@ -262,7 +262,7 @@ async function enhanceBracketFormatting() {
   console.log('\n📊 Summary:');
   console.log('   ✓ Row 1 frozen');
   console.log('   ✓ Row 1 text bolded (all columns)');
-  console.log('   ✓ Championship label updated with formula (=Config!B3&" - Champion")');
+  console.log('   ✓ Championship label updated with formula (=Config!B3&" Champion")');
   console.log('   ✓ Championship label: 10pt, bold, single-line display (no wrapping)');
   console.log('   ✓ Region names: 22pt, bold');
   console.log('   ✓ All columns auto-sized (A-AF)');

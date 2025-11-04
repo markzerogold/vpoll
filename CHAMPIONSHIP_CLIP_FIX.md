@@ -39,9 +39,9 @@ This made column B and other columns look uneven.
   ```
 
 **Changed to:**
-- Formula: `=Config!B3&" - Champion"`
+- Formula: `=Config!B3&" Champion"`
 - Wrap strategy: `CLIP` (no text wrapping)
-- Display format: `Star Trek Character Battle 2025 - Champion`
+- Display format: `Star Trek Character Battle 2025 Champion`
 
 ### Uniform Row Heights
 
@@ -96,17 +96,17 @@ for (let rowIndex = 0; rowIndex < 65; rowIndex++) {
 ❌ **Row heights:** Variable (some stretched due to wrapping)
 
 ### After
-✅ **Championship label:** Single line "Tournament Name - Champion"
+✅ **Championship label:** Single line "Tournament Name Champion"
 ✅ **Wrap strategy:** CLIP (no wrapping)
 ✅ **Row heights:** Uniform 21 pixels across all 65 rows
-✅ **Formula:** `=Config!B3&" - Champion"`
+✅ **Formula:** `=Config!B3&" Champion"`
 ✅ **Text formatting:** 10pt bold, centered (maintained)
 
 ## Verification
 
 ### Championship Cell
-✅ **Formula:** `=Config!B3&" - Champion"`
-✅ **Display:** Single line (e.g., "Star Trek Character Battle 2025 - Champion")
+✅ **Formula:** `=Config!B3&" Champion"`
+✅ **Display:** Single line (e.g., "Star Trek Character Battle 2025 Champion")
 ✅ **Wrap strategy:** CLIP
 ✅ **Font:** 10pt bold
 ✅ **Alignment:** Center, Middle
@@ -130,7 +130,7 @@ textFormat: { bold: true, fontSize: 10 },
 
 Formula updated:
 ```typescript
-values: [['=Config!B3&" - Champion"']]
+values: [['=Config!B3&" Champion"']]
 ```
 
 Future brackets will use single-line format automatically.
@@ -168,8 +168,8 @@ Creates brackets with single-line championship label from the start.
 - Better horizontal space utilization
 
 **Format:**
-- Separator: " - " (space-hyphen-space)
-- Example: "Star Trek Character Battle 2025 - Champion"
+- Separator: Single space
+- Example: "Star Trek Character Battle 2025 Champion"
 - Merged cell O18:Q18 provides adequate width
 
 ### Why 21 Pixels?

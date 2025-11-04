@@ -45,7 +45,7 @@ async function fixChampionshipClip() {
     range: 'Bracket!O18',
     valueInputOption: 'USER_ENTERED',
     requestBody: {
-      values: [['=Config!B3&" - Champion"']],
+      values: [['=Config!B3&" Champion"']],
     },
   });
 
@@ -115,11 +115,11 @@ async function fixChampionshipClip() {
 
   console.log('\n✅ Championship cell and row heights fixed!');
   console.log('\n📊 Summary:');
-  console.log('   ✓ Championship formula updated (=Config!B3&" - Champion")');
+  console.log('   ✓ Championship formula updated (=Config!B3&" Champion")');
   console.log('   ✓ Championship cell O18: CLIP (no wrapping)');
   console.log('   ✓ All rows set to uniform height (21 pixels)');
   console.log('   ✓ Text formatting maintained (10pt bold, centered)');
-  console.log('\n💡 Championship label displays: "Star Trek Character Battle 2025 - Champion"');
+  console.log('\n💡 Championship label displays: "Star Trek Character Battle 2025 Champion"');
   console.log('   All rows in column B (and entire bracket) now have consistent height');
 }
 
