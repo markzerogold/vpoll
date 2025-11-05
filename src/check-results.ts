@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import * as path from 'path';
 
-const SPREADSHEET_ID = '1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk';
+const SPREADSHEET_ID = '1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o';
 
 async function checkResults() {
   const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
@@ -14,11 +14,11 @@ async function checkResults() {
   const sheets = google.sheets({ version: 'v4', auth });
 
   try {
-    console.log('📊 Reading Reuslts tab...\n');
+    console.log('📊 Reading Results tab...\n');
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Reuslts!A:P',
+      range: 'Results!A:P',
     });
 
     const rows = response.data.values || [];
