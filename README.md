@@ -89,7 +89,16 @@ For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.
 - `npm run check-results` - View all results written to Results tab
 - `npm run check-bracket` - Verify bracket checkbox updates and winner progression
 
-**Purpose:** Test bracket formulas, TRUE/FALSE advancement logic, and Results tab population. See `SIMULATION_RESULTS.md` for latest simulation report.
+**Purpose:** Test bracket formulas, TRUE/FALSE advancement logic, and Results tab population.
+
+**Recent Updates:**
+- Simulation now clears Results tab before each run (fresh data starting at row 2)
+- Fixed Round 2 cell mapping to read from rows 4, 5, 12, 13, 20, 21, 28, 29
+- Added Round 2→3 winner copying to rows 8, 16, 24, 32 (for Round 3 formulas)
+- Fixed Round 3 checkbox column from G to D (matching formula expectations)
+- Added Round 3→4 winner copying logic
+
+See `SIMULATION_FULL_REPORT.md` for detailed analysis of simulation behavior.
 
 ### Bracket Formatting Scripts
 - `npm run apply-styling` - Apply comprehensive bracket styling (colors, merges, text)

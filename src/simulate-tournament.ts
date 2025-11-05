@@ -105,6 +105,9 @@ function getRound2Matches(): Match[] {
     const isRightSide = regionIdx >= 2;
 
     for (let matchNum = 1; matchNum <= 4; matchNum++) {
+      // Round 2 participants are at rows 4, 5, 12, 13, 20, 21, 28, 29
+      // (populated by Round 1 formulas in Column E)
+      // Write checkboxes to Column D at these same rows
       const baseRow = (regionIdx % 2) * 32 + 4 + (matchNum - 1) * 8;
       const checkboxCol = isRightSide ? 'AB' : 'D';
 
@@ -141,8 +144,10 @@ function getRound3Matches(): Match[] {
     const isRightSide = regionIdx >= 2;
 
     for (let matchNum = 1; matchNum <= 2; matchNum++) {
+      // Round 3 participants are at rows 8, 9, 24, 25 (from Round 2 copy operation)
+      // Write checkboxes to Column D at these rows (matching what formulas H8/H24 expect)
       const baseRow = (regionIdx % 2) * 32 + 8 + (matchNum - 1) * 16;
-      const checkboxCol = isRightSide ? 'Y' : 'G';
+      const checkboxCol = isRightSide ? 'AB' : 'D';
 
       matches.push({
         matchId: `R3-${region}-M${matchNum}`,
@@ -364,6 +369,46 @@ async function processRound(
       values: [[false]]
     });
 
+    // For Round 2+, also write participant names (since cells don't have formulas)
+    if (roundNum >= 2) {
+      // Calculate name cell (column next to checkbox)
+      const nameCol = winner.checkboxCell.replace(/^[A-Z]+/, (col) => {
+        if (col === 'D') return 'E';
+        if (col === 'AB') return 'AA';
+        if (col === 'G') return 'H';
+        if (col === 'Y') return 'X';
+        if (col === 'J') return 'K';
+        if (col === 'V') return 'U';
+        if (col === 'M') return 'N';
+        if (col === 'O') return 'P';
+        return String.fromCharCode(col.charCodeAt(col.length - 1) + 1);
+      });
+
+      const loserNameCol = loser.checkboxCell.replace(/^[A-Z]+/, (col) => {
+        if (col === 'D') return 'E';
+        if (col === 'AB') return 'AA';
+        if (col === 'G') return 'H';
+        if (col === 'Y') return 'X';
+        if (col === 'J') return 'K';
+        if (col === 'V') return 'U';
+        if (col === 'M') return 'N';
+        if (col === 'O') return 'P';
+        return String.fromCharCode(col.charCodeAt(col.length - 1) + 1);
+      });
+
+      // Write winner name with seed
+      checkboxUpdates.push({
+        range: `Bracket!${nameCol}`,
+        values: [[`(${winner.seed}) ${winner.name}`]]
+      });
+
+      // Write loser name with seed (it will show until next round)
+      checkboxUpdates.push({
+        range: `Bracket!${loserNameCol}`,
+        values: [[`(${loser.seed}) ${loser.name}`]]
+      });
+    }
+
     // Prepare result row
     const now = new Date();
     const pollStart = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
@@ -440,6 +485,122 @@ async function processRound(
 
   console.log(`\n✅ Round ${roundNum} complete!`);
 
+  // For Round 2, copy winners to Round 3's expected cells
+  if (roundNum === 2 && checkboxUpdates.length > 0) {
+    console.log(`📋 Copying Round 2 winners to Round 3 cells (rows 8, 16, 24, 32)...`);
+
+    const round3PrepUpdates: any[] = [];
+
+    for (const match of matches) {
+      if (!match.participant1.name || !match.participant2.name) continue;
+
+      // Find this match's result
+      const matchResult = results.find(r => r.matchId === match.matchId);
+      if (!matchResult) continue;
+
+      const winner = matchResult.p1Votes > matchResult.p2Votes ? match.participant1 : match.participant2;
+      const loser = matchResult.p1Votes > matchResult.p2Votes ? match.participant2 : match.participant1;
+
+      // Round 2 matches are at rows 4, 12, 20, 28 (participant 1)
+      // Need to copy to rows 8, 16, 24, 32 for Round 3
+      // Pattern: row + 4
+      const p1Row = parseInt(winner.checkboxCell.replace(/[A-Z]/g, ''));
+      const targetRow = p1Row + 4;
+
+      // Get name column (E for left side, AA for right side)
+      const checkboxCol = winner.checkboxCell.replace(/[0-9]/g, '');
+      const nameCol = checkboxCol === 'D' ? 'E' : 'AA';
+
+      round3PrepUpdates.push({
+        range: `Bracket!${nameCol}${targetRow}`,
+        values: [[`(${winner.seed}) ${winner.name}`]]
+      });
+
+      // Also write loser to targetRow + 1
+      round3PrepUpdates.push({
+        range: `Bracket!${nameCol}${targetRow + 1}`,
+        values: [[`(${loser.seed}) ${loser.name}`]]
+      });
+    }
+
+    if (round3PrepUpdates.length > 0) {
+      await sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          valueInputOption: 'RAW',
+          data: round3PrepUpdates,
+        },
+      });
+      console.log(`  ✓ Copied ${round3PrepUpdates.length / 2} matches to Round 3 cells`);
+    }
+  }
+
+  // For Round 3, copy winners to Round 4's expected cells
+  if (roundNum === 3 && checkboxUpdates.length > 0) {
+    console.log(`📋 Copying Round 3 winners to Round 4 cells (rows 16, 48 for each region)...`);
+
+    const round4PrepUpdates: any[] = [];
+
+    // Group matches by region to pair them
+    const matchesByRegion: { [key: string]: Match[] } = {};
+    for (const match of matches) {
+      if (!match.participant1.name || !match.participant2.name) continue;
+      if (!matchesByRegion[match.region]) {
+        matchesByRegion[match.region] = [];
+      }
+      matchesByRegion[match.region].push(match);
+    }
+
+    // For each region, take the 2 Round 3 matches and create 1 Round 4 match
+    for (const [region, regionMatches] of Object.entries(matchesByRegion)) {
+      if (regionMatches.length !== 2) continue;
+
+      // Find winners from both matches
+      const match1 = regionMatches[0];
+      const match2 = regionMatches[1];
+      const result1 = results.find(r => r.matchId === match1.matchId);
+      const result2 = results.find(r => r.matchId === match2.matchId);
+
+      if (!result1 || !result2) continue;
+
+      const winner1 = result1.p1Votes > result1.p2Votes ? match1.participant1 : match1.participant2;
+      const winner2 = result2.p1Votes > result2.p2Votes ? match2.participant1 : match2.participant2;
+
+      // Determine target row for Round 4
+      // ALPHA (regionIdx 0): row 16
+      // BETA (regionIdx 1): row 48
+      // GAMMA (regionIdx 2): row 16 (right side)
+      // DELTA (regionIdx 3): row 48 (right side)
+      const regionIdx = ['ALPHA', 'BETA', 'GAMMA', 'DELTA'].indexOf(region);
+      const isRightSide = regionIdx >= 2;
+      const targetRow = (regionIdx % 2) * 32 + 16;
+
+      // Column H for left side, column X for right side
+      const nameCol = isRightSide ? 'X' : 'H';
+
+      round4PrepUpdates.push({
+        range: `Bracket!${nameCol}${targetRow}`,
+        values: [[`(${winner1.seed}) ${winner1.name}`]]
+      });
+
+      round4PrepUpdates.push({
+        range: `Bracket!${nameCol}${targetRow + 1}`,
+        values: [[`(${winner2.seed}) ${winner2.name}`]]
+      });
+    }
+
+    if (round4PrepUpdates.length > 0) {
+      await sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          valueInputOption: 'RAW',
+          data: round4PrepUpdates,
+        },
+      });
+      console.log(`  ✓ Copied ${round4PrepUpdates.length / 2} matches to Round 4 cells`);
+    }
+  }
+
   // Pause between rounds for dramatic effect
   if (roundNum < 6) {
     console.log('⏸️  Waiting 3 seconds before next round...');
@@ -463,6 +624,14 @@ async function simulateTournament() {
   try {
     console.log('🎮 Starting tournament simulation...');
     console.log(`📊 Sheet: https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit\n`);
+
+    // Clear previous simulation results (keep header row)
+    console.log('🧹 Clearing previous results from Results tab...');
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'Results!A2:P1000',
+    });
+    console.log('  ✓ Results tab cleared\n');
 
     // Process all 6 rounds
     for (let round = 1; round <= 6; round++) {

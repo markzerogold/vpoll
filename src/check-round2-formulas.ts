@@ -11,12 +11,14 @@ async function checkRound2Formulas() {
   });
   const sheets = google.sheets({ version: 'v4', auth });
 
-  // Check Round 2 cells with includeGridData to see formulas
+  // Check intermediate cells between Round 2 and Round 3
   const cells = [
-    'Bracket!E4',  // Round 2 ALPHA M1 P1 name
-    'Bracket!D4',  // Round 2 ALPHA M1 P1 checkbox
-    'Bracket!AB4', // Round 2 GAMMA M1 P1 name (right side)
-    'Bracket!AC4', // Round 2 GAMMA M1 P1 checkbox (right side)
+    'Bracket!D8',  // What Round 3 formula looks at
+    'Bracket!E8',  // What Round 3 expects for participant name
+    'Bracket!D9',  // Second row of Round 3's lookup range
+    'Bracket!E9',  // Second row of Round 3's lookup range
+    'Bracket!D4',  // Actual Round 2 checkbox position
+    'Bracket!E4',  // Actual Round 2 name position
   ];
 
   const response = await sheets.spreadsheets.get({
