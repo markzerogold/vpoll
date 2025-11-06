@@ -10,7 +10,7 @@ import * as path from 'path';
  */
 
 // vPoll tournament sheet - all regions populated
-const SPREADSHEET_ID = '1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o';
+const SPREADSHEET_ID = '1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w';
 
 interface Match {
   matchId: string;

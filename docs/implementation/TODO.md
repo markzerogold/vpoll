@@ -90,6 +90,39 @@ Tracks all finished implementation work.
 
 ---
 
+## 🧪 Testing & Tooling Issues
+
+### Bracket Formatting Issues
+**Status:** Known issue, needs investigation
+**Priority:** Medium (doesn't block core functionality)
+
+**Problem:**
+- `populate-test-sheet` + `format-bracket` scripts don't produce correctly formatted brackets
+- Missing expected formatting elements observed in test sheets
+- Borders, merged cells, or layout may not match master template
+
+**Evidence:**
+- Screenshots: `debug/new-test-Screenshot 2025-11-06 063920.png`, `debug/bad-bracket-Screenshot 2025-11-06 064632.png`
+- Test sheet: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+
+**Next Steps:**
+1. Compare generated bracket with master template visually
+2. Identify specific missing formatting elements
+3. Update `apply-bracket-formatting.ts` to match master template exactly
+4. Consider extracting formatting from master template programmatically
+
+**Related Files:**
+- `src/populate-test-sheet.ts` - Sheet population
+- `src/apply-bracket-formatting.ts` - Formatting application
+- `src/simulate-tournament.ts` - Tournament simulation
+
+**Logs:**
+- `population-log.txt` - Sheet population process
+- `bracket-formatting-log.txt` - Formatting application
+- `tournament-simulation-log.txt` - Full simulation run
+
+---
+
 ## 📚 Related Documentation
 
 - **Requirements:** [../requirements/README.md](../requirements/README.md) - Product specifications

@@ -1,0 +1,21 @@
+📊 Analyzing tournament progression from Results tab...
+
+
+=== Round 1 (32 matches) ===
+
+✅ 32 unique matches (no duplicates)
+
+=== Round 2 (16 matches) ===
+
+✅ 16 unique matches (no duplicates)
+
+=== Sweet 16 (5 matches) ===
+
+✅ 5 unique matches (no duplicates)
+
+
+=== SUMMARY ===
+Total result rows: 53
+  Round 1: 32 entries
+  Round 2: 16 entries
+  Sweet 16: 5 entries

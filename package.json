@@ -30,7 +30,8 @@
     "update-example-borders": "ts-node src/update-example-borders.ts",
     "simulate-tournament": "ts-node src/simulate-tournament.ts",
     "check-results": "ts-node src/check-results.ts",
-    "check-bracket": "ts-node src/check-bracket-progression.ts"
+    "check-bracket": "ts-node src/check-bracket-progression.ts",
+    "format-bracket": "ts-node src/apply-bracket-formatting.ts"
   },
   "keywords": [
     "discord",

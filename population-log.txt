@@ -1,0 +1,36 @@
+
+> vpoll@1.0.0 populate-test-sheet
+> ts-node src/populate-test-sheet.ts 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+Populating spreadsheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+Setting up tabs...
+✅ Tabs created/renamed
+
+Expanding Bracket tab grid dimensions...
+✅ Bracket tab expanded to 100 rows × 35 columns
+
+Populating Instructions tab...
+Populating Participants tab...
+Populating Config tab...
+Populating Regions tab...
+Populating Bracket tab...
+Populating Results tab...
+
+Writing all data...
+Generating bracket formulas...
+✅ Wrote 136 formulas and 8 values
+✅ Added 126 checkbox validations
+Applying formatting...
+
+✅ Test tournament sheet populated successfully!
+
+🔗 URL: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+
+📝 Next steps:
+1. Open the sheet and verify all tabs are populated
+2. Grant "Anyone with the link" → Viewer access for public viewing
+3. Update Discord Channel ID in Config tab with a real channel ID
+4. Use this sheet to test /tournament create command
+
+✨ Done!
