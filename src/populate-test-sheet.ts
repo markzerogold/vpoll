@@ -404,7 +404,16 @@ async function populateSheet(spreadsheetId: string) {
       },
     });
 
-    // Generate and populate bracket formulas
+    // ========================================================================
+    // NOTE: Reference sheet does NOT use merged headers in row 1
+    // Headers are just text in individual cells (A1="Round 1", D1="Round 2", etc.)
+    // Skipping merge operations to match reference sheet structure
+    // ========================================================================
+    console.log('Skipping merged cells (not used in reference sheet)...');
+
+    // ========================================================================
+    // STEP 2: GENERATE AND WRITE BRACKET FORMULAS + CHECKBOX VALUES
+    // ========================================================================
     console.log('Generating bracket formulas...');
     const bracketCells = generateCompleteBracket();
 
@@ -417,7 +426,7 @@ async function populateSheet(spreadsheetId: string) {
       const cellAddress = `Bracket!${cell.col}${cell.row}`;
 
       if (cell.isCheckbox) {
-        // Checkbox cells need special data validation
+        // Checkbox cells need both value AND validation
         checkboxCells.push({
           range: cellAddress,
           value: cell.value ?? false
@@ -435,19 +444,27 @@ async function populateSheet(spreadsheetId: string) {
       }
     });
 
-    // Write formulas and values
-    if (formulaCells.length > 0 || valueCells.length > 0) {
+    // FIX: Write checkbox VALUES along with formulas and values
+    const checkboxValueUpdates = checkboxCells.map(cell => ({
+      range: cell.range,
+      values: [[false]] // Initial FALSE value for all checkboxes
+    }));
+
+    // Write ALL cell values at once: formulas, values, AND checkbox values
+    if (formulaCells.length > 0 || valueCells.length > 0 || checkboxValueUpdates.length > 0) {
       await sheets.spreadsheets.values.batchUpdate({
         spreadsheetId,
         requestBody: {
           valueInputOption: 'USER_ENTERED',
-          data: [...formulaCells, ...valueCells],
+          data: [...formulaCells, ...valueCells, ...checkboxValueUpdates],
         },
       });
-      console.log(`✅ Wrote ${formulaCells.length} formulas and ${valueCells.length} values`);
+      console.log(`✅ Wrote ${formulaCells.length} formulas, ${valueCells.length} values, and ${checkboxValueUpdates.length} checkbox values`);
     }
 
-    // Add checkbox data validation for checkbox cells
+    // ========================================================================
+    // STEP 3: ADD CHECKBOX DATA VALIDATION
+    // ========================================================================
     if (checkboxCells.length > 0) {
       const checkboxRequests = checkboxCells.map(cell => {
         // Parse cell address like "Bracket!A2" or "Bracket!AB15"

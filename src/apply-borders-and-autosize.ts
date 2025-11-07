@@ -254,8 +254,10 @@ async function main() {
       (s: any) => s.properties?.title === 'Bracket'
     );
 
-    if (!bracketSheet) {
-      throw new Error('Bracket sheet not found');
+    if (!bracketSheet || !bracketSheet.properties ||
+        bracketSheet.properties.sheetId === undefined ||
+        bracketSheet.properties.sheetId === null) {
+      throw new Error('Bracket sheet not found or missing sheetId');
     }
 
     const sheetId = bracketSheet.properties.sheetId;
