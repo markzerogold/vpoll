@@ -1,0 +1,151 @@
+
+> vpoll@1.0.0 simulate-tournament
+> ts-node src/simulate-tournament.ts
+
+🎮 Starting tournament simulation...
+📊 Sheet: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+
+🧹 Clearing previous results from Results tab...
+  ✓ Results tab cleared
+
+
+================================================================================
+ROUND 1: Round 1
+================================================================================
+Processing 32 matches...
+
+🏆 R1-ALPHA-M1: Spock (TOS/TAS/Films/SNW) defeats Kathryn Janeway (VOY) (78-35)
+🏆 R1-ALPHA-M2: William Riker (TNG/Films) defeats Miles O'Brien (TNG/DS9) (73-47)
+🏆 R1-ALPHA-M3: Julian Bashir (DS9) defeats Deanna Troi (TNG/Films) (92-50)
+🏆 R1-ALPHA-M4: Tom Paris (VOY) defeats Nog (DS9) (90-28)
+🏆 R1-ALPHA-M5: Q (TNG/DS9/VOY) defeats Ro Laren (TNG) (76-45)
+🏆 R1-ALPHA-M6: Harry Kim (VOY) defeats Martok (DS9) (94-81)
+🏆 R1-ALPHA-M7: Number One (TOS/SNW) defeats Khan Noonien Singh (TOS/Films) (82-77)
+🏆 R1-ALPHA-M8: Icheb (VOY) defeats Nurse Ogawa (TNG) (92-68)
+🏆 R1-BETA-M1: Jean-Luc Picard (TNG/Films) defeats Benjamin Sisko (DS9) (90-61)
+🏆 R1-BETA-M2: Jadzia Dax (DS9) defeats Kira Nerys (DS9) (94-35)
+🏆 R1-BETA-M3: Tuvok (VOY) defeats Geordi La Forge (TNG/Films) (93-90)
+🏆 R1-BETA-M4: Nyota Uhura (TOS/TAS/Films) defeats Neelix (VOY) (63-29)
+🏆 R1-BETA-M5: Keiko O'Brien (TNG/DS9) defeats Tasha Yar (TNG) (78-20)
+🏆 R1-BETA-M6: Gowron (TNG/DS9) defeats Rom (DS9) (92-37)
+🏆 R1-BETA-M7: Christine Chapel (TOS/SNW) defeats Sarek (TOS/TNG/Films) (56-38)
+🏆 R1-BETA-M8: Mot (TNG) defeats Seska (VOY) (89-56)
+🏆 R1-GAMMA-M1: James T. Kirk (TOS/TAS/Films) defeats Data (TNG/Films) (69-38)
+🏆 R1-GAMMA-M2: Leonard McCoy (TOS/TAS/Films) defeats The Doctor (VOY) (55-46)
+🏆 R1-GAMMA-M3: Beverly Crusher (TNG/Films) defeats Chakotay (VOY) (66-31)
+🏆 R1-GAMMA-M4: Montgomery Scott (TOS/TAS/Films) defeats Kes (VOY) (93-85)
+🏆 R1-GAMMA-M5: Wesley Crusher (TNG) defeats Alexander Rozhenko (TNG/DS9) (52-50)
+🏆 R1-GAMMA-M6: Leeta (DS9) defeats Kai Winn (DS9) (81-30)
+🏆 R1-GAMMA-M7: Sulu (TOS/Films) defeats Amanda Grayson (TOS/Films) (90-69)
+🏆 R1-GAMMA-M8: Lon Suder (VOY) defeats Morn (DS9) (47-23)
+🏆 R1-DELTA-M1: Worf (TNG/DS9/Films) defeats Seven of Nine (VOY) (95-69)
+🏆 R1-DELTA-M2: Quark (DS9) defeats Odo (DS9) (81-20)
+🏆 R1-DELTA-M3: B'Elanna Torres (VOY) defeats Ezri Dax (DS9) (49-35)
+🏆 R1-DELTA-M4: Garak (DS9) defeats Guinan (TNG) (97-76)
+🏆 R1-DELTA-M5: Reginald Barclay (TNG/VOY) defeats Lwaxana Troi (TNG/DS9) (98-35)
+🏆 R1-DELTA-M6: Dukat (DS9) defeats Vic Fontaine (DS9) (63-37)
+🏆 R1-DELTA-M7: Christopher Pike (TOS/SNW) defeats Chekov (TOS/Films) (70-45)
+🏆 R1-DELTA-M8: Naomi Wildman (VOY) defeats Tuvix (VOY) (63-39)
+
+📝 Updating 64 bracket cells...
+⏳ Waiting 5 seconds for formulas to recalculate...
+📊 Writing 32 results to Results tab...
+
+✅ Round 1 complete!
+⏸️  Waiting 3 seconds before next round...
+
+================================================================================
+ROUND 2: Round 2
+================================================================================
+Processing 16 matches...
+
+🏆 R2-ALPHA-M1: Spock (TOS/TAS/Films/SNW) defeats William Riker (TNG/Films) (83-22)
+🏆 R2-ALPHA-M2: Tom Paris (VOY) defeats Julian Bashir (DS9) (81-26)
+🏆 R2-ALPHA-M3: Q (TNG/DS9/VOY) defeats Harry Kim (VOY) (93-76)
+🏆 R2-ALPHA-M4: Number One (TOS/SNW) defeats Icheb (VOY) (59-43)
+🏆 R2-BETA-M1: Jadzia Dax (DS9) defeats Jean-Luc Picard (TNG/Films) (47-46)
+🏆 R2-BETA-M2: Nyota Uhura (TOS/TAS/Films) defeats Tuvok (VOY) (94-29)
+🏆 R2-BETA-M3: Keiko O'Brien (TNG/DS9) defeats Gowron (TNG/DS9) (97-81)
+🏆 R2-BETA-M4: Christine Chapel (TOS/SNW) defeats Mot (TNG) (53-30)
+🏆 R2-GAMMA-M1: Leonard McCoy (TOS/TAS/Films) defeats James T. Kirk (TOS/TAS/Films) (73-67)
+🏆 R2-GAMMA-M2: Beverly Crusher (TNG/Films) defeats Montgomery Scott (TOS/TAS/Films) (89-61)
+🏆 R2-GAMMA-M3: Leeta (DS9) defeats Wesley Crusher (TNG) (98-83)
+🏆 R2-GAMMA-M4: Sulu (TOS/Films) defeats Lon Suder (VOY) (57-42)
+🏆 R2-DELTA-M1: Quark (DS9) defeats Worf (TNG/DS9/Films) (79-55)
+🏆 R2-DELTA-M2: B'Elanna Torres (VOY) defeats Garak (DS9) (99-98)
+🏆 R2-DELTA-M3: Reginald Barclay (TNG/VOY) defeats Dukat (DS9) (82-26)
+🏆 R2-DELTA-M4: Christopher Pike (TOS/SNW) defeats Naomi Wildman (VOY) (79-78)
+
+📝 Updating 64 bracket cells...
+⏳ Waiting 5 seconds for formulas to recalculate...
+📊 Writing 16 results to Results tab...
+
+✅ Round 2 complete!
+📋 Copying Round 2 winners to Round 3 cells (rows 8, 16, 24, 32)...
+  ✓ Copied 16 matches to Round 3 cells
+⏸️  Waiting 3 seconds before next round...
+
+================================================================================
+ROUND 3: Sweet 16
+================================================================================
+Processing 8 matches...
+
+🏆 R3-ALPHA-M1: Spock (TOS/TAS/Films/SNW) defeats William Riker (TNG/Films) (54-22)
+🏆 R3-ALPHA-M2: Q (TNG/DS9/VOY) defeats Harry Kim (VOY) (87-50)
+⏭️  Skipping R3-BETA-M1 - participants not ready
+🏆 R3-BETA-M2: Keiko O'Brien (TNG/DS9) defeats Gowron (TNG/DS9) (70-37)
+⏭️  Skipping R3-GAMMA-M1 - participants not ready
+⏭️  Skipping R3-GAMMA-M2 - participants not ready
+⏭️  Skipping R3-DELTA-M1 - participants not ready
+🏆 R3-DELTA-M2: Reginald Barclay (TNG/VOY) defeats Dukat (DS9) (96-62)
+
+📝 Updating 16 bracket cells...
+⏳ Waiting 5 seconds for formulas to recalculate...
+📊 Writing 4 results to Results tab...
+
+✅ Round 3 complete!
+📋 Copying Round 3 winners to Round 4 cells (rows 16, 48 for each region)...
+  ✓ Copied 1 matches to Round 4 cells
+⏸️  Waiting 3 seconds before next round...
+
+================================================================================
+ROUND 4: Elite 8
+================================================================================
+Processing 4 matches...
+
+⏭️  Skipping R4-ALPHA-M1 - participants not ready
+⏭️  Skipping R4-BETA-M1 - participants not ready
+⏭️  Skipping R4-GAMMA-M1 - participants not ready
+⏭️  Skipping R4-DELTA-M1 - participants not ready
+
+✅ Round 4 complete!
+⏸️  Waiting 3 seconds before next round...
+
+================================================================================
+ROUND 5: Final 4
+================================================================================
+Processing 2 matches...
+
+⏭️  Skipping R5-ALPHA_vs_BETA-M1 - participants not ready
+⏭️  Skipping R5-GAMMA_vs_DELTA-M1 - participants not ready
+
+✅ Round 5 complete!
+⏸️  Waiting 3 seconds before next round...
+
+================================================================================
+ROUND 6: Championship
+================================================================================
+Processing 1 matches...
+
+⏭️  Skipping R6-CHAMPIONSHIP-M1 - participants not ready
+
+✅ Round 6 complete!
+
+================================================================================
+🏆 TOURNAMENT COMPLETE! 🏆
+================================================================================
+
+📊 Check the Results tab for complete match history
+🏅 Check cell O19 in the Bracket tab for the champion!
+
+✨ Simulation complete!

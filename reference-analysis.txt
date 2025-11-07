@@ -1,0 +1,97 @@
+📊 Analyzing reference sheet structure...
+
+Reference: https://docs.google.com/spreadsheets/d/1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o/edit
+
+Sheet title: vpoll bracket test
+Tabs: Bracket, Results, Participants, Regions, Config, Instructions
+
+=== BRACKET STRUCTURE SAMPLES ===
+
+Row 1 (Headers):
+  A: Round 1
+  B: (empty)
+  C: (empty)
+  D: Round 2
+  E: (empty)
+  F: (empty)
+  G: Sweet 16
+  H: (empty)
+  I: (empty)
+  J: Elite 8
+  K: (empty)
+  L: (empty)
+  M: Final 4
+  N: (empty)
+  O: (empty)
+  P: Championship
+  Q: (empty)
+  R: Final 4
+  S: (empty)
+  T: (empty)
+  U: Elite 8
+  V: (empty)
+  W: (empty)
+  X: Sweet 16
+
+Round 1 Match 1 (A2:E3):
+  Row 2: A="FALSE" | B="(1) Spock (TOS/TAS/Films/SNW)"
+  Row 3: A="TRUE" | B="(2) Kathryn Janeway (VOY)"
+
+Round 2 Match 1 (D4:E5):
+  Row 4: D="FALSE" | E="(2) Kathryn Janeway (VOY)"
+  Row 5: D="FALSE" | E="(3) Miles O'Brien (TNG/DS9)"
+
+Region header (C17:E17):
+  undefined
+
+Championship area (M15:O20):
+  Row 15: (empty)
+  Row 16: (empty)
+  Row 17: (empty)
+  Row 18: M="" | N="" | O="Star Trek Character Battle 2025 Champion"
+  Row 19: M="" | N="" | O=" "
+
+=== DETAILED FORMATTING ANALYSIS ===
+
+Checking first 5 rows for merges and formatting:
+
+A1:
+  Value: "Round 1"
+
+D1:
+  Value: "Round 2"
+
+A2:
+  Value: "false"
+  Type: CHECKBOX
+
+B2:
+  Value: "(1) Spock (TOS/TAS/Films/SNW)"
+  Formula: ="("&Regions!$A$3&") "&Regions!$B$3...
+
+A3:
+  Value: "true"
+  Type: CHECKBOX
+
+B3:
+  Value: "(2) Kathryn Janeway (VOY)"
+  Formula: ="("&Regions!$A$4&") "&Regions!$B$4...
+
+D4:
+  Value: "false"
+  Type: CHECKBOX
+
+E4:
+  Value: "(2) Kathryn Janeway (VOY)"
+  Formula: =IFERROR(VLOOKUP(TRUE,$A$2:$B$3,2,FALSE),"")...
+
+D5:
+  Value: "false"
+  Type: CHECKBOX
+
+E5:
+  Value: "(3) Miles O'Brien (TNG/DS9)"
+  Formula: =IFERROR(VLOOKUP(TRUE,$A$6:$B$7,2,FALSE),"")...
+
+
+✅ Analysis complete!
