@@ -145,9 +145,9 @@ function getRound3Matches(): Match[] {
 
     for (let matchNum = 1; matchNum <= 2; matchNum++) {
       // Round 3 participants are at rows 8, 9, 24, 25 (from Round 2 copy operation)
-      // Write checkboxes to Column D at these rows (matching what formulas H8/H24 expect)
+      // Write checkboxes to Column G (left) or Y (right) - matches generate-bracket.ts:301
       const baseRow = (regionIdx % 2) * 32 + 8 + (matchNum - 1) * 16;
-      const checkboxCol = isRightSide ? 'AB' : 'D';
+      const checkboxCol = isRightSide ? 'Y' : 'G';  // FIX: Was 'AB':'D', should be 'Y':'G'
 
       matches.push({
         matchId: `R3-${region}-M${matchNum}`,
@@ -182,7 +182,7 @@ function getRound4Matches(): Match[] {
     const isRightSide = regionIdx >= 2;
 
     const baseRow = (regionIdx % 2) * 32 + 16;
-    const checkboxCol = isRightSide ? 'V' : 'J';
+    const checkboxCol = isRightSide ? 'U' : 'J';  // FIX: Was 'V', should be 'U' for right side
 
     matches.push({
       matchId: `R4-${region}-M1`,
@@ -223,8 +223,8 @@ function getRound5Matches(): Match[] {
       round: 5,
       roundName: 'Final 4',
       region: 'GAMMA_vs_DELTA',
-      participant1: { name: '', seed: 0, checkboxCell: 'S31' },
-      participant2: { name: '', seed: 0, checkboxCell: 'S32' }
+      participant1: { name: '', seed: 0, checkboxCell: 'R31' },  // FIX: Was 'S31', should be 'R31'
+      participant2: { name: '', seed: 0, checkboxCell: 'R32' }   // FIX: Was 'S32', should be 'R32'
     }
   ];
 }
@@ -265,11 +265,11 @@ async function populateMatchNames(
         return col === 'AE' ? 'AD' :
                col === 'AB' ? 'AA' :
                col === 'Y' ? 'X' :
-               col === 'V' ? 'U' :
-               col === 'S' ? 'R' :
+               col === 'U' ? 'V' :   // FIX: Added U→V mapping for Round 4 right side
+               col === 'R' ? 'S' :   // FIX: Changed S→R to R→S for Round 5 right side
                col === 'M' ? 'N' :
                col === 'O' ? 'P' :
-               col === 'Q' ? 'P' : // Q also reads from P
+               col === 'Q' ? 'P' :   // Q also reads from P
                String.fromCharCode(colCode + 1);
       }
     });

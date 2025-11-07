@@ -1,0 +1,80 @@
+🔍 Diagnosing bracket structure...
+
+Sheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+=== BRACKET ROWS 1-20 (Columns A-F) ===
+
+Row  1: A:Round 1 | B:(empty) | C:(empty) | D:Round 2
+Row  2: A:TRUE | B:(1) Spock (TOS/TAS/Films/SNW)
+Row  3: A:FALSE | B:(2) Kathryn Janeway (VOY)
+Row  4: A:(empty) | B:(empty) | C:(empty) | D:TRUE | E:(1) Spock (TOS/TAS/Films/SNW)
+Row  5: A:(empty) | B:(empty) | C:(empty) | D:FALSE | E:(4) William Riker (TNG/Films)
+Row  6: A:FALSE | B:(3) Miles O'Brien (TNG/DS9)
+Row  7: A:TRUE | B:(4) William Riker (TNG/Films)
+Row  8: A:(empty) | B:(empty) | C:(empty) | D:FALSE | E:(1) Spock (TOS/TAS/Films/SNW)
+Row  9: A:(empty) | B:(empty) | C:(empty) | D:TRUE | E:(4) William Riker (TNG/Films)
+Row 10: A:TRUE | B:(5) Deanna Troi (TNG/Films)
+Row 11: A:FALSE | B:(6) Julian Bashir (DS9)
+Row 12: A:(empty) | B:(empty) | C:(empty) | D:FALSE | E:(5) Deanna Troi (TNG/Films)
+Row 13: A:(empty) | B:(empty) | C:(empty) | D:TRUE | E:(8) Nog (DS9)
+Row 14: A:FALSE | B:(7) Tom Paris (VOY)
+Row 15: A:TRUE | B:(8) Nog (DS9) | C:(empty) | D:(empty) | E:Federation
+Row 16: 
+Row 17: A:(empty) | B:(empty) | C:(empty) | D:(empty) | E:(8) Nog (DS9)
+Row 18: A:TRUE | B:(9) Q (TNG/DS9/VOY) | C:(empty) | D:(empty) | E:(5) Deanna Troi (TNG/Films)
+Row 19: A:FALSE | B:(10) Ro Laren (TNG)
+Row 20: A:(empty) | B:(empty) | C:(empty) | D:FALSE | E:(9) Q (TNG/DS9/VOY)
+
+=== ROUND 1 ANALYSIS ===
+
+Expected Round 1 Match 1:
+  Row 2: A=checkbox, B=participant formula
+  Row 3: A=checkbox, B=participant formula
+
+Actual Round 1 Match 1:
+  Row 2: A="TRUE", B="(1) Spock (TOS/TAS/Films/SNW)"
+  Row 3: A="FALSE", B="(2) Kathryn Janeway (VOY)"
+
+Expected Round 1 Match 2:
+  Row 6: A=checkbox, B=participant formula
+  Row 7: A=checkbox, B=participant formula
+
+Actual Round 1 Match 2:
+  Row 6: A="FALSE", B="(3) Miles O'Brien (TNG/DS9)"
+  Row 7: A="TRUE", B="(4) William Riker (TNG/Films)"
+
+
+=== ROUND 2 ANALYSIS ===
+
+Expected Round 2 Match 1:
+  Row 4: D=checkbox, E=VLOOKUP formula for R1M1 winner
+  Row 5: D=checkbox, E=VLOOKUP formula for R1M2 winner
+
+Actual Round 2 Match 1:
+  Row 4: D="TRUE", E="(1) Spock (TOS/TAS/Films/SNW)"
+  Row 5: D="FALSE", E="(4) William Riker (TNG/Films)"
+  Row 6: D="undefined", E="undefined"
+  Row 7: D="undefined", E="undefined"
+  Row 8: D="FALSE", E="(1) Spock (TOS/TAS/Films/SNW)"
+  Row 9: D="TRUE", E="(4) William Riker (TNG/Films)"
+
+
+=== FORMULAS CHECK ===
+
+Round 2 Formulas (Columns D-F):
+
+Row 15:
+  E15:
+    Formula: =Regions!B2
+    Value: Federation
+
+=== REGION NAMES CHECK ===
+
+Checking rows 14-17 for region names:
+  Row 14: E="(empty)"
+  Row 15: E="Federation"
+  Row 16: E="(empty)"
+  Row 17: E="(8) Nog (DS9)"
+
+✅ Diagnostic complete!
+
