@@ -1,0 +1,43 @@
+🎨 Adding Missing Formatting
+================================================================================
+Example sheet: 1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk
+Test sheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+Available sheets:
+  - Bracket (ID: 0)
+  - Results (ID: 1485259197)
+  - Participants (ID: 1269532178)
+  - Regions (ID: 94548884)
+  - Config (ID: 1071709473)
+  - Instructions (ID: 734582221)
+
+📋 Bracket sheet ID: 0
+
+📖 Reading region name formatting from example sheet...
+  E15 (Federation):
+    Background: RGB(0.8117647, 0.8862745, 0.9529412)
+    Font size: 24
+    Bold: true
+  Y15 (Romulan Star Empire):
+    Background: RGB(0.8509804, 0.91764706, 0.827451)
+    Font size: 24
+    Bold: true
+✅ Found formatting for 2 region cells
+
+🔗 Merging header cells...
+✅ Merged 10 header cell ranges
+
+🎨 Applying region name formatting...
+✅ Applied formatting to 2 region name cells
+
+🖼️  Reading borders for columns Y and AA from example sheet...
+✅ Found 54 cells with borders in Y:AA
+
+🖼️  Applying borders to columns Y and AA...
+  Applied batch 1/1...
+✅ Applied 54 border updates
+
+================================================================================
+✅ Missing formatting added successfully!
+🔗 View result: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+

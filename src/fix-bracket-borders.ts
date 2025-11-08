@@ -7,7 +7,7 @@ import * as path from 'path';
  */
 
 const EXAMPLE_SHEET_ID = '1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk';
-const TEST_SHEET_ID = '1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o';
+const TEST_SHEET_ID = process.argv[2] || '1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o';
 
 interface BorderStyle {
   style: string;

@@ -425,11 +425,92 @@ async function populateSheet(spreadsheetId: string) {
     });
 
     // ========================================================================
-    // NOTE: Reference sheet does NOT use merged headers in row 1
-    // Headers are just text in individual cells (A1="Round 1", D1="Round 2", etc.)
-    // Skipping merge operations to match reference sheet structure
+    // STEP 1.5: MERGE HEADER CELLS (MUST BE DONE BEFORE BORDERS)
     // ========================================================================
-    console.log('Skipping merged cells (not used in reference sheet)...');
+    console.log('Merging header cells...');
+
+    const bracketSheetId = 0; // Bracket is always the first sheet
+    const merges = [
+      // Left side headers
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 2 }, // A1:B1 Round 1
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 3, endColumnIndex: 5 }, // D1:E1 Round 2
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 6, endColumnIndex: 8 }, // G1:H1 Sweet 16
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 9, endColumnIndex: 11 }, // J1:K1 Elite 8
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 12, endColumnIndex: 14 }, // M1:N1 Final 4
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 15, endColumnIndex: 19 }, // P1:S1 Championship
+      // Right side headers
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 20, endColumnIndex: 22 }, // U1:V1 Elite 8
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 23, endColumnIndex: 25 }, // X1:Y1 Sweet 16
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 26, endColumnIndex: 28 }, // AA1:AB1 Round 2
+      { startRowIndex: 0, endRowIndex: 1, startColumnIndex: 29, endColumnIndex: 31 }, // AD1:AE1 Round 1
+    ];
+
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: merges.map(merge => ({
+          mergeCells: {
+            range: {
+              sheetId: bracketSheetId,
+              ...merge,
+            },
+            mergeType: 'MERGE_ALL',
+          },
+        })),
+      },
+    });
+
+    console.log(`  ✓ Merged ${merges.length} header ranges`);
+
+    // ========================================================================
+    // STEP 1.6: FORMAT REGION NAMES (BACKGROUND COLOR, FONT SIZE, BOLD)
+    // ========================================================================
+    console.log('Formatting region names...');
+
+    const regionNameFormats = [
+      // Federation (E15) - Light blue background
+      { row: 14, col: 4, color: { red: 0.8117647, green: 0.8862745, blue: 0.9529412 } },
+      // Klingon Empire (E31) - Light blue background
+      { row: 30, col: 4, color: { red: 0.8117647, green: 0.8862745, blue: 0.9529412 } },
+      // Romulan Star Empire (Y15) - Light green background
+      { row: 14, col: 24, color: { red: 0.8509804, green: 0.91764706, blue: 0.827451 } },
+      // Dominion (Y31) - Light green background
+      { row: 30, col: 24, color: { red: 0.8509804, green: 0.91764706, blue: 0.827451 } },
+    ];
+
+    const regionFormatRequests = regionNameFormats.map(({ row, col, color }) => ({
+      repeatCell: {
+        range: {
+          sheetId: bracketSheetId,
+          startRowIndex: row,
+          endRowIndex: row + 1,
+          startColumnIndex: col,
+          endColumnIndex: col + 1,
+        },
+        cell: {
+          userEnteredFormat: {
+            backgroundColor: color,
+            textFormat: {
+              fontSize: 24,
+              bold: true,
+              foregroundColor: { red: 0, green: 0, blue: 0 }, // Black text
+            },
+            horizontalAlignment: 'CENTER',
+            verticalAlignment: 'MIDDLE',
+          },
+        },
+        fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment)',
+      },
+    }));
+
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: regionFormatRequests,
+      },
+    });
+
+    console.log(`  ✓ Formatted ${regionNameFormats.length} region name cells`);
 
     // ========================================================================
     // STEP 2: GENERATE AND WRITE BRACKET FORMULAS + CHECKBOX VALUES
