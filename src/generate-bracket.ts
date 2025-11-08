@@ -270,9 +270,9 @@ function generateRound3Region(
     const r2Match2End = r2Match2Start + 1;
 
     if (isRightSide) {
-      // Right side - columns Y and X
+      // Right side - columns Y and AB
       const checkboxCol = 'Y';
-      const nameCol = 'X';
+      const nameCol = 'AB';  // FIX: Was 'X', should be 'AB'
 
       cells.push({
         row: matchStartRow,
@@ -283,7 +283,8 @@ function generateRound3Region(
       cells.push({
         row: matchStartRow,
         col: nameCol,
-        formula: `=IFERROR(VLOOKUP(TRUE,{$AB$${r2Match1Start}:$AB$${r2Match1End},$AA$${r2Match1Start}:$AA$${r2Match1End}},2,FALSE),"")`
+        // FIX: Look at Round 2 right side columns W:AA (was AB:AA)
+        formula: `=IFERROR(VLOOKUP(TRUE,{$W$${r2Match1Start}:$W$${r2Match1End},$AA$${r2Match1Start}:$AA$${r2Match1End}},2,FALSE),"")`
       });
 
       cells.push({
@@ -295,7 +296,8 @@ function generateRound3Region(
       cells.push({
         row: matchStartRow + 1,
         col: nameCol,
-        formula: `=IFERROR(VLOOKUP(TRUE,{$AB$${r2Match2Start}:$AB$${r2Match2End},$AA$${r2Match2Start}:$AA$${r2Match2End}},2,FALSE),"")`
+        // FIX: Look at Round 2 right side columns W:AA (was AB:AA)
+        formula: `=IFERROR(VLOOKUP(TRUE,{$W$${r2Match2Start}:$W$${r2Match2End},$AA$${r2Match2Start}:$AA$${r2Match2End}},2,FALSE),"")`
       });
 
     } else {
