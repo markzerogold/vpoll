@@ -101,39 +101,74 @@ Rank | Participant Name              | Notes                                    
 ### Tab 4: Regions
 
 **Range:** A1:E18 (18 rows including 2 header rows)
-**Purpose:** Show participant distribution across 4 tournament regions
+**Purpose:** Distribute 64 participants across 4 tournament regions in proper seeding order
 
 **Header Structure:**
-- **Row 1 (Generic Headers):** (blank), Region 1, Region 2, Region 3, Region 4 - Column headers remain constant across all tournaments
-- **Row 2 (Rank + Region Names):** "Rank", plus customizable region names per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
-- **Rows 3-18 (Participant Data):** 16 participants distributed across 4 regions
+- **Row 1 (Generic Headers):** "Seed", Region 1, Region 2, Region 3, Region 4 - Column headers remain constant across all tournaments
+- **Row 2 (Seed + Region Names):** "Seed", plus customizable region names per tournament (e.g., "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion")
+- **Rows 3-18 (Seed + Participant Data):** 16 seed values and participants distributed across 4 regions
 
 | Column | Row 1 Header | Row 2 Content | Data Type | Description |
 |--------|--------------|---------------|-----------|-------------|
-| A | (blank) | Rank | Integer (1-16) | "Rank" label in row 2, sequential rank values in rows 3-18 |
+| A | Seed | Seed | Integer | "Seed" label in rows 1-2, seed values in tournament order in rows 3-18 |
 | B | Region 1 | Custom Name | String | Generic "Region 1" label in row 1, customizable name in row 2, participants in rows 3-18 |
 | C | Region 2 | Custom Name | String | Generic "Region 2" label in row 1, customizable name in row 2, participants in rows 3-18 |
 | D | Region 3 | Custom Name | String | Generic "Region 3" label in row 1, customizable name in row 2, participants in rows 3-18 |
 | E | Region 4 | Custom Name | String | Generic "Region 4" label in row 1, customizable name in row 2, participants in rows 3-18 |
 
-**Distribution Pattern:**
-- Rank 1 → Region 1 (Column B, Row 3)
-- Rank 2 → Region 2 (Column C, Row 3)
-- Rank 3 → Region 3 (Column D, Row 3)
-- Rank 4 → Region 4 (Column E, Row 3)
-- Rank 5 → Region 1 (Column B, Row 4)
-- [Pattern repeats: 16 participants per region]
+**Seed Order (ALWAYS FIXED):**
+
+Column A contains seed numbers in this exact order to create proper bracket matchups:
+```
+Row  | Seed | Matchup
+-----|------|------------------------
+3    | 1    | Seed 1 vs Seed 16
+4    | 16   |
+5    | 8    | Seed 8 vs Seed 9
+6    | 9    |
+7    | 5    | Seed 5 vs Seed 12
+8    | 12   |
+9    | 4    | Seed 4 vs Seed 13
+10   | 13   |
+11   | 6    | Seed 6 vs Seed 11
+12   | 11   |
+13   | 3    | Seed 3 vs Seed 14
+14   | 14   |
+15   | 7    | Seed 7 vs Seed 10
+16   | 10   |
+17   | 2    | Seed 2 vs Seed 15
+18   | 15   |
+```
+
+**This seed order creates the standard tournament bracket:**
+- Top seed (1) plays bottom seed (16)
+- Seeds are distributed to avoid top seeds meeting early
+- Pattern matches NCAA tournament, March Madness, etc.
+
+**Participant Distribution Across Regions:**
+
+Participants from the Participants tab are distributed by rank:
+- **Rank 1** → Region 1 Seed 1 (Column B, Row 3)
+- **Rank 2** → Region 2 Seed 1 (Column C, Row 3)
+- **Rank 3** → Region 3 Seed 1 (Column D, Row 3)
+- **Rank 4** → Region 4 Seed 1 (Column E, Row 3)
+- **Rank 5** → Region 1 Seed 5 (Column B, Row 7)
+- **Rank 6** → Region 2 Seed 6 (Column C, Row 11)
+- **Rank 7** → Region 3 Seed 7 (Column D, Row 15)
+- **Rank 8** → Region 4 Seed 8 (Column E, Row 5)
+- ... pattern continues for all 64 participants (16 per region)
 
 **Region Name Customization:**
 - Row 2 contains customizable region names (editable)
 - Region names must be unique
-- Column A in row 2 should remain blank
+- Column A in row 2 contains "Seed" label
 - Typical examples: "ALPHA", "BETA", "GAMMA", "DELTA" OR "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion"
 
 **Formulas:**
 - Cells B3:E18 contain VLOOKUP formulas referencing Participants tab
 - Automatically populate based on Participants tab Rank column
 - Do not manually edit participant names in this tab
+- Example formula (B3): `=VLOOKUP(1, Participants!$A$2:$B$65, 2, FALSE)` pulls Rank 1 participant
 
 **Formatting:**
 - Both header rows (rows 1-2) are frozen for scrolling visibility
@@ -141,14 +176,16 @@ Rank | Participant Name              | Notes                                    
 
 **Example:**
 ```
-         | Region 1   | Region 2        | Region 3             | Region 4
----------|------------|-----------------|----------------------|------------------
-Rank     | Federation | Klingon Empire  | Romulan Star Empire  | Dominion
-1        | Spock      | Picard          | Data                 | Worf
-2        | Janeway    | Sisko           | Kirk                 | Seven of Nine
-3        | Riker      | O'Brien         | Quark                | Odo
+Seed | Federation                  | Klingon Empire              | Romulan Star Empire         | Dominion
+-----|-----------------------------|-----------------------------|-----------------------------|--------------------------
+1    | Spock (TOS/TAS/Films/SNW)   | Jean-Luc Picard (TNG/Films) | Data (TNG/Films)            | Worf (TNG/DS9/Films)
+16   | Kathryn Janeway (VOY)       | Benjamin Sisko (DS9)        | James T. Kirk (TOS)         | Seven of Nine (VOY)
+8    | Julian Bashir (DS9)         | Jadzia Dax (DS9)            | Leonard McCoy (TOS)         | Quark (DS9)
+9    | Deanna Troi (TNG/Films)     | Kira Nerys (DS9)            | The Doctor (VOY)            | Odo (DS9)
 ...
 ```
+
+**Purpose:** This tab serves as the source for Round 1 bracket formulas, which reference these cells to display "(seed) Participant Name" in the bracket.
 
 ### Tab 5: Config
 

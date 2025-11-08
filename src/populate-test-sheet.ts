@@ -333,17 +333,37 @@ async function populateSheet(spreadsheetId: string) {
     // 3. Regions tab
     console.log('Populating Regions tab...');
     const regionsData = [
-      // Row 1: Generic region headers (Column A is blank)
-      ['', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
-      // Row 2: "Rank" header + Customizable region names
-      ['Rank', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion'],
+      // Row 1: Generic headers including "Seed"
+      ['Seed', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
+      // Row 2: "Seed" label + Customizable region names
+      ['Seed', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion'],
     ];
 
+    // Seed order for tournament bracket (ALWAYS FIXED)
+    // Creates matchups: 1v16, 8v9, 5v12, 4v13, 6v11, 3v14, 7v10, 2v15
+    const seedOrder = [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15];
+
     // Distribute 64 participants across 4 regions (16 each)
+    // Participant ranks 1-4 go to first seed position across regions
+    // Participant ranks 5-8 go to their respective seed positions
     for (let i = 0; i < 16; i++) {
-      const row: any[] = [i + 1];
+      const seed = seedOrder[i];
+      const row: any[] = [seed]; // Column A: Seed number
+
+      // For each region, add the appropriate participant
       for (let regionIdx = 0; regionIdx < 4; regionIdx++) {
-        const participantRank = i * 4 + regionIdx + 1;
+        // Calculate which participant rank goes in this region's seed position
+        // Region 1 (idx 0): ranks 1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61
+        // Region 2 (idx 1): ranks 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62
+        // Region 3 (idx 2): ranks 3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63
+        // Region 4 (idx 3): ranks 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64
+
+        // Find which rank should be at this seed position for this region
+        // The pattern: rank = (seed_position * 4) + region_offset + 1
+        // But we need to map seed to seed position (0-15)
+        const seedPosition = i; // Position in seedOrder array
+        const participantRank = (seedPosition * 4) + regionIdx + 1;
+
         const participant = mockParticipants.find(p => p.rank === participantRank);
         row.push(participant ? participant.name : '');
       }
