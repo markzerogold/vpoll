@@ -262,9 +262,11 @@ function generateRound3Region(
     const matchStartRow = startRow + (match * 16); // Each R3 match is 16 rows apart
 
     // Each R3 match pulls from 2 R2 matches
-    const r2Match1Start = startRow + (match * 16);
+    // Round 2 starts at row 4 (top half) or row 36 (bottom half), matches 8 rows apart
+    const r2BaseRow = startRow <= 20 ? 4 : 36;  // FIX: Round 2 base row
+    const r2Match1Start = r2BaseRow + (match * 2 * 8);  // FIX: First of two R2 matches
     const r2Match1End = r2Match1Start + 1;
-    const r2Match2Start = r2Match1Start + 8;
+    const r2Match2Start = r2Match1Start + 8;  // FIX: Second R2 match (8 rows after first)
     const r2Match2End = r2Match2Start + 1;
 
     if (isRightSide) {
