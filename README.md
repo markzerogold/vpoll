@@ -8,8 +8,7 @@ Uses Discord.js v14 native polls + Google Sheets for tournament data management 
 
 ## 🚀 New Session? Start Here
 
-**Current Status:** @PROJECT_STATUS.md
-**Current Tasks:** @ACTION_ITEMS.md
+**Project Status & Tasks:** @PROJECT_STATUS.md
 **Latest Test Report:** @testing/reports/COMPLETE_BRACKET_TEST_SUMMARY.md
 
 ---
@@ -131,23 +130,6 @@ https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCa
 **Get Template in Discord:** `/tournament template`
 
 **Detailed Setup:** @docs/quick-start/setup.md
-
----
-
-## 🎯 Current Development Phase
-
-**Phase:** Bracket Formatting Complete (November 2025)
-
-**Status:** Ready to begin MVP Discord bot development
-
-**Next Steps:**
-1. Implement `/tournament create` command (validate and load Google Sheets)
-2. Implement `/tournament start` command (launch Round 1 polls)
-3. Implement poll result tracking and bracket updates
-
-**Full Status:** @PROJECT_STATUS.md
-
-**Active Tasks:** @ACTION_ITEMS.md
 
 ---
 

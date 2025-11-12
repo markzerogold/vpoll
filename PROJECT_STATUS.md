@@ -6,29 +6,29 @@
 
 ---
 
-## Completed Work
+## Completed Work ✅
 
-### 1. Formula-Driven Bracket Specification ✅
-- Defined complete bracket behavior (BRACKET_POPULATION_FLOW.md)
+### 1. Formula-Driven Bracket Specification
+- Defined complete bracket behavior (requirements/BRACKET_POPULATION_FLOW.md)
 - Participants tab → Regions tab → Round 1 (all via formulas)
 - Seed order: 1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15 (FIXED)
 - vPoll ONLY writes TRUE/FALSE to checkboxes
 - Round 2-6 use VLOOKUP(TRUE,...) to auto-display winners
 
-### 2. Regions Tab Structure ✅
+### 2. Regions Tab Structure
 - Column A: "Seed" (not "Rank") with correct order
 - Participant distribution across 4 regions (16 each)
 - VLOOKUP formulas pull from Participants tab
 - Updated documentation (docs/requirements/07-google-sheets-spec.md)
 
-### 3. Round 1 Bracket Formulas ✅
+### 3. Round 1 Bracket Formulas
 - Format: `="(" & Regions!$A$3 & ") " & Regions!$B$3`
 - Displays: `(1) Spock (TOS/TAS/Films/SNW)`
 - Verified working for all 64 participants
 
-### 4. Complete Bracket Formatting ✅ (NEW - 2025-11-12)
+### 4. Complete Bracket Formatting (2025-11-12)
 
-**Script Created:** `src/complete-bracket-test.ts`
+**Script Created:** `testing/scripts/active/complete-bracket-test.ts`
 **Duration:** 41.7 seconds
 **Command:** `npm run complete-bracket-test <sheet-id>`
 
@@ -50,35 +50,157 @@
 - ✅ Text wrapping disabled
 
 **Documentation:**
-- COMPLETE_BRACKET_TEST_SUMMARY.md - Full details of test and fixes
+- testing/reports/COMPLETE_BRACKET_TEST_SUMMARY.md - Full details of test and fixes
 
-### 5. Winner Copy Code Removed ✅
+### 5. Winner Copy Code Removed
 - Removed 114 lines of problematic code (simulate-tournament.ts lines 488-602)
 - Code was overwriting region names and formulas
 - Bracket is now purely formula-driven
 
-### 6. Round 3 Formula Fixes ✅
+### 6. Round 3 Formula Fixes
 - Left side (ALPHA/BETA): Fixed to reference correct Round 2 rows
 - Right side (GAMMA/DELTA): Fixed column (AB not X) and VLOOKUP source (W:AA)
+
+### 7. Sheet Population (2025-11-08)
+- ✅ Formula-driven bracket specification
+- ✅ Regions tab structure with correct seed order
+- ✅ Round 1-6 bracket formulas
+- ✅ Cell merging and region name formatting
+- ✅ Removed problematic winner copy code
+
+---
+
+## Active Tasks
+
+### High Priority - MVP Development (Critical)
+
+**Status:** ⚠️ Not Started
+**Priority:** Critical for core functionality
+
+#### Tournament Commands
+- [ ] `/tournament create <sheet-url>` - Parse URL, validate, load tournament
+- [ ] `/tournament start` - Display summary, confirm, launch Round 1 polls
+- [ ] `/tournament next-round` - Manual round advancement
+
+#### Poll Management
+- [ ] Create `src/services/poll.ts`
+- [ ] Implement Discord native poll creation
+- [ ] Implement poll batching logic
+- [ ] Implement poll monitoring (60-second polling, no Discord event exists)
+
+#### Result Tracking
+- [ ] Implement automatic result processing
+- [ ] Update Bracket tab TRUE/FALSE
+- [ ] Append to Results tab (16 columns)
+- [ ] Implement tiebreaker dice roll
+
+#### Winner Announcement
+- [ ] Detect Round 6 completion
+- [ ] Post winner announcement with formatting
+
+**See:** docs/implementation/todo-phase1.md for complete checklist
+
+### Medium Priority - Testing & Verification
+
+**Status:** Partially Complete
+
+#### Bracket Formula Testing
+- [ ] Investigate why Round 3 GAMMA/DELTA formulas show empty
+- [ ] Fix Round 3 right side VLOOKUP references
+- [ ] Verify fix with simulation
+
+#### Full Tournament Simulation
+- [ ] Run complete 64-participant tournament (all 6 rounds)
+- [ ] Verify bracket formulas work through Championship
+- [ ] Verify Results tab population
+- [ ] Verify winner announcement logic
+
+#### Edge Case Testing
+- [ ] Test tiebreaker dice rolls
+- [ ] Test with non-standard participant names (special characters)
+- [ ] Test with very long participant names
+- [ ] Test poll batching variations
+
+### Medium Priority - Code Quality
+
+**Status:** Partially Complete
+
+#### Service Account Validation
+- [ ] Create `src/services/validation.ts`
+- [ ] Validate tab structure (6 required tabs)
+- [ ] Validate Participants tab (64 unique, ranks 1-64)
+- [ ] Validate Config tab (required settings)
+- [ ] Check service account permissions
+- [ ] Check Discord channel access
+
+#### Results Tab Writing
+- [ ] Implement 16-column result row writing
+- [ ] Test with actual poll results
+- [ ] Verify timestamp formatting
+
+#### Bracket Cell Mapping
+- [ ] Document named range approach for TRUE/FALSE cells
+- [ ] Implement match ID → cell location mapping
+- [ ] Test with all 6 rounds
+
+### Low Priority - Documentation
+
+**Status:** Not Started
+
+#### Documentation Cleanup
+- [ ] Consolidate formatting docs
+- [ ] Archive old formatting fix summaries
+- [ ] Keep only current/relevant docs
+- [ ] Create single source of truth for formatting process
+
+#### Update Quick Start Guide
+- [ ] Update docs/quick-start/setup.md with complete-bracket-test
+- [ ] Update common-tasks.md with new scripts
+- [ ] Remove references to deprecated scripts
+
+#### API Documentation
+- [ ] Complete Discord poll API docs
+- [ ] Complete Google Sheets API patterns
+- [ ] Add code examples
 
 ---
 
 ## Known Issues
 
-### Bracket Formatting Issues (Deferred)
+### 1. Bracket Formatting Issues (Deferred)
 
+**Date Identified:** 2025-11-12
 **Status:** ⚠️ To Fix Later
 **Priority:** Medium
 
-The new `complete-bracket-test.ts` fixed major issues but introduced new ones:
-1. Championship cell formula verification shows `undefined` (may be merged cell reading issue)
-2. Potential border alignment issues with row offsets
-3. Column auto-sizing applied twice (consolidation needed)
-4. Other issues to be identified via manual inspection
+The new `complete-bracket-test.ts` script fixed several formatting issues but introduced new problems:
 
-**See:** ACTION_ITEMS.md for detailed tracking
+#### Championship Cell Issues
+- Formula verification shows `undefined` (may be due to merged cell reading)
+- Need to verify formula is actually working in the sheet
+- May need to adjust how merged cells are read/written
 
-### Round 3 Right Side (Outstanding from Previous Work)
+#### Potential Border Conflicts
+- Script applies borders from example sheet with row offset
+- May not match current test sheet structure exactly
+- Need to verify all borders are in correct locations
+
+#### Column Auto-Sizing
+- Auto-resize applied twice (once in populate, once in borders)
+- May cause inconsistent column widths
+- Should consolidate to single auto-resize pass
+
+#### Unknown Additional Issues
+- Need manual visual inspection of generated sheet
+- Document specific issues when identified
+
+**Action Required:**
+- [ ] Manual visual inspection of test sheet
+- [ ] Document specific new issues discovered
+- [ ] Create targeted fix scripts for each issue
+- [ ] Update complete-bracket-test.ts to prevent issues
+
+### 2. Round 3 Right Side (Outstanding from Previous Work)
 
 **Status:** ⚠️ Needs Investigation
 **Priority:** Medium
@@ -87,7 +209,7 @@ The new `complete-bracket-test.ts` fixed major issues but introduced new ones:
 - Left side Round 3 works correctly
 - Needs investigation of VLOOKUP formula references
 
-### Rounds 4-6 Not Fully Tested
+### 3. Rounds 4-6 Not Fully Tested
 
 **Status:** ❌ Not Tested
 **Priority:** High
@@ -128,15 +250,32 @@ The new `complete-bracket-test.ts` fixed major issues but introduced new ones:
 
 ---
 
+## Deferred (Post-MVP)
+
+See docs/reference/FUTURE.md for complete list of deferred features:
+- Multi-tournament support
+- Match preview posts
+- Participant info lookup command
+- Bracket image/PDF generation
+- Role-based voting enforcement
+- Announcements channel
+- Advanced statistics and analytics
+- Historical tournament tracking
+- And more...
+
+---
+
 ## Files Created/Modified (Recent)
 
 ### New Scripts (2025-11-12)
-- `src/complete-bracket-test.ts` - Comprehensive formatting test (REPLACES comprehensive-format-test.ts)
-- `ACTION_ITEMS.md` - Track all outstanding issues and todos
-- `COMPLETE_BRACKET_TEST_SUMMARY.md` - Full documentation of formatting fixes
+- `testing/scripts/active/complete-bracket-test.ts` - Comprehensive formatting test (REPLACES comprehensive-format-test.ts)
+- `testing/reports/COMPLETE_BRACKET_TEST_SUMMARY.md` - Full documentation of formatting fixes
 
 ### Modified Files (2025-11-12)
 - `package.json` - Added `complete-bracket-test` script
+- `requirements/REQUIREMENTS.md` - Rewritten as comprehensive index
+- `README.md` - Updated structure to show requirements/ folder
+- `testing/README.md` - Updated reports section
 
 ### Core Bracket Generation (Previous)
 - `src/generate-bracket.ts` - Fixed Round 3 right side formulas
@@ -154,11 +293,11 @@ The new `complete-bracket-test.ts` fixed major issues but introduced new ones:
 - `src/check-round3-formulas.ts` - Verify Round 3 VLOOKUP formulas
 
 ### Documentation (Previous)
-- `BRACKET_POPULATION_FLOW.md` - Complete bracket specification
+- `requirements/BRACKET_POPULATION_FLOW.md` - Complete bracket specification
 - `FORMATTING_FIX_SUMMARY.md` - Details of formatting fixes (Nov 10)
 - `FORMATTING_FIX_SUMMARY_2025-11-10.md` - Nov 10 specific fixes
 - `POPULATION_REPORT.md` - Latest population verification
-- `WINNER_COPY_REMOVAL.md` - Why winner copy code was removed
+- `requirements/WINNER_COPY_REMOVAL.md` - Why winner copy code was removed
 - `ROUND3_FORMULA_FIX.md` - Round 3 formula fix details
 - Updated `docs/requirements/07-google-sheets-spec.md` - Regions tab spec
 
@@ -166,49 +305,22 @@ The new `complete-bracket-test.ts` fixed major issues but introduced new ones:
 
 ## Next Steps
 
-### Immediate (Critical Priority)
+### Immediate Priority: Begin MVP Development
 
-**Goal:** Start MVP Development
+The bracket formatting is complete (with minor deferred issues). The project is ready to start Discord bot implementation.
 
-1. **Begin Discord Bot Implementation**
-   - Create `src/services/validation.ts` for sheet validation
-   - Implement `/tournament create <sheet-url>` command
-   - Implement `/tournament start` command
-   - Create `src/services/poll.ts` for Discord poll management
+**Critical Path:**
+1. Implement `/tournament create` and validation (see Active Tasks above)
+2. Implement `/tournament start` and poll creation
+3. Implement result tracking and bracket updates
+4. Test full tournament flow
 
-   **See:** docs/implementation/todo-phase1.md for complete checklist
+**Alternative Path (Testing First):**
+1. Run full tournament simulation to verify Rounds 4-6
+2. Fix any issues discovered
+3. Then begin bot implementation
 
-2. **Test Full Tournament Simulation**
-   - Run complete 64-participant tournament through all 6 rounds
-   - Verify bracket formulas work through Championship
-   - Document any issues discovered
-   - Fix Round 3 right side if blocking
-
-### Short Term (High Priority)
-
-3. **Implement Result Tracking**
-   - Automatic poll result processing
-   - Bracket tab TRUE/FALSE updates
-   - Results tab row writing (16 columns)
-   - Tiebreaker dice roll logic
-
-4. **Implement Winner Announcement**
-   - Detect Round 6 completion
-   - Generate winner announcement
-   - Post to Discord with formatting
-
-### Medium Term (Medium Priority)
-
-5. **Fix Bracket Formatting Issues**
-   - Manual inspection of test sheet
-   - Document specific new issues
-   - Create targeted fix scripts
-   - Update complete-bracket-test.ts
-
-6. **Complete Tournament Testing**
-   - Edge case testing (ties, special characters, long names)
-   - Poll batching variations
-   - Error handling scenarios
+**Recommended:** Start bot implementation. Testing can happen in parallel as features are developed.
 
 ---
 
@@ -276,6 +388,11 @@ npm run check-results 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 - ✅ **Single script for all formatting** - complete-bracket-test.ts handles everything
 - ✅ **Populate includes basic formatting** - Merging and region names built-in
 - ✅ **Borders applied from example sheet** - Copied with row offset correction
+
+### Project Organization
+- ✅ **Separate requirements folders** - High-level (requirements/) vs detailed (docs/requirements/)
+- ✅ **Test reports in testing/reports/** - Historical analysis and verification
+- ✅ **Single status file** - PROJECT_STATUS.md merged with ACTION_ITEMS.md
 
 ---
 
