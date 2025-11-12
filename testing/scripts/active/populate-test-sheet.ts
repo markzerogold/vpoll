@@ -512,42 +512,8 @@ async function populateSheet(spreadsheetId: string) {
 
     console.log(`  ✓ Formatted ${regionNameFormats.length} region name cells`);
 
-    // ========================================================================
-    // STEP 1.7: FORMAT CHAMPIONSHIP CELL (BACKGROUND COLOR, FONT, ALIGNMENT)
-    // ========================================================================
-    console.log('Formatting Championship cell...');
-
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [{
-          repeatCell: {
-            range: {
-              sheetId: bracketSheetId,
-              startRowIndex: 17, // Row 18 (0-indexed)
-              endRowIndex: 18,
-              startColumnIndex: 14, // Column O
-              endColumnIndex: 15,
-            },
-            cell: {
-              userEnteredFormat: {
-                backgroundColor: { red: 1, green: 0.949, blue: 0.8 }, // Light gold
-                textFormat: {
-                  fontSize: 14,
-                  bold: true,
-                  foregroundColor: { red: 0, green: 0, blue: 0 }, // Black text
-                },
-                horizontalAlignment: 'CENTER',
-                verticalAlignment: 'MIDDLE',
-              },
-            },
-            fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment)',
-          },
-        }],
-      },
-    });
-
-    console.log('  ✓ Formatted Championship cell (O18)');
+    // Note: Championship cell formatting is handled by complete-bracket-test.ts
+    // (merged O17:O18 with formula, 16pt bold, light gold background)
 
     // ========================================================================
     // STEP 2: GENERATE AND WRITE BRACKET FORMULAS + CHECKBOX VALUES
@@ -843,17 +809,8 @@ async function populateSheet(spreadsheetId: string) {
               },
             },
           },
-          // Auto-resize Bracket tab columns (A-AE = columns 0-30)
-          {
-            autoResizeDimensions: {
-              dimensions: {
-                sheetId: sheetIdMap['Bracket'],
-                dimension: 'COLUMNS',
-                startIndex: 0,
-                endIndex: 31, // Include all bracket columns through AE
-              },
-            },
-          },
+          // Note: Bracket tab column auto-sizing is handled by fix-bracket-borders.ts
+          // (applies after borders are set for correct sizing)
         ],
       },
     });
