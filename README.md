@@ -23,6 +23,11 @@ vpoll/
 │   ├── events/                  # Discord event handlers
 │   └── services/                # Business logic (sheets, polls, etc.)
 │
+├── requirements/                # High-level requirement documents
+│   ├── REQUIREMENTS.md          # Index to all requirements
+│   ├── BRACKET_POPULATION_FLOW.md  # Bracket behavior specification
+│   └── WINNER_COPY_REMOVAL.md   # Formula-driven architecture decision
+│
 ├── testing/                     # All testing materials
 │   ├── scripts/active/          # Current testing scripts (9 files)
 │   ├── logs/                    # Test execution logs (not committed)
@@ -31,7 +36,7 @@ vpoll/
 │
 ├── docs/                        # Complete project documentation
 │   ├── quick-start/             # Setup, commands, common tasks
-│   ├── requirements/            # Product requirements (9 sections)
+│   ├── requirements/            # Detailed product requirements (9 sections)
 │   ├── implementation/          # MVP task lists
 │   ├── technical/               # Architecture, specs, API docs
 │   └── reference/               # Sheets structure, future features
@@ -94,7 +99,8 @@ npm run format                   # Format with Prettier
 - Dev Workflows: @docs/quick-start/common-tasks.md
 
 **Requirements & Planning:**
-- Requirements Index: @docs/requirements/README.md
+- High-Level Requirements: @requirements/REQUIREMENTS.md
+- Detailed Requirements: @docs/requirements/README.md
 - MVP Tasks: @docs/implementation/todo-phase1.md
 - Future Features: @docs/reference/FUTURE.md
 
