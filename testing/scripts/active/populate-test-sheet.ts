@@ -100,7 +100,7 @@ const tournamentConfig = [
 ];
 
 async function populateSheet(spreadsheetId: string) {
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
 
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,

@@ -506,7 +506,7 @@ async function processRound(
  * Main tournament simulation
  */
 async function simulateTournament() {
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
 
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,

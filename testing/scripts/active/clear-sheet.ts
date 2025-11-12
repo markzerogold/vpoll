@@ -4,7 +4,7 @@ import * as path from 'path';
 const SHEET_ID = '1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w';
 
 async function clearSheet() {
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],

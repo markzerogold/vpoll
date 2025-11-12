@@ -34,7 +34,7 @@ function log(message: string) {
 async function clearSheet(spreadsheetId: string) {
   log('\n🧹 STEP 1: Clearing sheet completely...');
 
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -107,7 +107,7 @@ async function runScript(scriptName: string, args: string = '') {
 async function freezeAndBoldBracketRow1(spreadsheetId: string) {
   log('\n❄️  STEP 4: Freezing and bolding Bracket row 1...');
 
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -184,7 +184,7 @@ async function freezeAndBoldBracketRow1(spreadsheetId: string) {
 async function updateChampionshipCell(spreadsheetId: string) {
   log('\n🏆 STEP 5: Updating Championship cell with formula...');
 
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -280,7 +280,7 @@ async function updateChampionshipCell(spreadsheetId: string) {
 async function verifyFormatting(spreadsheetId: string) {
   log('\n🔍 STEP 6: Verifying formatting...');
 
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],

@@ -1,4 +1,4 @@
-import { SheetsService } from './services/sheets';
+import { SheetsService } from '../../../src/services/sheets';
 
 /**
  * Test script to read the vPoll tournament template

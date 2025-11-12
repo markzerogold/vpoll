@@ -25,6 +25,7 @@ yarn-error.log*
 
 # Testing
 coverage/
+testing/logs/
 
 # Google API Credentials
 keys/

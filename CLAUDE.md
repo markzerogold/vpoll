@@ -1,115 +1,99 @@
-# CLAUDE.md
+# vPoll - Claude Code Instructions
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**Load documentation on-demand using `@filename.md` syntax to minimize context usage**
 
 ## Project Overview
 
-vPoll is a Discord bot for running tournament-style voting competitions (e.g., "Best Star Trek Character") using:
-- **Discord.js v14** for bot functionality and native Discord polls
-- **Google Sheets API v4** for tournament data management and results tracking
-- **64-participant single elimination** tournament structure with 4 customizable regions
+vPoll is a Discord bot for running 64-participant single elimination tournament voting using Discord.js v14 polls and Google Sheets for data management.
 
-## 📚 Quick Access Documentation
+**Current Phase:** Bracket formatting complete (Nov 2025) - Ready to begin MVP Discord bot development
 
-Load on-demand using `@` syntax for efficient context management:
+## 📋 Where to Start
 
-### Getting Started
-- **5-Minute Setup:** @docs/quick-start/setup.md
-- **All Bot Commands:** @docs/quick-start/commands.md
-- **Dev Workflows:** @docs/quick-start/common-tasks.md
+**New Session?** → Check @PROJECT_STATUS.md first
+
+**Current Tasks:** @ACTION_ITEMS.md
+
+**Project Navigation:** @README.md
+
+## 📚 On-Demand Documentation
+
+### Quick Start (Load when needed)
+- **Setup Guide:** @docs/quick-start/setup.md
+- **Bot Commands:** @docs/quick-start/commands.md
+- **Common Tasks:** @docs/quick-start/common-tasks.md
 
 ### Requirements & Planning
-- **Requirements Index:** @docs/requirements/README.md (85% context savings vs full files)
-- **Current Tasks:** @docs/implementation/todo-phase1.md (Core Tournament Flow)
+- **Requirements Index:** @docs/requirements/README.md
+- **MVP Tasks:** @docs/implementation/todo-phase1.md
 - **Future Features:** @docs/reference/FUTURE.md
 
-### Technical Documentation
-- **Architecture Overview:** @docs/technical/architecture/overview.md
-- **Specifications Index:** @docs/technical/specifications/README.md
-- **Google Sheets Tabs:** @docs/reference/google-sheets/README.md
-- **API References:** @docs/technical/api/README.md
+### Technical Specs
+- **Architecture:** @docs/technical/architecture/overview.md
+- **Google Sheets:** @docs/reference/google-sheets/README.md
+- **API Reference:** @docs/technical/api/README.md
 
-### Testing & Reference
-- **Test Sheet Generation:** @docs/reference/TEST_SHEET_GENERATION.md
-- **Discord/Sheets References:** @docs/reference/REFERENCES.md
+### Testing
+- **Testing Scripts:** @testing/README.md
+- **Test Generation:** @docs/reference/TEST_SHEET_GENERATION.md
 
-## Google Sheets Integration
+### Archived Files
+- **Historical Docs:** @backup/README.md
 
-**Service Account (Required):**
+## 🔑 Essential Info
+
+**Google Service Account:**
 - Email: `vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com`
-- Credentials: `keys/vpoll-key.json` (not committed, in .gitignore)
-- Scope: `https://www.googleapis.com/auth/spreadsheets`
-- Permission: **Editor** access required on tournament sheets
+- Key: `keys/vpoll-key.json` (not committed)
+- Requires **Editor** permission on tournament sheets
 
-**Template Structure:** 5 tabs (Participants, Regions, Config, Bracket, Results)
-- See @docs/reference/google-sheets/README.md for complete tab specifications
-- Master template: https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit
+**Master Template:** https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit
 
-## Development Commands
+## ⚡ Quick Commands
 
-### Setup
 ```bash
-npm install                 # Install dependencies
-cp .env.example .env        # Create environment file (then edit with credentials)
+# Development
+npm install                      # Install dependencies
+npm run build                    # Compile TypeScript
+npm run deploy-commands          # Deploy slash commands to Discord
+npm run dev                      # Run with hot reload
+
+# Testing
+npm run test-sheets              # Test Google Sheets API
+npm run complete-bracket-test <sheet-id>  # Full bracket test
+
+# Code Quality
+npm run lint                     # Check code style
+npm run format                   # Format code
 ```
 
-### Running the Bot
-```bash
-npm run build               # Compile TypeScript to JavaScript (required before first run)
-npm run deploy-commands     # Deploy slash commands to Discord (required after adding/changing commands)
-npm run test-sheets         # Test Google Sheets API connection (reads template structure)
-npm run dev                 # Run in development mode with hot reload
-npm start                   # Run in production mode
-```
-
-### Code Quality
-```bash
-npm run lint                # Check code style with ESLint
-npm run lint:fix            # Fix linting issues automatically
-npm run format              # Format code with Prettier
-```
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-src/
-├── commands/           # Slash command definitions (each file exports data + execute)
-│   ├── ping.ts        # Example: simple ping command
-│   └── poll.ts        # Create polls with buttons for voting
-├── events/            # Discord event handlers
-│   └── ready.ts       # Fires when bot successfully connects
-├── utils/             # Helper functions and utilities
-├── config.ts          # Environment variable loading and validation
-├── index.ts           # Main bot entry point - loads commands/events
-└── deploy-commands.ts # Script to register commands with Discord API
+vpoll/
+├── src/                         # Core bot code
+├── testing/                     # Test scripts, logs, reports (@testing/README.md)
+├── docs/                        # Complete documentation (@docs/)
+├── backup/                      # Archived files (@backup/README.md)
+├── keys/                        # Service account credentials (not committed)
+└── [root files]                 # Status, actions, READMEs
 ```
 
-## Architecture Patterns
+**Full navigation:** See @README.md for complete file index
 
-**Command System:** Slash commands using `SlashCommandBuilder`
-- Files in `src/commands/` export `data` (builder) and `execute` (handler)
-- Auto-loaded at startup, registered via `npm run deploy-commands`
+## 🏗️ Architecture
 
-**Event System:** Discord event handlers
-- Files in `src/events/` export `name`, `once`, and `execute`
-- Auto-loaded and attached to bot client
+- **Commands:** `src/commands/` - Slash command files (`data` + `execute` exports)
+- **Events:** `src/events/` - Discord event handlers
+- **Services:** `src/services/` - Business logic (sheets, tournament, polls)
 
-**Bot Client:** Extended Discord.js Client with commands collection
-- Uses `GatewayIntentBits.Guilds` intent
-- Central interaction router in `src/index.ts`
+**Details:** @docs/technical/architecture/overview.md
 
-See @docs/technical/architecture/overview.md for complete architecture details.
+## 🔐 Environment Setup
 
-## Adding New Commands
-
-1. Create `src/commands/mycommand.ts` with `data` and `execute` exports
-2. `npm run build` → `npm run deploy-commands` → restart bot
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and configure:
-- `DISCORD_TOKEN` - Bot token from Developer Portal
+Required `.env` variables:
+- `DISCORD_TOKEN` - Bot token
 - `CLIENT_ID` - Application ID
-- `GUILD_ID` - (Optional) Server ID for faster dev deployment
+- `GUILD_ID` - (Optional) Server ID for dev
 
-**Required Bot Permissions:** Send Messages, Embed Links, Use Slash Commands
+**Setup guide:** @docs/quick-start/setup.md

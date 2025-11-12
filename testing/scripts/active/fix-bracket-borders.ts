@@ -311,7 +311,7 @@ function parseCellRef(ref: string): { row: number; col: number } {
  * Main function
  */
 async function main() {
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
 
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,

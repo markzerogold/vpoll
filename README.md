@@ -1,156 +1,188 @@
 # vPoll
 
-A Discord bot for creating and managing polls in your Discord servers.
+**Discord bot for running 64-participant single elimination tournament voting**
 
-## Setup
+Uses Discord.js v14 native polls + Google Sheets for tournament data management and bracket visualization.
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+---
 
-2. **Configure environment variables:**
-   - Copy `.env.example` to `.env`
-   - Fill in your Discord bot credentials:
-     - `DISCORD_TOKEN`: Get from [Discord Developer Portal](https://discord.com/developers/applications)
-     - `CLIENT_ID`: Your application's client ID
-     - `GUILD_ID`: (Optional) Your server ID for faster command deployment during development
+## 🚀 New Session? Start Here
 
-3. **Build the project:**
-   ```bash
-   npm run build
-   ```
+**Current Status:** @PROJECT_STATUS.md
+**Current Tasks:** @ACTION_ITEMS.md
+**Latest Summary:** @COMPLETE_BRACKET_TEST_SUMMARY.md
 
-4. **Deploy commands to Discord:**
-   ```bash
-   npm run deploy-commands
-   ```
+---
 
-5. **Start the bot:**
-   ```bash
-   npm start
-   ```
-
-   For development with auto-reload:
-   ```bash
-   npm run dev
-   ```
-
-## Commands
-
-- `/ping` - Test command to check if the bot is responding
-- `/poll` - Create a poll with custom question and options
-- `/tournament template` - Get the master template spreadsheet to create tournaments
-
-## Tournament Setup
-
-vPoll uses Google Sheets for tournament management. To create a tournament:
-
-1. **Get the master template:**
-   - Run `/tournament template` in Discord, OR
-   - Use this link: https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit
-
-2. **Make a copy:**
-   - Open the template and click **File → Make a copy**
-   - Rename your copy (e.g., "Star Trek Character Battle 2025")
-
-3. **Fill in your tournament data:**
-   - Participants tab: 64 participants with ranks, names, and optional notes/links
-   - Config tab: Tournament settings (name, poll length, etc.)
-   - Regions tab: Customize your 4 region names
-
-4. **Share with service account:**
-   - Share your copy with: `vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com`
-   - Give **Editor** permission (required for vPoll to update results)
-
-5. **Create tournament in Discord:**
-   - Run `/tournament create <your-sheet-url>` (coming soon)
-
-For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.md) or [REQUIREMENTS.md](REQUIREMENTS.md).
-
-## Development
-
-### Build and Run
-- `npm run dev` - Run in development mode with hot reload
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm run start` - Run compiled bot in production mode
-
-### Code Quality
-- `npm run lint` - Check code style
-- `npm run lint:fix` - Fix linting issues automatically
-- `npm run format` - Format code with Prettier
-
-### Testing and Utilities
-- `npm run test-sheets` - Test Google Sheets API connection
-- `npm run populate-test-sheet <sheet-id>` - Populate a blank sheet with test tournament data
-- `npm run complete-bracket-test <sheet-id>` - **RECOMMENDED**: Complete bracket generation with all formatting (clear, populate, borders, freeze row 1, championship cell)
-
-### Tournament Simulation and Testing
-- `npm run simulate-tournament <sheet-id>` - Simulate complete tournament with random winners (all 6 rounds)
-- `npm run check-results <sheet-id>` - View all results written to Results tab
-- `npm run check-bracket <sheet-id>` - Verify bracket checkbox updates and winner progression
-
-**Purpose:** Test bracket formulas, TRUE/FALSE advancement logic, and Results tab population.
-
-**Complete Bracket Test (NEW - 2025-11-12):**
-```bash
-npm run complete-bracket-test <sheet-id>
-```
-
-This script performs ALL necessary formatting steps in correct order:
-1. Clear sheet completely (all 6 tabs)
-2. Populate test data (136 formulas, 64 participants, 126 checkboxes)
-3. Apply comprehensive borders (461 borders from example sheet)
-4. Freeze and bold Bracket row 1
-5. Update Championship cell with formula: `=Config!B3&" Champion"` (merged O17:O18)
-6. Verify all formatting
-
-**Duration:** ~42 seconds | **Status:** Fully formatted and ready for use
-
-See `COMPLETE_BRACKET_TEST_SUMMARY.md` for full details.
-
-**Simulation Notes:**
-- Simulation now clears Results tab before each run (fresh data starting at row 2)
-- Fixed Round 2 cell mapping to read from rows 4, 5, 12, 13, 20, 21, 28, 29
-- Added Round 2→3 winner copying to rows 8, 16, 24, 32 (for Round 3 formulas)
-- Fixed Round 3 checkbox column from G to D (matching formula expectations)
-- Added Round 3→4 winner copying logic
-
-See `SIMULATION_FULL_REPORT.md` for detailed analysis of simulation behavior.
-
-### Bracket Formatting Scripts
-- `npm run apply-styling` - Apply comprehensive bracket styling (colors, merges, text)
-- `npm run enhance-formatting` - Apply formatting enhancements (frozen rows, formulas, auto-sizing)
-- `npm run update-region-colors` - Update region cell colors to custom scheme
-- `npm run copy-test-borders` - Read and preserve borders from test sheet
-- `npm run update-example-borders` - Update example sheet borders from test sheet
-- `npm run fix-all-borders` - Copy all borders from example sheet to test sheet
-
-**Note:** Border scripts have known issues. Manual border correction is recommended. See `BORDER_ISSUE_TODO.md`.
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 vpoll/
-├── src/
-│   ├── commands/       # Slash command definitions
-│   ├── events/         # Discord event handlers
-│   ├── utils/          # Helper functions
-│   ├── config.ts       # Configuration and environment variables
-│   ├── index.ts        # Bot entry point
-│   └── deploy-commands.ts  # Command deployment script
-├── dist/               # Compiled JavaScript (generated)
-└── package.json
+├── src/                         # Core Discord bot code
+│   ├── commands/                # Slash command definitions
+│   ├── events/                  # Discord event handlers
+│   └── services/                # Business logic (sheets, polls, etc.)
+│
+├── testing/                     # All testing materials
+│   ├── scripts/active/          # Current testing scripts (9 files)
+│   ├── logs/                    # Test execution logs (not committed)
+│   └── reports/                 # Simulation and analysis reports
+│   └── README.md                # Testing documentation
+│
+├── docs/                        # Complete project documentation
+│   ├── quick-start/             # Setup, commands, common tasks
+│   ├── requirements/            # Product requirements (9 sections)
+│   ├── implementation/          # MVP task lists
+│   ├── technical/               # Architecture, specs, API docs
+│   └── reference/               # Sheets structure, future features
+│
+├── backup/                      # Archived historical files
+│   ├── historical-docs/         # Old markdown files (20 files)
+│   └── deprecated-scripts/      # Old testing scripts (60 files)
+│   └── README.md                # Why files are archived
+│
+├── keys/                        # Google service account credentials
+│   └── vpoll-key.json           # (Not committed to git)
+│
+└── [Root Files]                 # Status, actions, configs
+    ├── PROJECT_STATUS.md        # Current development phase
+    ├── ACTION_ITEMS.md          # Active and deferred tasks
+    ├── COMPLETE_BRACKET_TEST_SUMMARY.md  # Latest test results
+    ├── CLAUDE.md                # Instructions for Claude Code
+    └── README.md                # This file
 ```
 
-## Creating New Commands
+**Detailed Navigation:** See each folder's README.md for complete index
 
-1. Create a new file in `src/commands/` (e.g., `mycommand.ts`)
-2. Export an object with `data` (SlashCommandBuilder) and `execute` function
-3. Build the project: `npm run build`
-4. Deploy commands: `npm run deploy-commands`
-5. Restart the bot
+---
 
-## License
+## ⚡ Quick Commands
+
+### Development
+```bash
+npm install                      # Install dependencies
+npm run build                    # Compile TypeScript
+npm run deploy-commands          # Deploy slash commands to Discord
+npm run dev                      # Run with hot reload
+npm start                        # Run in production
+```
+
+### Testing
+```bash
+npm run test-sheets              # Test Google Sheets API connection
+npm run complete-bracket-test <sheet-id>  # Full bracket generation (~42s)
+npm run simulate-tournament <sheet-id>    # Simulate 6-round tournament
+npm run check-results <sheet-id>          # View Results tab
+```
+
+**All testing scripts:** See @testing/README.md
+
+### Code Quality
+```bash
+npm run lint                     # Check code style
+npm run lint:fix                 # Auto-fix issues
+npm run format                   # Format with Prettier
+```
+
+---
+
+## 📚 Documentation
+
+**Quick Start:**
+- 5-Minute Setup: @docs/quick-start/setup.md
+- Bot Commands: @docs/quick-start/commands.md
+- Dev Workflows: @docs/quick-start/common-tasks.md
+
+**Requirements & Planning:**
+- Requirements Index: @docs/requirements/README.md
+- MVP Tasks: @docs/implementation/todo-phase1.md
+- Future Features: @docs/reference/FUTURE.md
+
+**Technical:**
+- Architecture: @docs/technical/architecture/overview.md
+- Google Sheets Spec: @docs/reference/google-sheets/README.md
+- API References: @docs/technical/api/README.md
+
+**Testing:**
+- Testing Guide: @testing/README.md
+- Test Sheet Setup: @docs/reference/TEST_SHEET_GENERATION.md
+
+**Archived:**
+- Historical Files: @backup/README.md
+
+---
+
+## 🔑 Google Sheets Integration
+
+**Service Account (Required):**
+- Email: `vpoll-sheets-access@vpoll-475821.iam.gserviceaccount.com`
+- Key File: `keys/vpoll-key.json` (not committed)
+- Required Permission: **Editor** on tournament sheets
+
+**Master Template:**
+https://docs.google.com/spreadsheets/d/1Jm2oRCvsHN1ijeos6Bi1wqzN44C2eMJAO3KvkmCaCmo/edit
+
+**Get Template in Discord:** `/tournament template`
+
+**Detailed Setup:** @docs/quick-start/setup.md
+
+---
+
+## 🎯 Current Development Phase
+
+**Phase:** Bracket Formatting Complete (November 2025)
+
+**Status:** Ready to begin MVP Discord bot development
+
+**Next Steps:**
+1. Implement `/tournament create` command (validate and load Google Sheets)
+2. Implement `/tournament start` command (launch Round 1 polls)
+3. Implement poll result tracking and bracket updates
+
+**Full Status:** @PROJECT_STATUS.md
+
+**Active Tasks:** @ACTION_ITEMS.md
+
+---
+
+## 🧪 Testing Workflow
+
+**Generate Test Bracket:**
+```bash
+npm run complete-bracket-test 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+```
+
+**What it does:**
+1. Clears sheet completely
+2. Populates 64 participants with test data
+3. Applies 461 comprehensive borders
+4. Freezes and bolds Bracket row 1
+5. Updates Championship cell with formula
+
+**Duration:** ~42 seconds | **Result:** Fully formatted bracket ready for simulation
+
+**Run Simulation:**
+```bash
+npm run simulate-tournament 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+```
+
+**Detailed Guide:** @testing/README.md
+
+---
+
+## 🔐 Environment Setup
+
+**Required `.env` variables:**
+```env
+DISCORD_TOKEN=your_bot_token
+CLIENT_ID=your_application_id
+GUILD_ID=your_server_id_optional
+```
+
+**Full Setup Guide:** @docs/quick-start/setup.md
+
+---
+
+## 📝 License
 
 MIT

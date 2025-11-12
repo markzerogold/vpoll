@@ -4,7 +4,7 @@ import * as path from 'path';
 const SPREADSHEET_ID = '1GbIyPmw7VyicKSxZmqdLmQvlBO_x8f97EMpyXESv78o';
 
 async function checkResults() {
-  const keyPath = path.join(__dirname, '../keys/vpoll-key.json');
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
 
   const auth = new google.auth.GoogleAuth({
     keyFile: keyPath,
