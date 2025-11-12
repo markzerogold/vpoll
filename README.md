@@ -17,6 +17,11 @@ Uses Discord.js v14 native polls + Google Sheets for tournament data management 
 
 ```
 vpoll/
+├── .claude/                     # Claude Code configuration
+│   └── agents/                  # Specialized subagents for development
+│       ├── discord-bot-dev.md   # Discord.js v14 & poll expertise
+│       └── sheets-integration.md # Google Sheets API v4 expertise
+│
 ├── src/                         # Core Discord bot code
 │   ├── commands/                # Slash command definitions
 │   ├── events/                  # Discord event handlers
@@ -30,7 +35,7 @@ vpoll/
 ├── testing/                     # All testing materials
 │   ├── scripts/active/          # Current testing scripts (9 files)
 │   ├── logs/                    # Test execution logs (not committed)
-│   └── reports/                 # Simulation and analysis reports
+│   ├── reports/                 # Simulation and analysis reports (6 files)
 │   └── README.md                # Testing documentation
 │
 ├── docs/                        # Complete project documentation
@@ -48,10 +53,8 @@ vpoll/
 ├── keys/                        # Google service account credentials
 │   └── vpoll-key.json           # (Not committed to git)
 │
-└── [Root Files]                 # Status, actions, configs
-    ├── PROJECT_STATUS.md        # Current development phase
-    ├── ACTION_ITEMS.md          # Active and deferred tasks
-    ├── COMPLETE_BRACKET_TEST_SUMMARY.md  # Latest test results
+└── [Root Files]                 # Status and configuration
+    ├── PROJECT_STATUS.md        # Current phase, tasks, completed work, known issues
     ├── CLAUDE.md                # Instructions for Claude Code
     └── README.md                # This file
 ```
@@ -155,6 +158,61 @@ npm run simulate-tournament 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 ```
 
 **Detailed Guide:** @testing/README.md
+
+---
+
+## 🤖 Claude Code Agents
+
+**Specialized AI subagents assist with development tasks**
+
+vPoll includes two expert subagents that automatically help with implementation:
+
+### discord-bot-dev
+**Expertise:** Discord.js v14, slash commands, native polls, event handlers
+
+**Auto-invoked for:**
+- Implementing `/tournament` commands
+- Creating and monitoring Discord polls (no close event, 60s polling)
+- Setting up interaction responses and error handling
+- Permission validation
+
+**Key knowledge:**
+- Poll duration is in HOURS (not minutes)
+- No poll close event exists (requires polling)
+- vPoll's command structure and requirements
+
+### sheets-integration
+**Expertise:** Google Sheets API v4, service accounts, formula debugging
+
+**Auto-invoked for:**
+- Sheet validation during tournament creation
+- Batch operations for efficiency
+- Writing to Results tab (16 columns per match)
+- Updating bracket TRUE/FALSE cells
+- Formula-driven architecture (vPoll never overwrites formulas)
+
+**Key knowledge:**
+- 6-tab template structure (Bracket, Results, Participants, Regions, Config, Instructions)
+- Named ranges for bracket advancement
+- Match ID format (R1-ALPHA-M1, etc.)
+
+### How They Work
+
+**Automatic:** Claude Code invokes agents based on task context
+```
+"Implement /tournament create" → discord-bot-dev auto-invoked
+"Add sheet validation" → sheets-integration auto-invoked
+```
+
+**Explicit:** Request a specific agent
+```
+"Use discord-bot-dev to implement poll monitoring"
+"Use sheets-integration to debug bracket formulas"
+```
+
+**View agents:** Run `/agents` command in Claude Code
+
+**Location:** `.claude/agents/` (version controlled)
 
 ---
 

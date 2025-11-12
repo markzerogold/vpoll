@@ -10,11 +10,19 @@ vPoll is a Discord bot for running 64-participant single elimination tournament 
 
 ## 📋 Where to Start
 
-**New Session?** → Check @PROJECT_STATUS.md first
-
-**Current Tasks:** @ACTION_ITEMS.md
+**New Session?** → Check @PROJECT_STATUS.md first (includes current tasks, completed work, and known issues)
 
 **Project Navigation:** @README.md
+
+## 🤖 Specialized Subagents
+
+**vPoll includes expert subagents for development tasks:**
+
+- **discord-bot-dev** - Discord.js v14, slash commands, native polls (auto-invoked for Discord features)
+- **sheets-integration** - Google Sheets API v4, formulas, batch operations (auto-invoked for Sheets work)
+
+**Location:** `.claude/agents/` (version controlled)
+**View agents:** Run `/agents` command
 
 ## 📚 On-Demand Documentation
 
@@ -24,7 +32,8 @@ vPoll is a Discord bot for running 64-participant single elimination tournament 
 - **Common Tasks:** @docs/quick-start/common-tasks.md
 
 ### Requirements & Planning
-- **Requirements Index:** @docs/requirements/README.md
+- **High-Level Requirements:** @requirements/REQUIREMENTS.md (index to all specs)
+- **Detailed Requirements:** @docs/requirements/README.md (9 focused sections)
 - **MVP Tasks:** @docs/implementation/todo-phase1.md
 - **Future Features:** @docs/reference/FUTURE.md
 

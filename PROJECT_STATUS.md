@@ -267,15 +267,24 @@ See docs/reference/FUTURE.md for complete list of deferred features:
 
 ## Files Created/Modified (Recent)
 
-### New Scripts (2025-11-12)
+### New Files (2025-11-12)
 - `testing/scripts/active/complete-bracket-test.ts` - Comprehensive formatting test (REPLACES comprehensive-format-test.ts)
 - `testing/reports/COMPLETE_BRACKET_TEST_SUMMARY.md` - Full documentation of formatting fixes
+- `.claude/agents/discord-bot-dev.md` - Discord.js v14 expert subagent
+- `.claude/agents/sheets-integration.md` - Google Sheets API v4 expert subagent
+- `requirements/REQUIREMENTS.md` - High-level requirements index
+- `requirements/BRACKET_POPULATION_FLOW.md` - Moved from root
+- `requirements/WINNER_COPY_REMOVAL.md` - Moved from root
 
 ### Modified Files (2025-11-12)
 - `package.json` - Added `complete-bracket-test` script
-- `requirements/REQUIREMENTS.md` - Rewritten as comprehensive index
-- `README.md` - Updated structure to show requirements/ folder
+- `README.md` - Added agents section, updated structure, removed ACTION_ITEMS reference
+- `CLAUDE.md` - Added agents section, updated references, removed ACTION_ITEMS
+- `PROJECT_STATUS.md` - Merged with ACTION_ITEMS.md for single source of truth
 - `testing/README.md` - Updated reports section
+
+### Removed Files (2025-11-12)
+- `ACTION_ITEMS.md` - Merged into PROJECT_STATUS.md
 
 ### Core Bracket Generation (Previous)
 - `src/generate-bracket.ts` - Fixed Round 3 right side formulas
@@ -393,6 +402,7 @@ npm run check-results 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 - ✅ **Separate requirements folders** - High-level (requirements/) vs detailed (docs/requirements/)
 - ✅ **Test reports in testing/reports/** - Historical analysis and verification
 - ✅ **Single status file** - PROJECT_STATUS.md merged with ACTION_ITEMS.md
+- ✅ **Claude Code subagents** - discord-bot-dev and sheets-integration in .claude/agents/
 
 ---
 
