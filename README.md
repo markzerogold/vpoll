@@ -83,6 +83,7 @@ npm run check-results <sheet-id>          # View Results tab
 ```
 
 **All testing scripts:** See @testing/README.md
+**Sheet population & formatting:** See @testing/SHEET_POPULATION_INDEX.md
 
 ### Code Quality
 ```bash

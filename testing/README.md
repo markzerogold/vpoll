@@ -6,6 +6,12 @@
 
 ---
 
+## 📋 Index of Sheet Population Scripts
+
+**See:** [SHEET_POPULATION_INDEX.md](SHEET_POPULATION_INDEX.md) for complete documentation of all scripts, formatting operations, and workflow for keeping scripts aligned with master template.
+
+---
+
 ## Quick Start
 
 ### Run Complete Bracket Test
