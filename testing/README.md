@@ -72,11 +72,12 @@ Test execution logs, population logs, simulation logs.
 - Comparing test run outputs
 - Investigating historical test behavior
 
-### `reports/` (5 files)
+### `reports/` (6 files)
 
-Simulation and population analysis reports.
+Test execution reports, simulation analysis, and development history.
 
 **Files:**
+- **COMPLETE_BRACKET_TEST_SUMMARY.md** - Complete bracket test development (Nov 2025)
 - **SIMULATION_FULL_REPORT.md** - Complete simulation analysis
 - **SIMULATION_RESULTS.md** - Simulation outcomes
 - **SIMULATION_COLUMN_MAPPING_BUG.md** - Bug investigation
@@ -84,6 +85,7 @@ Simulation and population analysis reports.
 - **POPULATION_REPORT.md** - Sheet population verification
 
 **When to Reference:**
+- Understanding how complete-bracket-test.ts was developed
 - Understanding bracket formula behavior
 - Investigating simulation issues
 - Verifying tournament progression logic

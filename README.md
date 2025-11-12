@@ -10,7 +10,7 @@ Uses Discord.js v14 native polls + Google Sheets for tournament data management 
 
 **Current Status:** @PROJECT_STATUS.md
 **Current Tasks:** @ACTION_ITEMS.md
-**Latest Summary:** @COMPLETE_BRACKET_TEST_SUMMARY.md
+**Latest Test Report:** @testing/reports/COMPLETE_BRACKET_TEST_SUMMARY.md
 
 ---
 
