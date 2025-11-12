@@ -31,7 +31,10 @@
     "simulate-tournament": "ts-node src/simulate-tournament.ts",
     "check-results": "ts-node src/check-results.ts",
     "check-bracket": "ts-node src/check-bracket-progression.ts",
-    "format-bracket": "ts-node src/apply-bracket-formatting.ts"
+    "format-bracket": "ts-node src/apply-bracket-formatting.ts",
+    "fix-missing-borders": "ts-node src/fix-missing-borders.ts",
+    "comprehensive-test": "ts-node src/comprehensive-format-test.ts",
+    "complete-bracket-test": "ts-node src/complete-bracket-test.ts"
   },
   "keywords": [
     "discord",

@@ -1,0 +1,125 @@
+[2025-11-12T12:04:29.581Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T12:04:29.585Z]   COMPLETE BRACKET FORMATTING TEST
+[2025-11-12T12:04:29.587Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T12:04:29.590Z]   Spreadsheet ID: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+[2025-11-12T12:04:29.594Z]   URL: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+[2025-11-12T12:04:29.598Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T12:04:29.601Z] 
+🧹 STEP 1: Clearing sheet completely...
+[2025-11-12T12:04:30.411Z]   Found 6 sheets
+[2025-11-12T12:04:30.414Z]   Clearing sheet: Bracket
+[2025-11-12T12:04:31.371Z]   Clearing sheet: Results
+[2025-11-12T12:04:31.757Z]   Clearing sheet: Participants
+[2025-11-12T12:04:32.120Z]   Clearing sheet: Regions
+[2025-11-12T12:04:32.509Z]   Clearing sheet: Config
+[2025-11-12T12:04:32.914Z]   Clearing sheet: Instructions
+[2025-11-12T12:04:33.292Z] ✅ Sheet cleared successfully
+
+[2025-11-12T12:04:33.295Z] 
+📝 Running populate-test-sheet.ts...
+[2025-11-12T12:04:51.091Z] Populating spreadsheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+Setting up tabs...
+Expanding Bracket tab grid dimensions...
+✅ Bracket tab expanded to 100 rows × 35 columns
+
+Populating Instructions tab...
+Populating Participants tab...
+Populating Config tab...
+Populating Regions tab...
+Populating Bracket tab...
+Populating Results tab...
+
+Writing all data...
+Merging header cells...
+  ✓ Merged 10 header ranges
+Formatting region names...
+  ✓ Formatted 4 region name cells
+Formatting Championship cell...
+  ✓ Formatted Championship cell (O18)
+Generating bracket formulas...
+✅ Wrote 136 formulas, 8 values, and 126 checkbox values
+✅ Added 126 checkbox validations
+Applying formatting...
+
+✅ Test tournament sheet populated successfully!
+
+🔗 URL: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+
+📝 Next steps:
+1. Open the sheet and verify all tabs are populated
+2. Grant "Anyone with the link" → Viewer access for public viewing
+3. Update Discord Channel ID in Config tab with a real channel ID
+4. Use this sheet to test /tournament create command
+
+✨ Done!
+
+[2025-11-12T12:04:51.093Z] ✅ populate-test-sheet.ts completed
+
+[2025-11-12T12:04:51.096Z] 
+📝 Running fix-bracket-borders.ts...
+[2025-11-12T12:05:09.214Z] 🎨 Fixing Bracket Borders and Autosizing Columns
+================================================================================
+Example sheet: 1Z83Lr02EW9wvpH3YfBvLwafHMIqyxJLXaO_0D85bMfk
+Test sheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+⚙️  Row mapping: rows 1-32 = no offset, rows 33+ = +1 offset
+
+📖 Reading border formatting from example sheet...
+✅ Found 459 cells with custom borders (row-mapped)
+🎨 Applying borders to test sheet (with row correction)...
+🧹 Clearing existing borders...
+✅ Borders cleared
+  Applying batch 1/5...
+  Applying batch 2/5...
+  Applying batch 3/5...
+  Applying batch 4/5...
+  Applying batch 5/5...
+✅ Applied 459 border updates
+📝 Adding region name borders (E31, Y31)...
+✅ Region name borders added
+📏 Autosizing columns and disabling text wrap...
+✅ Columns autosized, text wrapping disabled
+
+================================================================================
+✅ Border formatting applied successfully with row correction!
+🔗 View result: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+
+✨ Complete!
+
+[2025-11-12T12:05:09.219Z] ✅ fix-bracket-borders.ts completed
+
+[2025-11-12T12:05:09.225Z] 
+❄️  STEP 4: Freezing and bolding Bracket row 1...
+[2025-11-12T12:05:09.895Z]   ✓ Row 1 frozen
+[2025-11-12T12:05:09.901Z]   ✓ Row 1 text bolded
+[2025-11-12T12:05:09.907Z] ✅ Bracket row 1 formatting complete
+
+[2025-11-12T12:05:09.915Z] 
+🏆 STEP 5: Updating Championship cell with formula...
+[2025-11-12T12:05:10.321Z]   ✓ Formula set: =Config!B3&" Champion"
+[2025-11-12T12:05:10.566Z]   ✓ Cells O17:O18 merged
+[2025-11-12T12:05:10.570Z]   ✓ Font: 16pt bold, centered
+[2025-11-12T12:05:10.573Z]   ✓ Background: light gold
+[2025-11-12T12:05:10.577Z] ✅ Championship cell complete
+
+[2025-11-12T12:05:10.580Z] 
+🔍 STEP 6: Verifying formatting...
+[2025-11-12T12:05:11.058Z]   Frozen rows: 1
+[2025-11-12T12:05:11.061Z]   ✅ Row 1 frozen
+[2025-11-12T12:05:11.064Z]   Row 1 first cell bold: true
+[2025-11-12T12:05:11.067Z]   ✅ Row 1 text is bold
+[2025-11-12T12:05:11.262Z]   Championship cell formula: undefined
+[2025-11-12T12:05:11.265Z]   ⚠️  Championship cell formula incorrect!
+[2025-11-12T12:05:11.269Z]   Border cells found: 461
+[2025-11-12T12:05:11.271Z]   ✅ Comprehensive borders applied
+[2025-11-12T12:05:11.273Z] 
+✅ Verification complete
+
+[2025-11-12T12:05:11.274Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T12:05:11.276Z]   ✅ ALL FORMATTING COMPLETE
+[2025-11-12T12:05:11.278Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T12:05:11.280Z] 
+📄 Full log saved to: debug/complete-bracket-test-log.txt
+[2025-11-12T12:05:11.283Z] 
+🔗 View sheet: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit

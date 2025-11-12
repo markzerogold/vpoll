@@ -58,8 +58,8 @@ function generateBracketLayout(): BracketCell[] {
   cells.push({ row: 31, col: 'E', formula: '=Regions!C2' }); // BETA
   cells.push({ row: 31, col: 'Y', formula: '=Regions!E2' }); // DELTA
 
-  // "The Greatest" label for championship winner
-  cells.push({ row: 18, col: 'O', value: 'The Greatest' });
+  // Championship winner cell
+  cells.push({ row: 18, col: 'O', value: 'Championship' });
 
   return cells;
 }

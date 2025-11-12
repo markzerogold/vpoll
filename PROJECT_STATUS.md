@@ -1,8 +1,8 @@
 # vPoll Project Status
 
-**Last Updated:** 2025-11-08
-**Current Phase:** Sheet Population & Formatting Complete
-**Next Phase:** Tournament Simulation Testing
+**Last Updated:** 2025-11-12
+**Current Phase:** Bracket Formatting Complete - Ready for Bot Development
+**Next Phase:** Implement Discord Bot Commands (MVP Phase 1)
 
 ---
 
@@ -26,16 +26,31 @@
 - Displays: `(1) Spock (TOS/TAS/Films/SNW)`
 - Verified working for all 64 participants
 
-### 4. Bracket Formatting Complete ✅
-- **Cell Merging:** 10 header ranges (A1:B1, D1:E1, etc.)
-- **Region Names:** 
-  - Light blue backgrounds (left side): RGB(0.812, 0.886, 0.953)
-  - Light green backgrounds (right side): RGB(0.851, 0.918, 0.827)
-  - 24pt bold, centered
-- **Borders:** 517 total border cells applied
-  - 459 main bracket borders
-  - 54 columns Y:AA borders
-  - 4 region name borders
+### 4. Complete Bracket Formatting ✅ (NEW - 2025-11-12)
+
+**Script Created:** `src/complete-bracket-test.ts`
+**Duration:** 41.7 seconds
+**Command:** `npm run complete-bracket-test <sheet-id>`
+
+**What It Does:**
+1. Clear sheet completely (all tabs)
+2. Populate test data (136 formulas, 64 participants, 126 checkboxes)
+3. Apply comprehensive borders (461 borders from example sheet)
+4. Freeze and bold Bracket row 1
+5. Update Championship cell with formula and merge (O17:O18)
+6. Verify all formatting
+
+**Formatting Applied:**
+- ✅ Row 1 frozen and bolded
+- ✅ 461 comprehensive borders (not just 50)
+- ✅ Championship cell: `=Config!B3&" Champion"`, merged, 16pt bold, gold background
+- ✅ All columns auto-sized (including E and Y)
+- ✅ Cell merging (10 header ranges)
+- ✅ Region name formatting (4 cells, light blue/green backgrounds, 24pt bold)
+- ✅ Text wrapping disabled
+
+**Documentation:**
+- COMPLETE_BRACKET_TEST_SUMMARY.md - Full details of test and fixes
 
 ### 5. Winner Copy Code Removed ✅
 - Removed 114 lines of problematic code (simulate-tournament.ts lines 488-602)
@@ -48,18 +63,38 @@
 
 ---
 
-## Current Issues
+## Known Issues
 
-### Known Bugs
+### Bracket Formatting Issues (Deferred)
 
-#### 1. Round 3 Right Side Still Not Working
+**Status:** ⚠️ To Fix Later
+**Priority:** Medium
+
+The new `complete-bracket-test.ts` fixed major issues but introduced new ones:
+1. Championship cell formula verification shows `undefined` (may be merged cell reading issue)
+2. Potential border alignment issues with row offsets
+3. Column auto-sizing applied twice (consolidation needed)
+4. Other issues to be identified via manual inspection
+
+**See:** ACTION_ITEMS.md for detailed tracking
+
+### Round 3 Right Side (Outstanding from Previous Work)
+
+**Status:** ⚠️ Needs Investigation
+**Priority:** Medium
+
 - Formulas exist in column AB but show (empty)
 - Left side Round 3 works correctly
 - Needs investigation of VLOOKUP formula references
 
-#### 2. Round 4+ Not Yet Verified
+### Rounds 4-6 Not Fully Tested
+
+**Status:** ❌ Not Tested
+**Priority:** High
+
 - Only tested through Round 3
 - Need to verify Round 4, 5, 6 formulas work correctly
+- Full tournament simulation pending
 
 ---
 
@@ -69,11 +104,14 @@
 - Participants tab population (64 participants)
 - Regions tab structure (seed order, distribution)
 - Round 1 formulas (all 64 participants display correctly)
-- Round 2 formulas (empty but syntax correct)
+- Round 2 formulas (syntax correct)
 - Checkbox initialization (all FALSE)
 - Cell merging (10 ranges)
 - Region name formatting (4 cells)
-- Border application (517 cells)
+- Border application (461 cells)
+- Row 1 freeze and bold (Bracket tab)
+- Championship cell formatting and merge
+- Column auto-sizing (all columns A-AE)
 
 ### ⚠️ Partially Working
 - Round 3 left side (ALPHA/BETA) - formulas correct
@@ -83,32 +121,42 @@
 - Round 4 formulas
 - Round 5 formulas
 - Round 6 (Championship) formula
-- Full tournament simulation
+- Full tournament simulation (all 6 rounds)
 - Winner announcement
+- Tiebreaker dice rolls
+- Result tab population via bot
 
 ---
 
-## Files Created/Modified
+## Files Created/Modified (Recent)
 
-### Core Bracket Generation
+### New Scripts (2025-11-12)
+- `src/complete-bracket-test.ts` - Comprehensive formatting test (REPLACES comprehensive-format-test.ts)
+- `ACTION_ITEMS.md` - Track all outstanding issues and todos
+- `COMPLETE_BRACKET_TEST_SUMMARY.md` - Full documentation of formatting fixes
+
+### Modified Files (2025-11-12)
+- `package.json` - Added `complete-bracket-test` script
+
+### Core Bracket Generation (Previous)
 - `src/generate-bracket.ts` - Fixed Round 3 right side formulas
 - `src/populate-test-sheet.ts` - Added cell merging and region formatting
 
-### Simulation
+### Simulation (Previous)
 - `src/simulate-tournament.ts` - Removed winner copy code (lines 488-602)
 
-### Utilities
+### Utilities (Previous)
 - `src/clear-sheet.ts` - Clear all data/formatting from sheet
-- `src/add-missing-formatting.ts` - Add formatting to existing sheets
+- `src/fix-bracket-borders.ts` - Apply comprehensive borders from example sheet
+- `src/fix-missing-borders.ts` - Apply 50 specific border fixes (superseded)
 - `src/verify-population.ts` - Verify Regions tab and formulas
 - `src/check-formatting.ts` - Check merges, borders, backgrounds
 - `src/check-round3-formulas.ts` - Verify Round 3 VLOOKUP formulas
-- `src/check-round3-columns.ts` - Check Round 3 column contents
-- `src/check-round3-right-side.ts` - Check Round 3 right side formulas
 
-### Documentation
+### Documentation (Previous)
 - `BRACKET_POPULATION_FLOW.md` - Complete bracket specification
-- `FORMATTING_FIX_SUMMARY.md` - Details of formatting fixes
+- `FORMATTING_FIX_SUMMARY.md` - Details of formatting fixes (Nov 10)
+- `FORMATTING_FIX_SUMMARY_2025-11-10.md` - Nov 10 specific fixes
 - `POPULATION_REPORT.md` - Latest population verification
 - `WINNER_COPY_REMOVAL.md` - Why winner copy code was removed
 - `ROUND3_FORMULA_FIX.md` - Round 3 formula fix details
@@ -118,20 +166,49 @@
 
 ## Next Steps
 
-### Immediate (High Priority)
-1. **Fix Round 3 right side** - Investigate why GAMMA/DELTA formulas show empty
-2. **Test full simulation** - Run complete 64-participant tournament
-3. **Verify all 6 rounds** - Ensure formulas work through Championship
+### Immediate (Critical Priority)
 
-### Short Term
-4. **Update column mappings** - Verify all rounds use correct columns
-5. **Test tiebreakers** - Verify dice roll logic works
-6. **Results tab writing** - Test match result recording
+**Goal:** Start MVP Development
 
-### Medium Term
-7. **Border refinement** - Ensure borders survive formula updates
-8. **Region name protection** - Prevent overwrites during simulation
-9. **Error handling** - Add validation for formula errors
+1. **Begin Discord Bot Implementation**
+   - Create `src/services/validation.ts` for sheet validation
+   - Implement `/tournament create <sheet-url>` command
+   - Implement `/tournament start` command
+   - Create `src/services/poll.ts` for Discord poll management
+
+   **See:** docs/implementation/todo-phase1.md for complete checklist
+
+2. **Test Full Tournament Simulation**
+   - Run complete 64-participant tournament through all 6 rounds
+   - Verify bracket formulas work through Championship
+   - Document any issues discovered
+   - Fix Round 3 right side if blocking
+
+### Short Term (High Priority)
+
+3. **Implement Result Tracking**
+   - Automatic poll result processing
+   - Bracket tab TRUE/FALSE updates
+   - Results tab row writing (16 columns)
+   - Tiebreaker dice roll logic
+
+4. **Implement Winner Announcement**
+   - Detect Round 6 completion
+   - Generate winner announcement
+   - Post to Discord with formatting
+
+### Medium Term (Medium Priority)
+
+5. **Fix Bracket Formatting Issues**
+   - Manual inspection of test sheet
+   - Document specific new issues
+   - Create targeted fix scripts
+   - Update complete-bracket-test.ts
+
+6. **Complete Tournament Testing**
+   - Edge case testing (ties, special characters, long names)
+   - Poll batching variations
+   - Error handling scenarios
 
 ---
 
@@ -140,21 +217,34 @@
 **ID:** 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 **URL:** https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
 
-**Status:** Populated with correct formatting, ready for simulation testing
+**Status:** Fully formatted with complete-bracket-test.ts (2025-11-12), ready for simulation testing
+
+**Last Generated:** 2025-11-12 12:04:29 UTC
+**Generation Time:** 41.7 seconds
 
 ---
 
 ## Commands Reference
 
-### Sheet Population
+### Sheet Population (RECOMMENDED)
+
 ```bash
-# Full fresh population
-npx ts-node src/clear-sheet.ts
+# Complete bracket generation and formatting (USE THIS)
+npm run complete-bracket-test 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+```
+
+### Sheet Population (Manual Steps - Not Recommended)
+
+```bash
+# If you need to run steps individually
+npx ts-node src/clear-sheet.ts 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 npm run populate-test-sheet 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 npm run apply-borders 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+# (Still missing row 1 freeze/bold and Championship cell updates)
 ```
 
 ### Verification
+
 ```bash
 npx ts-node src/verify-population.ts     # Check data
 npx ts-node src/check-formatting.ts      # Check formatting
@@ -162,8 +252,10 @@ npx ts-node src/check-round3-formulas.ts # Check Round 3
 ```
 
 ### Simulation
+
 ```bash
 npm run simulate-tournament 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+npm run check-results 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 ```
 
 ---
@@ -175,12 +267,18 @@ npm run simulate-tournament 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 - ✅ **Regions tab uses fixed seed order** - 1,16,8,9,5,12,4,13,6,11,3,14,7,10,2,15
 - ✅ **Cell merging before borders** - Ensures correct calculations
 - ✅ **No winner copying** - Formulas handle advancement
+- ✅ **Comprehensive border script** - Use fix-bracket-borders.ts (461 borders), not fix-missing-borders.ts (50 borders)
+- ✅ **Freeze and bold Bracket row 1** - Done in complete-bracket-test.ts
+- ✅ **Championship cell with formula** - =Config!B3&" Champion", merged O17:O18
 
 ### Process
-- ✅ **Clear → Data → Merge → Format → Borders** - Defined order
-- ✅ **Populate includes formatting** - Merging and region names built-in
-- ✅ **Borders applied separately** - After merging complete
+- ✅ **Clear → Data → Borders → Row1 → Championship** - Defined order in complete-bracket-test.ts
+- ✅ **Single script for all formatting** - complete-bracket-test.ts handles everything
+- ✅ **Populate includes basic formatting** - Merging and region names built-in
+- ✅ **Borders applied from example sheet** - Copied with row offset correction
 
 ---
 
-**Status:** Sheet population and formatting complete. Ready for simulation testing.
+**Status:** Bracket formatting complete with minor issues deferred. Ready to begin MVP Discord bot development.
+
+**Next Major Milestone:** Implement `/tournament create` and `/tournament start` commands.

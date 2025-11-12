@@ -1,0 +1,97 @@
+[2025-11-12T11:54:34.451Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T11:54:34.455Z]   COMPREHENSIVE FORMATTING TEST
+[2025-11-12T11:54:34.457Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T11:54:34.459Z]   Spreadsheet ID: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+[2025-11-12T11:54:34.461Z]   URL: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+[2025-11-12T11:54:34.463Z] ═══════════════════════════════════════════════════════════
+
+[2025-11-12T11:54:34.466Z] 
+🧹 STEP 1: Clearing sheet completely...
+[2025-11-12T11:54:35.081Z]   Found 6 sheets
+[2025-11-12T11:54:35.084Z]   Clearing sheet: Bracket
+[2025-11-12T11:54:35.542Z]   Clearing sheet: Results
+[2025-11-12T11:54:35.984Z]   Clearing sheet: Participants
+[2025-11-12T11:54:36.367Z]   Clearing sheet: Regions
+[2025-11-12T11:54:36.753Z]   Clearing sheet: Config
+[2025-11-12T11:54:37.166Z]   Clearing sheet: Instructions
+[2025-11-12T11:54:37.795Z] ✅ Sheet cleared successfully
+
+[2025-11-12T11:54:37.797Z] 
+📝 STEP 2: Populating test data...
+[2025-11-12T11:54:55.123Z] Populating spreadsheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+Setting up tabs...
+Expanding Bracket tab grid dimensions...
+✅ Bracket tab expanded to 100 rows × 35 columns
+
+Populating Instructions tab...
+Populating Participants tab...
+Populating Config tab...
+Populating Regions tab...
+Populating Bracket tab...
+Populating Results tab...
+
+Writing all data...
+Merging header cells...
+  ✓ Merged 10 header ranges
+Formatting region names...
+  ✓ Formatted 4 region name cells
+Formatting Championship cell...
+  ✓ Formatted Championship cell (O18)
+Generating bracket formulas...
+✅ Wrote 136 formulas, 8 values, and 126 checkbox values
+✅ Added 126 checkbox validations
+Applying formatting...
+
+✅ Test tournament sheet populated successfully!
+
+🔗 URL: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+
+📝 Next steps:
+1. Open the sheet and verify all tabs are populated
+2. Grant "Anyone with the link" → Viewer access for public viewing
+3. Update Discord Channel ID in Config tab with a real channel ID
+4. Use this sheet to test /tournament create command
+
+✨ Done!
+
+[2025-11-12T11:54:55.126Z] ✅ Population completed
+
+[2025-11-12T11:54:55.129Z] 
+🎨 STEP 3: Applying border fixes...
+[2025-11-12T11:55:09.891Z] 
+🔧 Fixing missing borders in spreadsheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+
+📋 Applying 50 border fixes...
+✅ Border fixes applied successfully!
+
+Fixed borders on:
+K33, T33, S4, V4, Y4, AB4, S5, V5, Y5, AB5, S12, V12, Y12, AB12, S13, V13, Y13, AB13, S20, V20, Y20, AB20, S21, V21, Y21, AB21, S28, V28, Y28, AB28, S29, V29, Y29, AB29, S40, V40, Y40, AB40, S41, V41, Y41, AB41, S48, V48, Y48, AB48, S49, V49, Y49, AB49
+
+
+[2025-11-12T11:55:09.896Z] ✅ Border fixes completed
+
+[2025-11-12T11:55:09.900Z] 
+🔍 STEP 4: Verifying formatting...
+[2025-11-12T11:55:10.261Z]   Championship cell (O18):
+[2025-11-12T11:55:10.273Z]     Value: "Championship"
+[2025-11-12T11:55:10.286Z]     Background: RGB(1, 0.94509804, 0.8)
+[2025-11-12T11:55:10.300Z]     Font size: 14pt
+[2025-11-12T11:55:10.312Z]     Bold: true
+[2025-11-12T11:55:10.321Z]   ✅ Championship cell text is correct
+[2025-11-12T11:55:10.496Z]   K33 borders:
+[2025-11-12T11:55:10.500Z]     Right: Present
+[2025-11-12T11:55:10.680Z]   T33 borders:
+[2025-11-12T11:55:10.684Z]     Right: Present
+[2025-11-12T11:55:10.840Z]   Column E width: undefinedpx
+[2025-11-12T11:55:10.844Z] 
+✅ Verification completed
+
+[2025-11-12T11:55:10.848Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T11:55:10.852Z]   ✅ ALL TESTS PASSED
+[2025-11-12T11:55:10.856Z] ═══════════════════════════════════════════════════════════
+[2025-11-12T11:55:10.860Z] 
+📄 Full log saved to: debug/format-test-log.txt
+[2025-11-12T11:55:10.864Z] 
+🔗 View sheet: https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+

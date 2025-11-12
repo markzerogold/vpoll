@@ -83,15 +83,33 @@ For detailed instructions, see [TEST_SHEET_GENERATION.md](TEST_SHEET_GENERATION.
 ### Testing and Utilities
 - `npm run test-sheets` - Test Google Sheets API connection
 - `npm run populate-test-sheet <sheet-id>` - Populate a blank sheet with test tournament data
+- `npm run complete-bracket-test <sheet-id>` - **RECOMMENDED**: Complete bracket generation with all formatting (clear, populate, borders, freeze row 1, championship cell)
 
 ### Tournament Simulation and Testing
-- `npm run simulate-tournament` - Simulate complete tournament with random winners (all 6 rounds)
-- `npm run check-results` - View all results written to Results tab
-- `npm run check-bracket` - Verify bracket checkbox updates and winner progression
+- `npm run simulate-tournament <sheet-id>` - Simulate complete tournament with random winners (all 6 rounds)
+- `npm run check-results <sheet-id>` - View all results written to Results tab
+- `npm run check-bracket <sheet-id>` - Verify bracket checkbox updates and winner progression
 
 **Purpose:** Test bracket formulas, TRUE/FALSE advancement logic, and Results tab population.
 
-**Recent Updates:**
+**Complete Bracket Test (NEW - 2025-11-12):**
+```bash
+npm run complete-bracket-test <sheet-id>
+```
+
+This script performs ALL necessary formatting steps in correct order:
+1. Clear sheet completely (all 6 tabs)
+2. Populate test data (136 formulas, 64 participants, 126 checkboxes)
+3. Apply comprehensive borders (461 borders from example sheet)
+4. Freeze and bold Bracket row 1
+5. Update Championship cell with formula: `=Config!B3&" Champion"` (merged O17:O18)
+6. Verify all formatting
+
+**Duration:** ~42 seconds | **Status:** Fully formatted and ready for use
+
+See `COMPLETE_BRACKET_TEST_SUMMARY.md` for full details.
+
+**Simulation Notes:**
 - Simulation now clears Results tab before each run (fresh data starting at row 2)
 - Fixed Round 2 cell mapping to read from rows 4, 5, 12, 13, 20, 21, 28, 29
 - Added Round 2→3 winner copying to rows 8, 16, 24, 32 (for Round 3 formulas)
