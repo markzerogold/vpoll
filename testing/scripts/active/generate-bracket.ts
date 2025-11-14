@@ -52,11 +52,13 @@ function generateBracketLayout(): BracketCell[] {
   cells.push({ row: 1, col: 'AA', formula: '=D1' }); // Round 2
   cells.push({ row: 1, col: 'AD', value: 'Round 1' });
 
-  // Region labels (row 15 in example)
-  cells.push({ row: 15, col: 'E', formula: '=Regions!B2' }); // ALPHA
-  cells.push({ row: 15, col: 'Y', formula: '=Regions!D2' }); // GAMMA
-  cells.push({ row: 31, col: 'E', formula: '=Regions!C2' }); // BETA
-  cells.push({ row: 31, col: 'Y', formula: '=Regions!E2' }); // DELTA
+  // Region labels
+  // Note: These formulas write to cells that will have VALUES written over them by fix-test-sheet.ts
+  // The merged regions are: E15:G18 (Federation), E47:G50 (Klingon Empire), Y15:AA18 (Romulan), Y47:AA50 (Dominion)
+  cells.push({ row: 15, col: 'E', formula: '=Regions!B2' }); // ALPHA/Federation (top-left)
+  cells.push({ row: 15, col: 'Y', formula: '=Regions!D2' }); // GAMMA/Romulan (top-right)
+  cells.push({ row: 47, col: 'E', formula: '=Regions!C2' }); // BETA/Klingon Empire (bottom-left) - FIXED from row 31
+  cells.push({ row: 47, col: 'Y', formula: '=Regions!E2' }); // DELTA/Dominion (bottom-right) - FIXED from row 31
 
   // Championship winner cell
   cells.push({ row: 18, col: 'O', value: 'Championship' });

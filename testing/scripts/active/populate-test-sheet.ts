@@ -125,9 +125,16 @@ async function populateSheet(spreadsheetId: string) {
 
     // Rename or create tabs
     requiredTabs.forEach((tabName, index) => {
+      // Check if this tab name already exists anywhere in the sheet
+      if (existingTabNames.has(tabName)) {
+        // Tab already exists with correct name - skip
+        return;
+      }
+
+      // Check if we have a sheet at this index that needs renaming
       if (existingSheets[index]) {
         const currentName = existingSheets[index].properties?.title;
-        // Only rename if the name is different
+        // Rename this sheet to our required name
         if (currentName !== tabName) {
           requests.push({
             updateSheetProperties: {
@@ -140,16 +147,14 @@ async function populateSheet(spreadsheetId: string) {
           });
         }
       } else {
-        // Create new tab only if it doesn't already exist
-        if (!existingTabNames.has(tabName)) {
-          requests.push({
-            addSheet: {
-              properties: {
-                title: tabName,
-              },
+        // No sheet at this index - create new tab
+        requests.push({
+          addSheet: {
+            properties: {
+              title: tabName,
             },
-          });
-        }
+          },
+        });
       }
     });
 
@@ -376,16 +381,8 @@ async function populateSheet(spreadsheetId: string) {
 
     // 4. Bracket tab - Generate full formula-driven bracket
     console.log('Populating Bracket tab...');
-    // We'll populate the bracket in a separate step after initial data
-    // to ensure proper formula references
-    // For now, just add a placeholder note
-    const bracketData = [
-      ['Bracket formulas will be added in next step...'],
-    ];
-    batchData.push({
-      range: 'Bracket!A1',
-      values: bracketData,
-    });
+    // Bracket formulas will be populated in STEP 2 below
+    // Skip adding placeholder to batchData - we'll write formulas directly later
 
     // 5. Results tab
     console.log('Populating Results tab...');
@@ -465,55 +462,86 @@ async function populateSheet(spreadsheetId: string) {
     // ========================================================================
     // STEP 1.6: FORMAT REGION NAMES (BACKGROUND COLOR, FONT SIZE, BOLD)
     // ========================================================================
-    console.log('Formatting region names...');
+    // Skip region formatting if --skip-region-formatting flag is provided
+    // (formatting should come from copy-bracket-formatting.ts instead)
+    const skipRegionFormatting = process.argv.includes('--skip-region-formatting');
 
-    const regionNameFormats = [
-      // Federation (E15) - Light blue background
-      { row: 14, col: 4, color: { red: 0.8117647, green: 0.8862745, blue: 0.9529412 } },
-      // Klingon Empire (E31) - Light blue background
-      { row: 30, col: 4, color: { red: 0.8117647, green: 0.8862745, blue: 0.9529412 } },
-      // Romulan Star Empire (Y15) - Light green background
-      { row: 14, col: 24, color: { red: 0.8509804, green: 0.91764706, blue: 0.827451 } },
-      // Dominion (Y31) - Light green background
-      { row: 30, col: 24, color: { red: 0.8509804, green: 0.91764706, blue: 0.827451 } },
-    ];
+    if (!skipRegionFormatting) {
+      console.log('Formatting region names...');
 
-    const regionFormatRequests = regionNameFormats.map(({ row, col, color }) => ({
-      repeatCell: {
-        range: {
-          sheetId: bracketSheetId,
-          startRowIndex: row,
-          endRowIndex: row + 1,
-          startColumnIndex: col,
-          endColumnIndex: col + 1,
+      // Region colors from REGION_COLOR_UPDATE.md (2025-11-04)
+      // High contrast colors with optimized text colors for readability
+      const regionNameFormats = [
+        // Federation (E15) - ALPHA/Region 1 - Firebrick Red #B22222, White text
+        {
+          row: 14,
+          col: 4,
+          backgroundColor: { red: 0.698, green: 0.133, blue: 0.133 },
+          textColor: { red: 1, green: 1, blue: 1 }
         },
-        cell: {
-          userEnteredFormat: {
-            backgroundColor: color,
-            textFormat: {
-              fontSize: 24,
-              bold: true,
-              foregroundColor: { red: 0, green: 0, blue: 0 }, // Black text
-            },
-            horizontalAlignment: 'CENTER',
-            verticalAlignment: 'MIDDLE',
+        // Klingon Empire (E31) - BETA/Region 2 - Amber #FFB300, Black text
+        {
+          row: 30,
+          col: 4,
+          backgroundColor: { red: 1.0, green: 0.702, blue: 0.0 },
+          textColor: { red: 0, green: 0, blue: 0 }
+        },
+        // Romulan Star Empire (Y15) - GAMMA/Region 3 - Light Blue #6699CC, Black text
+        {
+          row: 14,
+          col: 24,
+          backgroundColor: { red: 0.4, green: 0.6, blue: 0.8 },
+          textColor: { red: 0, green: 0, blue: 0 }
+        },
+        // Dominion (Y31) - DELTA/Region 4 - Gray #999999, White text
+        {
+          row: 30,
+          col: 24,
+          backgroundColor: { red: 0.6, green: 0.6, blue: 0.6 },
+          textColor: { red: 1, green: 1, blue: 1 }
+        },
+      ];
+
+      const regionFormatRequests = regionNameFormats.map(({ row, col, backgroundColor, textColor }) => ({
+        repeatCell: {
+          range: {
+            sheetId: bracketSheetId,
+            startRowIndex: row,
+            endRowIndex: row + 1,
+            startColumnIndex: col,
+            endColumnIndex: col + 1,
           },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: backgroundColor,
+              textFormat: {
+                fontSize: 24,
+                bold: true,
+                foregroundColor: textColor,
+              },
+              horizontalAlignment: 'CENTER',
+              verticalAlignment: 'MIDDLE',
+            },
+          },
+          fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment)',
         },
-        fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment)',
-      },
-    }));
+      }));
 
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: regionFormatRequests,
-      },
-    });
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          requests: regionFormatRequests,
+        },
+      });
 
-    console.log(`  ✓ Formatted ${regionNameFormats.length} region name cells`);
+      console.log(`  ✓ Formatted ${regionNameFormats.length} region name cells`);
+    } else {
+      console.log('⏭️  Skipping region formatting (--skip-region-formatting flag set)');
+      console.log('   Region formatting should come from copy-bracket-formatting.ts');
+    }
 
     // Note: Championship cell formatting is handled by complete-bracket-test.ts
-    // (merged O17:O18 with formula, 16pt bold, light gold background)
+    // (merged O17:Q17 horizontal with formula, 16pt bold, light gold background)
 
     // ========================================================================
     // STEP 2: GENERATE AND WRITE BRACKET FORMULAS + CHECKBOX VALUES

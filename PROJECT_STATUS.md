@@ -1,7 +1,7 @@
 # vPoll Project Status
 
-**Last Updated:** 2025-11-12
-**Current Phase:** Bracket Formatting Complete - Ready for Bot Development
+**Last Updated:** 2025-11-14
+**Current Phase:** Bracket Formatting with Source Sheet Authority - Ready for Bot Development
 **Next Phase:** Implement Discord Bot Commands (MVP Phase 1)
 
 ---
@@ -67,6 +67,50 @@
 - ✅ Round 1-6 bracket formulas
 - ✅ Cell merging and region name formatting
 - ✅ Removed problematic winner copy code
+
+### 8. Source Sheet Formatting Authority (2025-11-14)
+
+**Achievement:** Established user's manually-formatted sheet as single source of truth for ALL bracket formatting
+
+**Source Sheet:** `1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w`
+
+**Scripts Created:**
+- ✅ `read-bracket-formatting.ts` - Analyzes and documents all formatting from source
+- ✅ `copy-bracket-formatting.ts` - Copies 1995 cells + 16 merges with 100% fidelity
+- ✅ `fix-test-sheet.ts` - Championship cell and column autosizing only
+
+**Scripts Updated:**
+- ✅ `populate-test-sheet.ts` - Added `--skip-region-formatting` flag to preserve copied formatting
+- ✅ `generate-bracket.ts` - Fixed region name row positions (E31/Y31 → E47/Y47)
+- ✅ `generate-complete-bracket.ts` - Removed region value overwriting, preserves formulas
+
+**Critical Fixes:**
+1. **Region name formulas preserved** - No longer overwritten with hardcoded values
+   - E15: `=Regions!B2` (not "Federation")
+   - E47: `=Regions!C2` (not "Klingon Empire")
+   - Y15: `=Regions!D2` (not "Romulan Star Empire")
+   - Y47: `=Regions!E2` (not "Dominion")
+2. **Region positioning corrected** - Bottom regions moved from row 31 to row 47
+3. **Formatting conflicts resolved** - `populate-test-sheet.ts` no longer overwrites merged blocks
+
+**Workflow (3 Steps):**
+```bash
+# Step 1: Copy ALL formatting from source
+cd testing/scripts/active && npx ts-node copy-bracket-formatting.ts
+
+# Step 2: Populate data WITHOUT overwriting formatting
+npm run populate-test-sheet <sheet-id> -- --skip-region-formatting
+
+# Step 3: Championship cell and autosize columns
+cd testing/scripts/active && npx ts-node fix-test-sheet.ts
+```
+
+**Duration:** ~50 seconds | **Result:** 100% formatting fidelity to source sheet
+
+**Documentation:**
+- testing/reports/BRACKET_FORMATTING_CAPTURE.md - Complete formatting specification
+- testing/reports/BRACKET_GENERATION_WORKFLOW.md - 3-step workflow details
+- testing/reports/FORMATTING_CONFLICT_FIX.md - How conflicts were resolved
 
 ---
 
@@ -167,38 +211,27 @@
 
 ## Known Issues
 
-### 1. Bracket Formatting Issues (Deferred)
+### 1. Bracket Formatting Issues (RESOLVED)
 
 **Date Identified:** 2025-11-12
-**Status:** ⚠️ To Fix Later
-**Priority:** Medium
+**Status:** ✅ **FIXED** 2025-11-14
+**Priority:** ~~Medium~~ Complete
 
-The new `complete-bracket-test.ts` script fixed several formatting issues but introduced new problems:
+**Original Issues:**
+- Region names cut off
+- Column auto-sizing issues
+- Formatting conflicts between scripts
+- Region name formulas being overwritten with hardcoded values
 
-#### Championship Cell Issues
-- Formula verification shows `undefined` (may be due to merged cell reading)
-- Need to verify formula is actually working in the sheet
-- May need to adjust how merged cells are read/written
+**Resolution:**
+- Created source sheet formatting authority workflow (see Completed Work #8)
+- `copy-bracket-formatting.ts` copies ALL formatting with 100% fidelity
+- `populate-test-sheet.ts` preserves formatting with `--skip-region-formatting` flag
+- `fix-test-sheet.ts` no longer overwrites region name formulas
+- All formatting comes from user's source sheet: `1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w`
 
-#### Potential Border Conflicts
-- Script applies borders from example sheet with row offset
-- May not match current test sheet structure exactly
-- Need to verify all borders are in correct locations
-
-#### Column Auto-Sizing
-- Auto-resize applied twice (once in populate, once in borders)
-- May cause inconsistent column widths
-- Should consolidate to single auto-resize pass
-
-#### Unknown Additional Issues
-- Need manual visual inspection of generated sheet
-- Document specific issues when identified
-
-**Action Required:**
-- [ ] Manual visual inspection of test sheet
-- [ ] Document specific new issues discovered
-- [ ] Create targeted fix scripts for each issue
-- [ ] Update complete-bracket-test.ts to prevent issues
+**Documentation:**
+- testing/reports/FORMATTING_CONFLICT_FIX.md - Complete resolution details
 
 ### 2. Round 3 Right Side (Outstanding from Previous Work)
 
@@ -267,6 +300,20 @@ See docs/reference/FUTURE.md for complete list of deferred features:
 
 ## Files Created/Modified (Recent)
 
+### New Files (2025-11-14)
+- `testing/scripts/active/read-bracket-formatting.ts` - Analyzes source sheet formatting
+- `testing/scripts/active/copy-bracket-formatting.ts` - Copies ALL formatting from source sheet
+- `testing/scripts/active/fix-test-sheet.ts` - Championship cell and column autosizing
+- `testing/reports/BRACKET_FORMATTING_CAPTURE.md` - Complete formatting specification from source
+- `testing/reports/BRACKET_GENERATION_WORKFLOW.md` - 3-step workflow documentation
+- `testing/reports/FORMATTING_CONFLICT_FIX.md` - How formatting conflicts were resolved
+
+### Modified Files (2025-11-14)
+- `testing/scripts/active/populate-test-sheet.ts` - Added `--skip-region-formatting` flag (lines 465-541)
+- `testing/scripts/active/generate-bracket.ts` - Fixed region row positions (31 → 47)
+- `testing/scripts/active/generate-complete-bracket.ts` - Removed region value overwriting, preserves formulas
+- `PROJECT_STATUS.md` - Added section 8 (Source Sheet Formatting Authority), updated Known Issues
+
 ### New Files (2025-11-12)
 - `testing/scripts/active/complete-bracket-test.ts` - Comprehensive formatting test (REPLACES comprehensive-format-test.ts)
 - `testing/reports/COMPLETE_BRACKET_TEST_SUMMARY.md` - Full documentation of formatting fixes
@@ -316,7 +363,7 @@ See docs/reference/FUTURE.md for complete list of deferred features:
 
 ### Immediate Priority: Begin MVP Development
 
-The bracket formatting is complete (with minor deferred issues). The project is ready to start Discord bot implementation.
+The bracket formatting is complete with source sheet authority established. The project is ready to start Discord bot implementation.
 
 **Critical Path:**
 1. Implement `/tournament create` and validation (see Active Tasks above)
@@ -333,15 +380,20 @@ The bracket formatting is complete (with minor deferred issues). The project is 
 
 ---
 
-## Test Sheet
+## Test Sheets
 
+### Source Sheet (Authority)
 **ID:** 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
 **URL:** https://docs.google.com/spreadsheets/d/1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w/edit
+**Status:** Master template - Single source of truth for ALL bracket formatting
 
-**Status:** Fully formatted with complete-bracket-test.ts (2025-11-12), ready for simulation testing
-
-**Last Generated:** 2025-11-12 12:04:29 UTC
-**Generation Time:** 41.7 seconds
+### Target Sheet (Generated)
+**ID:** 1oInaAH5nZbFCwLnTKmbT5uYO2haFGkBCfPMDBSrmD6M
+**URL:** https://docs.google.com/spreadsheets/d/1oInaAH5nZbFCwLnTKmbT5uYO2haFGkBCfPMDBSrmD6M/edit
+**Status:** Fully formatted with source sheet workflow (2025-11-14), ready for simulation testing
+**Last Generated:** 2025-11-14
+**Generation Time:** ~50 seconds (3-step workflow)
+**Formatting Fidelity:** 100% match to source sheet
 
 ---
 

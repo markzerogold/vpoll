@@ -36,7 +36,7 @@ Created a comprehensive bracket formatting test that addresses **ALL** formattin
 
 - ❌ **Bracket row 1 freeze/bold** - `populate-test-sheet.ts` only freezes/bolds Participants, Config, Regions, Results, Instructions tabs (NOT Bracket)
 - ❌ **Championship cell formula** - `populate-test-sheet.ts` sets static text "Championship" instead of formula `=Config!B3&" Champion"`
-- ❌ **Championship cell merge** - O17:O18 merge not applied
+- ❌ **Championship cell merge** - O17:Q17 horizontal merge not applied
 - ❌ **Comprehensive borders** - `fix-missing-borders.ts` only applies 50 borders, not all 460+
 - ❌ **Calls comprehensive border script** - Should call `fix-bracket-borders.ts` which copies ALL borders from example sheet
 
@@ -78,8 +78,9 @@ Created a comprehensive bracket formatting test that addresses **ALL** formattin
 5. Update Championship Cell (0.7 seconds)
    └─> Custom code in complete-bracket-test.ts
        ├─ Set formula: =Config!B3&" Champion"
-       ├─ Merge cells O17:O18
-       └─ Format: 16pt bold, centered, light gold background, CLIP wrap
+       ├─ Merge cells O17:Q17 (horizontal)
+       ├─ Format: 16pt bold, centered, light gold background, CLIP wrap
+       └─ Autosize columns O, P, Q to fit championship text
 
 6. Verify Formatting (0.7 seconds)
    └─> Custom code in complete-bracket-test.ts
@@ -111,9 +112,10 @@ Created a comprehensive bracket formatting test that addresses **ALL** formattin
 - **Before:** Just text "Championship", no merge, no special formatting
 - **After:**
   - Formula: `=Config!B3&" Champion"` (displays "Star Trek Character Battle 2025 Champion")
-  - Merged: O17:O18
+  - Merged: O17:Q17 (horizontal, 3 columns)
   - Style: 16pt bold, centered, light gold background, no text wrapping
-- **Implementation:** Step 5 applies formula, merge, and formatting
+  - Columns O, P, Q autosized to fit text
+- **Implementation:** Step 5 applies formula, merge, formatting, and column sizing
 
 ### ✅ Comprehensive Borders
 - **Before:** Only 50 borders applied (from `fix-missing-borders.ts`)

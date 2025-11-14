@@ -230,16 +230,65 @@ async function addRegionNameBorders(sheets: any, sheetId: number): Promise<void>
 }
 
 /**
+ * Add missing right borders to columns S, V, Y
+ * These columns need right borders for proper bracket appearance
+ */
+async function addMissingRightBorders(sheets: any, sheetId: number): Promise<void> {
+  console.log('📝 Adding missing right borders (columns S, V, Y)...');
+
+  const borderStyle = {
+    style: 'SOLID',
+    width: 1,
+    color: { red: 0, green: 0, blue: 0 },
+  };
+
+  const requests: any[] = [];
+
+  // Column S (index 18) - Championship column left side
+  // Column V (index 21) - Elite 8 right side
+  // Column Y (index 24) - Sweet 16 right side
+
+  // Add right borders for rows 1-70 on these columns
+  const columnsToFix = [
+    { index: 18, letter: 'S' },  // Championship
+    { index: 21, letter: 'V' },  // Elite 8 right
+    { index: 24, letter: 'Y' },  // Sweet 16 right
+  ];
+
+  for (const col of columnsToFix) {
+    requests.push({
+      updateBorders: {
+        range: {
+          sheetId,
+          startRowIndex: 0,
+          endRowIndex: 70,
+          startColumnIndex: col.index,
+          endColumnIndex: col.index + 1,
+        },
+        right: borderStyle,
+      },
+    });
+  }
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: TEST_SHEET_ID,
+    requestBody: { requests },
+  });
+
+  console.log('✅ Right borders added to columns S, V, Y');
+}
+
+/**
  * Autosize columns and disable text wrapping
  */
 async function autosizeColumns(sheets: any, sheetId: number): Promise<void> {
   console.log('📏 Autosizing columns and disabling text wrap...');
 
+  // First disable text wrapping
   await sheets.spreadsheets.batchUpdate({
     spreadsheetId: TEST_SHEET_ID,
     requestBody: {
       requests: [
-        // Disable text wrapping
         {
           repeatCell: {
             range: {
@@ -257,7 +306,15 @@ async function autosizeColumns(sheets: any, sheetId: number): Promise<void> {
             fields: 'userEnteredFormat.wrapStrategy',
           },
         },
-        // Autosize all columns
+      ],
+    },
+  });
+
+  // Autosize all columns in one request
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: TEST_SHEET_ID,
+    requestBody: {
+      requests: [
         {
           autoResizeDimensions: {
             dimensions: {
@@ -268,6 +325,20 @@ async function autosizeColumns(sheets: any, sheetId: number): Promise<void> {
             },
           },
         },
+      ],
+    },
+  });
+
+  // Explicitly autosize critical columns E, Y, S, V (Sweet 16, Elite 8, Championship)
+  console.log('  Autosizing critical columns E, Y, S, V explicitly...');
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: TEST_SHEET_ID,
+    requestBody: {
+      requests: [
+        { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 4, endIndex: 5 } } }, // E
+        { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 18, endIndex: 19 } } }, // S
+        { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 21, endIndex: 22 } } }, // V
+        { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 24, endIndex: 25 } } }, // Y
       ],
     },
   });
@@ -350,6 +421,9 @@ async function main() {
 
     // Add missing region name borders (test sheet has different positions)
     await addRegionNameBorders(sheets, sheetId);
+
+    // Add missing right borders to columns S, V, Y
+    await addMissingRightBorders(sheets, sheetId);
 
     // Autosize columns and disable text wrapping
     await autosizeColumns(sheets, sheetId);

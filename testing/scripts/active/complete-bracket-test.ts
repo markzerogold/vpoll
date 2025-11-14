@@ -93,7 +93,7 @@ async function runScript(scriptName: string, args: string = '') {
 
   try {
     const result = execSync(
-      `npx ts-node src/${scriptName} ${args}`,
+      `npx ts-node testing/scripts/active/${scriptName} ${args}`,
       { encoding: 'utf8' }
     );
     log(result);
@@ -208,10 +208,10 @@ async function updateChampionshipCell(spreadsheetId: string) {
       throw new Error('Bracket sheet ID is undefined');
     }
 
-    // Update O18 with formula
+    // Update O17 with formula (merged cell stores formula in top-left)
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: 'Bracket!O18',
+      range: 'Bracket!O17',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [['=Config!B3&" Champion"']],
@@ -220,7 +220,28 @@ async function updateChampionshipCell(spreadsheetId: string) {
 
     log('  ✓ Formula set: =Config!B3&" Champion"');
 
-    // Merge O17:O18 for Championship label
+    // Unmerge any existing merges in the championship cell area first
+    log('  ✓ Unmerging any existing championship cell merges...');
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          {
+            unmergeCells: {
+              range: {
+                sheetId,
+                startRowIndex: 16, // Row 17 (0-indexed)
+                endRowIndex: 18,   // Row 18 (inclusive, to catch any vertical merges)
+                startColumnIndex: 14, // Column O (0-indexed)
+                endColumnIndex: 20,   // Column T (to catch any wide merges)
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    // Merge O17:Q17 horizontally for Championship label
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId,
       requestBody: {
@@ -230,9 +251,9 @@ async function updateChampionshipCell(spreadsheetId: string) {
               range: {
                 sheetId,
                 startRowIndex: 16, // Row 17 (0-indexed)
-                endRowIndex: 18,   // Row 18
-                startColumnIndex: 14, // Column O
-                endColumnIndex: 15,
+                endRowIndex: 17,   // Row 17 (exclusive end)
+                startColumnIndex: 14, // Column O (0-indexed)
+                endColumnIndex: 17,   // Column Q (0-indexed, exclusive end)
               },
               mergeType: 'MERGE_ALL',
             },
@@ -242,10 +263,10 @@ async function updateChampionshipCell(spreadsheetId: string) {
             repeatCell: {
               range: {
                 sheetId,
-                startRowIndex: 16,
-                endRowIndex: 18,
-                startColumnIndex: 14,
-                endColumnIndex: 15,
+                startRowIndex: 16, // Row 17
+                endRowIndex: 17,   // Row 17
+                startColumnIndex: 14, // Column O
+                endColumnIndex: 17,   // Column Q
               },
               cell: {
                 userEnteredFormat: {
@@ -267,12 +288,99 @@ async function updateChampionshipCell(spreadsheetId: string) {
       },
     });
 
-    log('  ✓ Cells O17:O18 merged');
+    log('  ✓ Cells O17:Q17 merged (horizontal)');
     log('  ✓ Font: 16pt bold, centered');
     log('  ✓ Background: light gold');
+
+    // Autosize columns O, P, Q to fit the championship text
+    log('  ✓ Autosizing championship columns (O, P, Q)...');
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId,
+                dimension: 'COLUMNS',
+                startIndex: 14, // Column O (0-indexed)
+                endIndex: 17,   // Column Q (exclusive)
+              },
+            },
+          },
+        ],
+      },
+    });
+
     log('✅ Championship cell complete\n');
   } catch (error) {
     log(`❌ Error updating Championship cell: ${error}`);
+    throw error;
+  }
+}
+
+async function finalColumnAutosizing(spreadsheetId: string) {
+  log('\n📐 STEP 7: Final column autosizing (after formula evaluation)...');
+
+  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
+  const auth = new google.auth.GoogleAuth({
+    keyFile: keyPath,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+
+  const sheets = google.sheets({ version: 'v4', auth });
+
+  try {
+    // Get Bracket sheet ID
+    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
+    const bracketSheet = metadata.data.sheets?.find(
+      (s: any) => s.properties?.title === 'Bracket'
+    );
+
+    if (!bracketSheet) {
+      throw new Error('Bracket sheet not found');
+    }
+
+    const sheetId = bracketSheet.properties?.sheetId;
+    if (sheetId === undefined) {
+      throw new Error('Bracket sheet ID is undefined');
+    }
+
+    // Autosize ALL columns one more time to ensure formulas are evaluated
+    log('  ✓ Autosizing all Bracket columns (A-AF)...');
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          {
+            autoResizeDimensions: {
+              dimensions: {
+                sheetId,
+                dimension: 'COLUMNS',
+                startIndex: 0,
+                endIndex: 32, // Columns A-AF
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    // Explicitly autosize critical columns that contain formulas/long text
+    log('  ✓ Explicitly autosizing columns E, Y (region names)...');
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 4, endIndex: 5 } } }, // E
+          { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 24, endIndex: 25 } } }, // Y
+        ],
+      },
+    });
+
+    log('✅ Final column autosizing complete\n');
+  } catch (error) {
+    log(`❌ Error during final autosizing: ${error}`);
     throw error;
   }
 }
@@ -325,10 +433,10 @@ async function verifyFormatting(spreadsheetId: string) {
       log('  ⚠️  Row 1 text NOT bold!');
     }
 
-    // Check Championship cell formula
+    // Check Championship cell formula (merged cell O17:Q17)
     const champCellValue = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'Bracket!O18',
+      range: 'Bracket!O17',
     });
 
     const formula = champCellValue.data.values?.[0]?.[0];
@@ -411,6 +519,9 @@ async function main() {
 
     // STEP 6: Verify all formatting
     await verifyFormatting(spreadsheetId);
+
+    // STEP 7: Final column autosizing (after all formulas evaluated)
+    await finalColumnAutosizing(spreadsheetId);
 
     log('═══════════════════════════════════════════════════════════');
     log('  ✅ ALL FORMATTING COMPLETE');
