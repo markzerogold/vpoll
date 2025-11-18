@@ -9,8 +9,8 @@ import * as path from 'path';
  * - Processes one full round at a time
  */
 
-// vPoll tournament sheet - all regions populated
-const SPREADSHEET_ID = '1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w';
+// vPoll tournament sheet - accept from command line or use default
+const SPREADSHEET_ID = process.argv[2] || '1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w';
 
 interface Match {
   matchId: string;
@@ -182,7 +182,7 @@ function getRound4Matches(): Match[] {
     const isRightSide = regionIdx >= 2;
 
     const baseRow = (regionIdx % 2) * 32 + 16;
-    const checkboxCol = isRightSide ? 'U' : 'J';  // FIX: Was 'V', should be 'U' for right side
+    const checkboxCol = isRightSide ? 'V' : 'J';  // Round 4 right side uses V for checkbox, U for name
 
     matches.push({
       matchId: `R4-${region}-M1`,
@@ -223,8 +223,8 @@ function getRound5Matches(): Match[] {
       round: 5,
       roundName: 'Final 4',
       region: 'GAMMA_vs_DELTA',
-      participant1: { name: '', seed: 0, checkboxCell: 'R31' },  // FIX: Was 'S31', should be 'R31'
-      participant2: { name: '', seed: 0, checkboxCell: 'R32' }   // FIX: Was 'S32', should be 'R32'
+      participant1: { name: '', seed: 0, checkboxCell: 'S31' },  // Round 5 right side: S=checkbox, R=name
+      participant2: { name: '', seed: 0, checkboxCell: 'S32' }
     }
   ];
 }
@@ -256,22 +256,26 @@ async function populateMatchNames(
   // Get all name cells we need to read
   const nameCells = matches.flatMap(m => {
     const p1NameCell = m.participant1.checkboxCell.replace(/^[A-Z]+/, (col) => {
-      // Convert checkbox column to name column (next column)
-      const colCode = col.charCodeAt(col.length - 1);
-      if (col.length === 1) {
-        return String.fromCharCode(colCode + 1); // A→B, D→E, etc.
-      } else {
-        // Handle multi-char columns like AE→AD (right side uses different pattern)
-        return col === 'AE' ? 'AD' :
-               col === 'AB' ? 'AA' :
-               col === 'Y' ? 'X' :
-               col === 'U' ? 'V' :   // FIX: Added U→V mapping for Round 4 right side
-               col === 'R' ? 'S' :   // FIX: Changed S→R to R→S for Round 5 right side
-               col === 'M' ? 'N' :
-               col === 'O' ? 'P' :
-               col === 'Q' ? 'P' :   // Q also reads from P
-               String.fromCharCode(colCode + 1);
+      // Special mappings for bracket columns (both single and multi-char)
+      const specialMappings: Record<string, string> = {
+        'AE': 'AD',  // Round 1 right - checkbox in AE, name in AD
+        'AB': 'AA',  // Round 2 right - checkbox in AB, name in AA
+        'Y': 'X',    // Round 3 right - checkbox in Y, name in X (FIXED: was incorrectly mapping to AB)
+        'V': 'U',    // Round 4 right - checkbox in V, name in U
+        'S': 'R',    // Round 5 right - checkbox in S, name in R
+        'M': 'N',    // Round 5 left - checkbox in M, name in N
+        'O': 'P',    // Round 6 - checkbox in O, name in P
+        'Q': 'P',    // Round 6 - checkbox in Q, name in P (both finalists read from same name column)
+      };
+
+      // Check special mappings first (handles both single and multi-char)
+      if (col in specialMappings) {
+        return specialMappings[col];
       }
+
+      // Default: next column (for standard single-char columns like A→B, D→E, G→H, J→K)
+      const colCode = col.charCodeAt(col.length - 1);
+      return String.fromCharCode(colCode + 1);
     });
 
     const p2NameCell = p1NameCell.replace(/\d+/, (rowNum) => String(parseInt(rowNum) + 1));
@@ -369,45 +373,9 @@ async function processRound(
       values: [[false]]
     });
 
-    // For Round 2+, also write participant names (since cells don't have formulas)
-    if (roundNum >= 2) {
-      // Calculate name cell (column next to checkbox)
-      const nameCol = winner.checkboxCell.replace(/^[A-Z]+/, (col) => {
-        if (col === 'D') return 'E';
-        if (col === 'AB') return 'AA';
-        if (col === 'G') return 'H';
-        if (col === 'Y') return 'X';
-        if (col === 'J') return 'K';
-        if (col === 'V') return 'U';
-        if (col === 'M') return 'N';
-        if (col === 'O') return 'P';
-        return String.fromCharCode(col.charCodeAt(col.length - 1) + 1);
-      });
-
-      const loserNameCol = loser.checkboxCell.replace(/^[A-Z]+/, (col) => {
-        if (col === 'D') return 'E';
-        if (col === 'AB') return 'AA';
-        if (col === 'G') return 'H';
-        if (col === 'Y') return 'X';
-        if (col === 'J') return 'K';
-        if (col === 'V') return 'U';
-        if (col === 'M') return 'N';
-        if (col === 'O') return 'P';
-        return String.fromCharCode(col.charCodeAt(col.length - 1) + 1);
-      });
-
-      // Write winner name with seed
-      checkboxUpdates.push({
-        range: `Bracket!${nameCol}`,
-        values: [[`(${winner.seed}) ${winner.name}`]]
-      });
-
-      // Write loser name with seed (it will show until next round)
-      checkboxUpdates.push({
-        range: `Bracket!${loserNameCol}`,
-        values: [[`(${loser.seed}) ${loser.name}`]]
-      });
-    }
+    // NOTE: We do NOT write participant names to Round 2+ cells.
+    // All rounds now have VLOOKUP formulas that auto-propagate winners from previous round checkboxes.
+    // Writing names here would overwrite those formulas with static values.
 
     // Prepare result row
     const now = new Date();
@@ -445,8 +413,34 @@ async function processRound(
     });
 
     // Wait for Google Sheets formulas to recalculate
-    console.log('⏳ Waiting 5 seconds for formulas to recalculate...');
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log('⏳ Waiting 15 seconds for formulas to recalculate...');
+    await new Promise(resolve => setTimeout(resolve, 15000));
+
+    // Autosize columns after names have been populated by formulas
+    console.log('📏 Autosizing columns to fit winner names...');
+    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
+    const bracketSheet = metadata.data.sheets?.find((s: any) => s.properties?.title === 'Bracket');
+    const bracketSheetId = bracketSheet?.properties?.sheetId;
+
+    if (bracketSheetId !== undefined) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          requests: [
+            {
+              autoResizeDimensions: {
+                dimensions: {
+                  sheetId: bracketSheetId,
+                  dimension: 'COLUMNS',
+                  startIndex: 0,
+                  endIndex: 31, // A-AE
+                },
+              },
+            },
+          ],
+        },
+      });
+    }
   }
 
   // Append results to Results tab

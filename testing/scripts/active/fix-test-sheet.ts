@@ -40,8 +40,38 @@ async function fixSheet() {
   });
   console.log('  ✅ Championship formula written\n');
 
-  // Step 2: Autosize columns
-  console.log('2️⃣  Autosizing columns...');
+  // Step 2: Bold row 1 headers
+  console.log('2️⃣  Making row 1 headers bold...');
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: sheetId,
+    requestBody: {
+      requests: [
+        {
+          repeatCell: {
+            range: {
+              sheetId: bracketSheetId,
+              startRowIndex: 0,
+              endRowIndex: 1,
+              startColumnIndex: 0,
+              endColumnIndex: 31, // A-AE
+            },
+            cell: {
+              userEnteredFormat: {
+                textFormat: {
+                  bold: true,
+                },
+              },
+            },
+            fields: 'userEnteredFormat.textFormat.bold',
+          },
+        },
+      ],
+    },
+  });
+  console.log('  ✅ Row 1 headers bolded\n');
+
+  // Step 3: Autosize columns
+  console.log('3️⃣  Autosizing columns...');
   await sheets.spreadsheets.batchUpdate({
     spreadsheetId: sheetId,
     requestBody: {

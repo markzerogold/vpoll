@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import * as path from 'path';
 
-const SHEET_ID = '1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w';
+const SHEET_ID = process.argv[2] || '1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w';
 
 async function clearSheet() {
   const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
@@ -23,7 +23,41 @@ async function clearSheet() {
 
   console.log(`Found ${sheetIds.length} tabs to clear`);
 
-  // Clear all data and formatting from each sheet
+  // First, get all merges and unmerge them
+  const fullMetadata = await sheets.spreadsheets.get({
+    spreadsheetId: SHEET_ID,
+    fields: 'sheets(properties(sheetId),merges)',
+  });
+
+  const unmergeRequests: any[] = [];
+  fullMetadata.data.sheets?.forEach(sheet => {
+    const merges = sheet.merges || [];
+    merges.forEach(merge => {
+      unmergeRequests.push({
+        unmergeCells: {
+          range: {
+            sheetId: sheet.properties?.sheetId,
+            startRowIndex: merge.startRowIndex,
+            endRowIndex: merge.endRowIndex,
+            startColumnIndex: merge.startColumnIndex,
+            endColumnIndex: merge.endColumnIndex,
+          },
+        },
+      });
+    });
+  });
+
+  if (unmergeRequests.length > 0) {
+    console.log(`  Unmerging ${unmergeRequests.length} merged cell ranges...`);
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID,
+      requestBody: {
+        requests: unmergeRequests,
+      },
+    });
+  }
+
+  // Then clear all data and formatting from each sheet
   const requests = sheetIds.map(sheetId => ({
     updateCells: {
       range: {

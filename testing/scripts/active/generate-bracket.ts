@@ -272,9 +272,9 @@ function generateRound3Region(
     const r2Match2End = r2Match2Start + 1;
 
     if (isRightSide) {
-      // Right side - columns Y and AB
+      // Right side - columns Y and X
       const checkboxCol = 'Y';
-      const nameCol = 'AB';  // FIX: Was 'X', should be 'AB'
+      const nameCol = 'X';  // Round 3 right names in column X
 
       cells.push({
         row: matchStartRow,
@@ -285,8 +285,8 @@ function generateRound3Region(
       cells.push({
         row: matchStartRow,
         col: nameCol,
-        // FIX: Look at Round 2 right side columns W:AA (was AB:AA)
-        formula: `=IFERROR(VLOOKUP(TRUE,{$W$${r2Match1Start}:$W$${r2Match1End},$AA$${r2Match1Start}:$AA$${r2Match1End}},2,FALSE),"")`
+        // FIXED: Round 2 right side has checkboxes in column AB (not W)
+        formula: `=IFERROR(VLOOKUP(TRUE,{$AB$${r2Match1Start}:$AB$${r2Match1End},$AA$${r2Match1Start}:$AA$${r2Match1End}},2,FALSE),"")`
       });
 
       cells.push({
@@ -298,8 +298,8 @@ function generateRound3Region(
       cells.push({
         row: matchStartRow + 1,
         col: nameCol,
-        // FIX: Look at Round 2 right side columns W:AA (was AB:AA)
-        formula: `=IFERROR(VLOOKUP(TRUE,{$W$${r2Match2Start}:$W$${r2Match2End},$AA$${r2Match2Start}:$AA$${r2Match2End}},2,FALSE),"")`
+        // FIXED: Round 2 right side has checkboxes in column AB (not W)
+        formula: `=IFERROR(VLOOKUP(TRUE,{$AB$${r2Match2Start}:$AB$${r2Match2End},$AA$${r2Match2Start}:$AA$${r2Match2End}},2,FALSE),"")`
       });
 
     } else {
@@ -346,9 +346,11 @@ function generateRound4Region(
   const cells: BracketCell[] = [];
 
   // 1 match per region in Round 4 (regional final)
-  const r3Match1Start = startRow;
+  // Round 3 starts 8 rows before Round 4 for each region
+  const r3StartRow = startRow - 8;
+  const r3Match1Start = r3StartRow;
   const r3Match1End = r3Match1Start + 1;
-  const r3Match2Start = startRow + 16;
+  const r3Match2Start = r3StartRow + 16;
   const r3Match2End = r3Match2Start + 1;
 
   if (isRightSide) {
@@ -365,6 +367,7 @@ function generateRound4Region(
     cells.push({
       row: startRow,
       col: nameCol,
+      // Round 3 right side has checkboxes in Y, names in X
       formula: `=IFERROR(VLOOKUP(TRUE,{$Y$${r3Match1Start}:$Y$${r3Match1End},$X$${r3Match1Start}:$X$${r3Match1End}},2,FALSE),"")`
     });
 
@@ -377,6 +380,7 @@ function generateRound4Region(
     cells.push({
       row: startRow + 1,
       col: nameCol,
+      // Round 3 right side has checkboxes in Y, names in X
       formula: `=IFERROR(VLOOKUP(TRUE,{$Y$${r3Match2Start}:$Y$${r3Match2End},$X$${r3Match2Start}:$X$${r3Match2End}},2,FALSE),"")`
     });
 
@@ -419,13 +423,13 @@ function generateRound4Region(
 function generateRound5(): BracketCell[] {
   const cells: BracketCell[] = [];
 
-  // Match 1: ALPHA winner (row 16) vs BETA winner (row 32)
+  // Match 1: ALPHA winner (row 16) vs BETA winner (row 48)
   const alphaRow = 16;
-  const betaRow = 32;
+  const betaRow = 48;
 
-  // Match 2: GAMMA winner (row 16 right side) vs DELTA winner (row 32 right side)
+  // Match 2: GAMMA winner (row 16 right side) vs DELTA winner (row 48 right side)
   const gammaRow = 16;
-  const deltaRow = 32;
+  const deltaRow = 48;
 
   // Match 1 - Left side (columns M and N)
   cells.push({
@@ -521,12 +525,9 @@ function generateRound6(): BracketCell[] {
     formula: '=IFERROR(VLOOKUP(TRUE,$O$26:$P$26,2,FALSE),IFERROR(VLOOKUP(TRUE,{$Q$27,$P$27},2,FALSE)," "))'
   });
 
-  // Mirror winner to right side
-  cells.push({
-    row: 27,
-    col: 'R',
-    formula: '=$P$27'
-  });
+  // NOTE: Column R is ONLY for Round 5 right names (rows 31-32).
+  // The championship winner is already displayed in O19.
+  // We do NOT mirror the winner to other columns.
 
   return cells;
 }

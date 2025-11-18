@@ -1,7 +1,7 @@
 # vPoll Project Status
 
-**Last Updated:** 2025-11-14
-**Current Phase:** Bracket Formatting with Source Sheet Authority - Ready for Bot Development
+**Last Updated:** 2025-11-18
+**Current Phase:** Bracket Formatting Complete - Ready for Bot Development
 **Next Phase:** Implement Discord Bot Commands (MVP Phase 1)
 
 ---
@@ -176,9 +176,149 @@ cd testing/scripts/active && npx ts-node fix-test-sheet.ts <sheet-id>
 **Scripts Deprecated:**
 - `copy-bracket-formatting.ts` - Replaced by standalone approach
 
+### 10. Bracket Row 1 Bold Formatting (2025-11-18)
+
+**Achievement:** Row 1 headers now display in bold font
+
+**Issue:** Row 1 headers were not bold despite being frozen
+**Fix:** Added row 1 bold formatting to `fix-test-sheet.ts` Step 2
+
+**Implementation:**
+- Uses `repeatCell` API with `textFormat.bold: true`
+- Applied to entire row 1 (columns A-AE) of Bracket tab
+- Executes during Step 4 of complete-bracket-test
+
+**Files Modified:**
+- ✅ `testing/scripts/active/fix-test-sheet.ts` - Added Step 2 (lines 43-71)
+
+**Diagnostic Scripts:**
+- ✅ `check-bracket-row1.ts` - Verifies row 1 headers are bold
+
+**Result:** All row 1 headers now display bold correctly
+
+### 11. Column Auto-Sizing After Each Round (2025-11-18)
+
+**Achievement:** Columns automatically resize after each round to fit longer winner names
+
+**Issue:** Columns sized once at setup, but winner names in later rounds could be longer
+**Fix:** Added column autosizing to `simulate-tournament.ts` after formula recalculation
+
+**Implementation:**
+- Executes after each round's formula recalculation wait (15 seconds)
+- Uses `autoResizeDimensions` for all bracket columns (0-31)
+- Gets Bracket sheet ID dynamically via metadata lookup
+- Applied to all 6 rounds
+
+**Files Modified:**
+- ✅ `testing/scripts/active/simulate-tournament.ts` - Added autosizing (lines 419-443)
+
+**Execution Flow:**
+```
+1. Update checkboxes (TRUE/FALSE)
+2. Wait 15 seconds for formulas to recalculate
+3. AUTO-SIZE COLUMNS (NEW!)
+4. Write results to Results tab
+5. Mark round complete
+```
+
+**Result:** Columns now automatically expand to fit winner names as tournament progresses
+
+### 12. Errant Column R Value Fix (2025-11-18)
+
+**Achievement:** Removed legacy "mirror winner" code creating errant R27 value
+
+**Issue:** Column R had errant value in row 27 (`=$P$27` mirroring championship winner)
+**Root Cause:** Legacy code in `generate-bracket.ts` lines 529-533 copying P27 to R27
+
+**Fix:** Removed "Mirror winner to right side" code
+- Championship winner already displayed in O19
+- Column R should ONLY contain Round 5 right participant names (R31, R32)
+- No need to mirror/copy winner to other columns
+
+**Files Modified:**
+- ✅ `testing/scripts/active/generate-bracket.ts` - Removed lines 529-533
+
+**Diagnostic Scripts:**
+- ✅ `check-column-r.ts` - Verifies column R only has R31, R32
+- ✅ `check-row27-context.ts` - Examines full row 27 context
+
+**Before Fix:**
+```
+Row 27: =$P$27 [FORMULA] ❌ (errant value)
+Row 31: =IFERROR(VLOOKUP(...)) [FORMULA] ✅
+Row 32: =IFERROR(VLOOKUP(...)) [FORMULA] ✅
+```
+
+**After Fix:**
+```
+Row 31: =IFERROR(VLOOKUP(...)) [FORMULA] ✅
+Row 32: =IFERROR(VLOOKUP(...)) [FORMULA] ✅
+(No R27!) ✅
+```
+
+**Result:** Column R now only contains Round 5 right participant names (R31, R32)
+
+### 13. Results Tab Merged Cells Fix (2025-11-18)
+
+**Achievement:** Results tab no longer has bracket formatting incorrectly applied
+
+**Issue:** Results tab had 10 merged cells and blank row 50 from bracket formatting
+**Root Cause:** `clear-sheet.ts` did not unmerge cells - old merges persisted across runs
+
+**Why `updateCells` Doesn't Unmerge:**
+- `updateCells` with `fields: '*'` clears cell content and formatting
+- But **merged cell ranges are a sheet property**, not cell-level formatting
+- Must use explicit `unmergeCells` request to remove merges
+
+**Fix:** Updated `clear-sheet.ts` to unmerge all cells before clearing
+1. Get all merge ranges from all sheets
+2. Use `unmergeCells` requests for each merge
+3. Then clear data with `updateCells`
+
+**Files Modified:**
+- ✅ `testing/scripts/active/clear-sheet.ts` - Added unmerge logic (lines 26-58)
+
+**Diagnostic Scripts:**
+- ✅ `check-results-merges.ts` - Verifies Results tab has no merges
+- ✅ `check-sheet-ids.ts` - Shows all sheet IDs
+- ✅ `test-clear-merges.ts` - Tests merge clearing behavior
+
+**Before Fix:**
+```
+Results tab: 10 merged cells ❌
+  - E15:G18 (bracket region merge)
+  - O17:Q18 (bracket championship merge)
+  - O19:Q19 (bracket winner merge)
+  - E47:G50 (bracket region merge)
+  - 6 header merges
+Blank rows: 1 (row 50) ❌
+```
+
+**After Fix:**
+```
+Results tab: 0 merged cells ✅
+Blank rows: 0 ✅
+```
+
+**Documentation:**
+- testing/logs/results-tab-merge-fix.md - Complete fix details
+
+**Result:** Results tab is now clean with no merged cells or blank rows
+
 ---
 
 ## Active Tasks
+
+### High Priority - Known Issues
+
+**Status:** ⚠️ Action Required
+**Priority:** High - Data Quality
+
+#### Results Tab Region Names (2025-11-18)
+- [ ] **TODO:** Fix region names in Results tab
+- **Issue:** Region names may not be populating correctly from simulation
+- **Priority:** Should be fixed before MVP bot development
+- **Location:** Check `simulate-tournament.ts` Results tab writing logic
 
 ### High Priority - MVP Development (Critical)
 
