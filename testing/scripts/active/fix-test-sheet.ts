@@ -9,9 +9,10 @@ async function fixSheet() {
   });
 
   const sheets = google.sheets({ version: 'v4', auth });
-  const sheetId = '1oInaAH5nZbFCwLnTKmbT5uYO2haFGkBCfPMDBSrmD6M';
+  const sheetId = process.argv[2] || '1oInaAH5nZbFCwLnTKmbT5uYO2haFGkBCfPMDBSrmD6M';
 
-  console.log('🔧 Fixing test sheet...\n');
+  console.log('🔧 Fixing test sheet...');
+  console.log(`Sheet ID: ${sheetId}\n`);
 
   // Get Bracket sheet ID
   const metadata = await sheets.spreadsheets.get({ spreadsheetId: sheetId });

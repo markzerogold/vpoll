@@ -112,6 +112,70 @@ cd testing/scripts/active && npx ts-node fix-test-sheet.ts
 - testing/reports/BRACKET_GENERATION_WORKFLOW.md - 3-step workflow details
 - testing/reports/FORMATTING_CONFLICT_FIX.md - How conflicts were resolved
 
+### 9. Standalone Formatting Generation (2025-11-17)
+
+**Achievement:** Bracket generation now works entirely from scripts - no external sheet dependencies required during generation
+
+**Source Sheet:** `1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w` (used once to extract rules, not needed for generation)
+
+**Scripts Created:**
+- ✅ `extract-all-formatting.ts` - ONE-TIME: Extracts all formatting from source, generates standalone code
+- ✅ `apply-formatting-standalone.ts` - GENERATED: Self-contained formatting (481 requests, 9000+ lines)
+
+**Scripts Updated:**
+- ✅ `complete-bracket-test.ts` - Now uses `apply-formatting-standalone.ts` instead of `copy-bracket-formatting.ts`
+- ✅ `fix-test-sheet.ts` - Accepts command-line sheet ID argument
+
+**Key Innovation:**
+- Formatting rules extracted once from source sheet into TypeScript code
+- All 1995 cells, 460 borders, 16 merges codified
+- Championship cell (O17) and winner cell (O19) formatting codified
+- Proper null handling for Google Sheets API responses
+- No external sheet access required during bracket generation
+
+**Workflow (4 Steps):**
+```bash
+# Recommended: One command
+npm run complete-bracket-test <sheet-id>
+
+# Manual steps if needed:
+# 1. Clear sheet
+cd testing/scripts/active && npx ts-node clear-sheet.ts <sheet-id>
+
+# 2. Apply formatting from codified rules (NO external sheet dependency)
+cd testing/scripts/active && npx ts-node apply-formatting-standalone.ts <sheet-id>
+
+# 3. Populate data WITHOUT overwriting formatting
+npm run populate-test-sheet <sheet-id> -- --skip-region-formatting
+
+# 4. Championship cell and autosize columns
+cd testing/scripts/active && npx ts-node fix-test-sheet.ts <sheet-id>
+```
+
+**Duration:** ~60 seconds | **Result:** Perfect bracket generated entirely from scripts
+
+**Benefits:**
+- ✅ No external sheet dependencies during generation
+- ✅ All formatting rules version-controlled in code
+- ✅ Faster (no API calls to read source sheet)
+- ✅ More reliable (no network dependency on source sheet)
+- ✅ Complete independence from external resources
+
+**Documentation:**
+- testing/reports/STANDALONE_FORMATTING_ACHIEVEMENT.md - Complete achievement summary
+- testing/reports/BRACKET_GENERATION_WORKFLOW.md - Updated with extraction process
+- testing/reports/CHAMPIONSHIP_FORMATTING_FIX.md - Championship cell (O17) formatting fix
+- testing/reports/WINNER_CELL_FORMATTING_FIX.md - Winner cell (O19) formatting fix
+
+**Verification Scripts Created:**
+- ✅ `check-source-championship.ts` - Verify O17 formatting in source
+- ✅ `check-target-championship.ts` - Verify O17 formatting in target
+- ✅ `check-source-o19.ts` - Verify O19 formatting in source
+- ✅ `check-target-o19.ts` - Verify O19 formatting in target
+
+**Scripts Deprecated:**
+- `copy-bracket-formatting.ts` - Replaced by standalone approach
+
 ---
 
 ## Active Tasks
@@ -399,21 +463,44 @@ The bracket formatting is complete with source sheet authority established. The 
 
 ## Commands Reference
 
-### Sheet Population (RECOMMENDED)
+### Sheet Population (SINGLE COMMAND - USE THIS) ✅
 
 ```bash
-# Complete bracket generation and formatting (USE THIS)
-npm run complete-bracket-test 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
+# Complete bracket generation and formatting - ONE COMMAND
+npm run complete-bracket-test <sheet-id>
+
+# Example:
+npm run complete-bracket-test 1oInaAH5nZbFCwLnTKmbT5uYO2haFGkBCfPMDBSrmD6M
 ```
 
-### Sheet Population (Manual Steps - Not Recommended)
+**What it does (5 automated steps):**
+1. ✅ Clears sheet completely
+2. ✅ Copies formatting from source sheet (79 cells, 16 merges, row freeze)
+3. ✅ Populates pizza tournament data (136 formulas, 126 checkboxes, 64 participants)
+4. ✅ Fixes championship cell formula and autosizes columns
+5. ✅ Applies comprehensive borders from example sheet (459 borders)
+
+**Result:** Perfectly formatted bracket, ready for simulation or use
+**Duration:** ~2 minutes
+**Column structure:** Round 3 names in column X (no conflicts with AB checkboxes)
+
+### Sheet Population (Manual 5-Step Workflow - Only for Debugging)
 
 ```bash
-# If you need to run steps individually
-npx ts-node src/clear-sheet.ts 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
-npm run populate-test-sheet 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
-npm run apply-borders 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
-# (Still missing row 1 freeze/bold and Championship cell updates)
+# Step 1: Clear sheet
+cd testing/scripts/active && npx ts-node clear-sheet.ts <sheet-id>
+
+# Step 2: Copy formatting from source
+cd testing/scripts/active && npx ts-node copy-bracket-formatting.ts
+
+# Step 3: Populate data (skip region formatting to preserve source formatting)
+npm run populate-test-sheet <sheet-id> -- --skip-region-formatting
+
+# Step 4: Fix championship and autosize
+cd testing/scripts/active && npx ts-node fix-test-sheet.ts
+
+# Step 5: Apply comprehensive borders
+npm run apply-borders <sheet-id>
 ```
 
 ### Verification

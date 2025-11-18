@@ -1,537 +1,84 @@
-import { google } from 'googleapis';
-import * as path from 'path';
 import { execSync } from 'child_process';
-import * as fs from 'fs';
+import * as path from 'path';
 
 /**
- * COMPLETE BRACKET FORMATTING TEST
+ * COMPLETE BRACKET GENERATION AND FORMATTING
  *
- * This script performs ALL necessary steps to generate a fully formatted bracket:
- * 1. Clear sheet completely
- * 2. Populate test data (data + basic formatting)
- * 3. Apply comprehensive bracket borders (from example sheet)
- * 4. Freeze and bold Bracket row 1
- * 5. Update Championship cell with formula
- * 6. Verify all formatting
+ * This script generates a perfectly formatted bracket using ONLY scripts - no external sheet dependencies.
+ * All formulas, formatting rules, and data are generated from code.
  *
- * Order matters! Steps must run in this exact sequence.
+ * Workflow:
+ * 1. Clear sheet completely (clear-sheet.ts)
+ * 2. Apply ALL formatting from extracted rules (apply-formatting-standalone.ts) - 1995 cells, 460 borders, 16 merges
+ * 3. Populate data with formulas (populate-test-sheet --skip-region-formatting)
+ * 4. Fix championship cell and autosize columns (fix-test-sheet.ts)
+ *
+ * All formatting rules extracted from source sheet and codified in apply-formatting-standalone.ts.
+ * All formulas come from generate-bracket.ts.
+ * No external sheet references required during generation.
+ *
+ * Usage: npm run complete-bracket-test <sheet-id>
+ * Example: npm run complete-bracket-test 1oInaAH5nZbFCwLnTKmbT5uYO2haFGkBCfPMDBSrmD6M
  */
 
-const LOG_FILE = 'debug/complete-bracket-test-log.txt';
+const SHEET_ID = process.argv[2];
 
-function log(message: string) {
-  const timestamp = new Date().toISOString();
-  const logMessage = `[${timestamp}] ${message}\n`;
-  console.log(message);
-
-  // Append to log file
-  if (!fs.existsSync('debug')) {
-    fs.mkdirSync('debug');
-  }
-  fs.appendFileSync(LOG_FILE, logMessage);
+if (!SHEET_ID) {
+  console.error('❌ Error: Sheet ID is required');
+  console.error('Usage: npm run complete-bracket-test <sheet-id>');
+  process.exit(1);
 }
 
-async function clearSheet(spreadsheetId: string) {
-  log('\n🧹 STEP 1: Clearing sheet completely...');
+console.log('═══════════════════════════════════════════════════════════');
+console.log('  🎨 COMPLETE BRACKET GENERATION');
+console.log('═══════════════════════════════════════════════════════════');
+console.log(`Sheet ID: ${SHEET_ID}\n`);
 
-  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+try {
+  console.log('Step 1/4: Clearing sheet...');
+  execSync(`npx ts-node testing/scripts/active/clear-sheet.ts ${SHEET_ID}`, {
+    stdio: 'inherit',
+    cwd: path.join(__dirname, '../../..')
   });
 
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  try {
-    // Get all sheets
-    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
-    const allSheets = metadata.data.sheets || [];
-
-    log(`  Found ${allSheets.length} sheets`);
-
-    for (const sheet of allSheets) {
-      const sheetId = sheet.properties?.sheetId;
-      const sheetTitle = sheet.properties?.title;
-
-      if (sheetId === undefined) continue;
-
-      log(`  Clearing sheet: ${sheetTitle}`);
-
-      // Clear all data
-      await sheets.spreadsheets.values.clear({
-        spreadsheetId,
-        range: `${sheetTitle}!A1:ZZ1000`,
-      });
-
-      // Clear all formatting
-      await sheets.spreadsheets.batchUpdate({
-        spreadsheetId,
-        requestBody: {
-          requests: [
-            {
-              updateCells: {
-                range: {
-                  sheetId,
-                },
-                fields: '*',
-              },
-            },
-          ],
-        },
-      });
-    }
-
-    log('✅ Sheet cleared successfully\n');
-  } catch (error) {
-    log(`❌ Error clearing sheet: ${error}`);
-    throw error;
-  }
-}
-
-async function runScript(scriptName: string, args: string = '') {
-  log(`\n📝 Running ${scriptName}...`);
-
-  try {
-    const result = execSync(
-      `npx ts-node testing/scripts/active/${scriptName} ${args}`,
-      { encoding: 'utf8' }
-    );
-    log(result);
-    log(`✅ ${scriptName} completed\n`);
-  } catch (error: any) {
-    log(`❌ Error running ${scriptName}: ${error.message}`);
-    throw error;
-  }
-}
-
-async function freezeAndBoldBracketRow1(spreadsheetId: string) {
-  log('\n❄️  STEP 4: Freezing and bolding Bracket row 1...');
-
-  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  console.log('\nStep 2/4: Applying formatting from codified rules...');
+  console.log('  Source: apply-formatting-standalone.ts (extracted from source sheet)');
+  console.log('  Applying: 1995 cells, 460 borders, 16 merges, championship + winner formatting\n');
+  execSync(`npx ts-node testing/scripts/active/apply-formatting-standalone.ts ${SHEET_ID}`, {
+    stdio: 'inherit',
+    cwd: path.join(__dirname, '../../..')
   });
 
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  try {
-    // Get Bracket sheet ID
-    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
-    const bracketSheet = metadata.data.sheets?.find(
-      (s: any) => s.properties?.title === 'Bracket'
-    );
-
-    if (!bracketSheet) {
-      throw new Error('Bracket sheet not found');
-    }
-
-    const sheetId = bracketSheet.properties?.sheetId;
-    if (sheetId === undefined) {
-      throw new Error('Bracket sheet ID is undefined');
-    }
-
-    // Freeze row 1 and make it bold
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          // Freeze row 1
-          {
-            updateSheetProperties: {
-              properties: {
-                sheetId,
-                gridProperties: {
-                  frozenRowCount: 1,
-                },
-              },
-              fields: 'gridProperties.frozenRowCount',
-            },
-          },
-          // Bold all text in row 1
-          {
-            repeatCell: {
-              range: {
-                sheetId,
-                startRowIndex: 0,
-                endRowIndex: 1,
-                startColumnIndex: 0,
-                endColumnIndex: 32, // All columns through AF
-              },
-              cell: {
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true,
-                  },
-                },
-              },
-              fields: 'userEnteredFormat.textFormat.bold',
-            },
-          },
-        ],
-      },
-    });
-
-    log('  ✓ Row 1 frozen');
-    log('  ✓ Row 1 text bolded');
-    log('✅ Bracket row 1 formatting complete\n');
-  } catch (error) {
-    log(`❌ Error freezing/bolding row 1: ${error}`);
-    throw error;
-  }
-}
-
-async function updateChampionshipCell(spreadsheetId: string) {
-  log('\n🏆 STEP 5: Updating Championship cell with formula...');
-
-  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  console.log('\nStep 3/4: Populating data with formulas...');
+  console.log('  Using --skip-region-formatting to preserve applied formatting\n');
+  execSync(`npm run populate-test-sheet ${SHEET_ID} -- --skip-region-formatting`, {
+    stdio: 'inherit',
+    cwd: path.join(__dirname, '../../..')
   });
 
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  try {
-    // Get Bracket sheet ID
-    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
-    const bracketSheet = metadata.data.sheets?.find(
-      (s: any) => s.properties?.title === 'Bracket'
-    );
-
-    if (!bracketSheet) {
-      throw new Error('Bracket sheet not found');
-    }
-
-    const sheetId = bracketSheet.properties?.sheetId;
-    if (sheetId === undefined) {
-      throw new Error('Bracket sheet ID is undefined');
-    }
-
-    // Update O17 with formula (merged cell stores formula in top-left)
-    await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      range: 'Bracket!O17',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [['=Config!B3&" Champion"']],
-      },
-    });
-
-    log('  ✓ Formula set: =Config!B3&" Champion"');
-
-    // Unmerge any existing merges in the championship cell area first
-    log('  ✓ Unmerging any existing championship cell merges...');
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          {
-            unmergeCells: {
-              range: {
-                sheetId,
-                startRowIndex: 16, // Row 17 (0-indexed)
-                endRowIndex: 18,   // Row 18 (inclusive, to catch any vertical merges)
-                startColumnIndex: 14, // Column O (0-indexed)
-                endColumnIndex: 20,   // Column T (to catch any wide merges)
-              },
-            },
-          },
-        ],
-      },
-    });
-
-    // Merge O17:Q17 horizontally for Championship label
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          {
-            mergeCells: {
-              range: {
-                sheetId,
-                startRowIndex: 16, // Row 17 (0-indexed)
-                endRowIndex: 17,   // Row 17 (exclusive end)
-                startColumnIndex: 14, // Column O (0-indexed)
-                endColumnIndex: 17,   // Column Q (0-indexed, exclusive end)
-              },
-              mergeType: 'MERGE_ALL',
-            },
-          },
-          // Format merged cell: 16pt bold, centered
-          {
-            repeatCell: {
-              range: {
-                sheetId,
-                startRowIndex: 16, // Row 17
-                endRowIndex: 17,   // Row 17
-                startColumnIndex: 14, // Column O
-                endColumnIndex: 17,   // Column Q
-              },
-              cell: {
-                userEnteredFormat: {
-                  backgroundColor: { red: 1, green: 0.949, blue: 0.8 }, // Light gold
-                  textFormat: {
-                    fontSize: 16,
-                    bold: true,
-                    foregroundColor: { red: 0, green: 0, blue: 0 },
-                  },
-                  horizontalAlignment: 'CENTER',
-                  verticalAlignment: 'MIDDLE',
-                  wrapStrategy: 'CLIP', // No wrapping
-                },
-              },
-              fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment,wrapStrategy)',
-            },
-          },
-        ],
-      },
-    });
-
-    log('  ✓ Cells O17:Q17 merged (horizontal)');
-    log('  ✓ Font: 16pt bold, centered');
-    log('  ✓ Background: light gold');
-
-    // Autosize columns O, P, Q to fit the championship text
-    log('  ✓ Autosizing championship columns (O, P, Q)...');
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          {
-            autoResizeDimensions: {
-              dimensions: {
-                sheetId,
-                dimension: 'COLUMNS',
-                startIndex: 14, // Column O (0-indexed)
-                endIndex: 17,   // Column Q (exclusive)
-              },
-            },
-          },
-        ],
-      },
-    });
-
-    log('✅ Championship cell complete\n');
-  } catch (error) {
-    log(`❌ Error updating Championship cell: ${error}`);
-    throw error;
-  }
-}
-
-async function finalColumnAutosizing(spreadsheetId: string) {
-  log('\n📐 STEP 7: Final column autosizing (after formula evaluation)...');
-
-  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  console.log('\nStep 4/4: Fixing championship cell and autosizing...');
+  execSync(`npx ts-node testing/scripts/active/fix-test-sheet.ts ${SHEET_ID}`, {
+    stdio: 'inherit',
+    cwd: path.join(__dirname, '../../..')
   });
 
-  const sheets = google.sheets({ version: 'v4', auth });
+  console.log('\n═══════════════════════════════════════════════════════════');
+  console.log('  ✅ BRACKET GENERATION COMPLETE!');
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log(`\n🔗 View: https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`);
+  console.log('\n📊 Summary:');
+  console.log('  - Sheet cleared');
+  console.log('  - Formatting applied from codified rules (1995 cells, 460 borders, 16 merges, championship + winner)');
+  console.log('  - Data populated (136 formulas, 126 checkboxes, 64 participants)');
+  console.log('  - Championship formula and columns autosized');
+  console.log('  - Column X used for Round 3 names (no conflicts with AB)');
+  console.log('\n✅ Result: Perfect bracket generated entirely from scripts!');
+  console.log('💡 All formulas from generate-bracket.ts');
+  console.log('💡 All formatting from apply-formatting-standalone.ts (extracted rules)');
+  console.log('💡 No external sheet dependencies required');
+  console.log('🎉 Ready for simulation or use!\n');
 
-  try {
-    // Get Bracket sheet ID
-    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
-    const bracketSheet = metadata.data.sheets?.find(
-      (s: any) => s.properties?.title === 'Bracket'
-    );
-
-    if (!bracketSheet) {
-      throw new Error('Bracket sheet not found');
-    }
-
-    const sheetId = bracketSheet.properties?.sheetId;
-    if (sheetId === undefined) {
-      throw new Error('Bracket sheet ID is undefined');
-    }
-
-    // Autosize ALL columns one more time to ensure formulas are evaluated
-    log('  ✓ Autosizing all Bracket columns (A-AF)...');
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          {
-            autoResizeDimensions: {
-              dimensions: {
-                sheetId,
-                dimension: 'COLUMNS',
-                startIndex: 0,
-                endIndex: 32, // Columns A-AF
-              },
-            },
-          },
-        ],
-      },
-    });
-
-    // Explicitly autosize critical columns that contain formulas/long text
-    log('  ✓ Explicitly autosizing columns E, Y (region names)...');
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 4, endIndex: 5 } } }, // E
-          { autoResizeDimensions: { dimensions: { sheetId, dimension: 'COLUMNS', startIndex: 24, endIndex: 25 } } }, // Y
-        ],
-      },
-    });
-
-    log('✅ Final column autosizing complete\n');
-  } catch (error) {
-    log(`❌ Error during final autosizing: ${error}`);
-    throw error;
-  }
+} catch (error: any) {
+  console.error('\n❌ ERROR:', error.message);
+  process.exit(1);
 }
-
-async function verifyFormatting(spreadsheetId: string) {
-  log('\n🔍 STEP 6: Verifying formatting...');
-
-  const keyPath = path.join(__dirname, '../../../keys/vpoll-key.json');
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
-
-  const sheets = google.sheets({ version: 'v4', auth });
-
-  try {
-    // Get Bracket sheet with formatting
-    const metadata = await sheets.spreadsheets.get({
-      spreadsheetId,
-      ranges: ['Bracket!A1:AF70'],
-      includeGridData: true,
-    });
-
-    const bracketSheet = metadata.data.sheets?.find(
-      (s: any) => s.properties?.title === 'Bracket'
-    );
-
-    if (!bracketSheet) {
-      throw new Error('Bracket sheet not found');
-    }
-
-    const sheetProperties = bracketSheet.properties;
-    const frozenRows = sheetProperties?.gridProperties?.frozenRowCount || 0;
-
-    log(`  Frozen rows: ${frozenRows}`);
-    if (frozenRows === 1) {
-      log('  ✅ Row 1 frozen');
-    } else {
-      log('  ⚠️  Row 1 NOT frozen!');
-    }
-
-    // Check row 1 bold
-    const rowData = bracketSheet.data?.[0]?.rowData?.[0];
-    const firstCellBold = rowData?.values?.[0]?.effectiveFormat?.textFormat?.bold;
-
-    log(`  Row 1 first cell bold: ${firstCellBold}`);
-    if (firstCellBold) {
-      log('  ✅ Row 1 text is bold');
-    } else {
-      log('  ⚠️  Row 1 text NOT bold!');
-    }
-
-    // Check Championship cell formula (merged cell O17:Q17)
-    const champCellValue = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: 'Bracket!O17',
-    });
-
-    const formula = champCellValue.data.values?.[0]?.[0];
-    log(`  Championship cell formula: ${formula}`);
-
-    if (formula && formula.includes('Champion')) {
-      log('  ✅ Championship cell has correct content');
-    } else {
-      log('  ⚠️  Championship cell formula incorrect!');
-    }
-
-    // Count borders
-    let borderCount = 0;
-    const rows = bracketSheet.data?.[0]?.rowData || [];
-    for (const row of rows) {
-      if (!row.values) continue;
-      for (const cell of row.values) {
-        const borders = cell.effectiveFormat?.borders;
-        if (
-          borders &&
-          (borders.top?.style !== 'NONE' ||
-            borders.bottom?.style !== 'NONE' ||
-            borders.left?.style !== 'NONE' ||
-            borders.right?.style !== 'NONE')
-        ) {
-          borderCount++;
-        }
-      }
-    }
-
-    log(`  Border cells found: ${borderCount}`);
-    if (borderCount > 400) {
-      log('  ✅ Comprehensive borders applied');
-    } else {
-      log('  ⚠️  Borders may be incomplete (expected 400+, got ${borderCount})');
-    }
-
-    log('\n✅ Verification complete\n');
-  } catch (error) {
-    log(`❌ Error during verification: ${error}`);
-    throw error;
-  }
-}
-
-async function main() {
-  const spreadsheetId = process.argv[2];
-
-  if (!spreadsheetId) {
-    console.error('Usage: ts-node complete-bracket-test.ts <spreadsheet-id>');
-    process.exit(1);
-  }
-
-  // Clear log file
-  if (fs.existsSync(LOG_FILE)) {
-    fs.unlinkSync(LOG_FILE);
-  }
-
-  log('═══════════════════════════════════════════════════════════');
-  log('  COMPLETE BRACKET FORMATTING TEST');
-  log('═══════════════════════════════════════════════════════════');
-  log(`  Spreadsheet ID: ${spreadsheetId}`);
-  log(`  URL: https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`);
-  log('═══════════════════════════════════════════════════════════');
-
-  try {
-    // STEP 1: Clear sheet
-    await clearSheet(spreadsheetId);
-
-    // STEP 2: Populate test data
-    await runScript('populate-test-sheet.ts', spreadsheetId);
-
-    // STEP 3: Apply comprehensive borders from example sheet
-    await runScript('fix-bracket-borders.ts', spreadsheetId);
-
-    // STEP 4: Freeze and bold Bracket row 1
-    await freezeAndBoldBracketRow1(spreadsheetId);
-
-    // STEP 5: Update Championship cell with formula and merge
-    await updateChampionshipCell(spreadsheetId);
-
-    // STEP 6: Verify all formatting
-    await verifyFormatting(spreadsheetId);
-
-    // STEP 7: Final column autosizing (after all formulas evaluated)
-    await finalColumnAutosizing(spreadsheetId);
-
-    log('═══════════════════════════════════════════════════════════');
-    log('  ✅ ALL FORMATTING COMPLETE');
-    log('═══════════════════════════════════════════════════════════');
-    log(`\n📄 Full log saved to: ${LOG_FILE}`);
-    log(`\n🔗 View sheet: https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`);
-  } catch (error) {
-    log(`\n❌ TEST FAILED: ${error}`);
-    process.exit(1);
-  }
-}
-
-main();

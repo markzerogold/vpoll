@@ -1,48 +1,73 @@
 # Bracket Generation Workflow
 
-**Last Updated:** 2025-11-14
+**Last Updated:** 2025-11-17
 
-## Problem Identified
+## Evolution of Approach
 
-The initial approach had a flaw: `copy-bracket-formatting.ts` copied formatting but not VALUES, and `populate-test-sheet.ts` overwrote some of the formatting when adding data. This caused:
-- Region name cells showing cut-off text
-- Championship cell showing wrong format
-- Columns not properly autosized
+### Original Problem (2025-11-14)
+`copy-bracket-formatting.ts` copied formatting but not VALUES, and `populate-test-sheet.ts` overwrote some formatting. This caused cut-off text, wrong championship format, and improper column sizing.
 
-## Solution
+### First Solution (2025-11-14)
+Three-step workflow with `--skip-region-formatting` flag fixed the issues by copying from source sheet.
 
-✅ **FIXED** (2025-11-14) - Three-step workflow now working correctly with `--skip-region-formatting` flag.
+### Current Solution (2025-11-17)
+✅ **STANDALONE GENERATION** - All formatting rules extracted and codified in scripts. No external sheet dependencies required during generation.
+
+**Key Innovation:** `extract-all-formatting.ts` reads source sheet once, generates `apply-formatting-standalone.ts` with all formatting rules as code.
 
 ---
 
 ## Workflow: Generate Formatted Bracket
 
-### Step 1: Copy Formatting from Source
+### Recommended: One-Command Generation
+
+```bash
+npm run complete-bracket-test <sheet-id>
+```
+
+**Duration:** ~60 seconds | **Result:** Perfect bracket ready for simulation
+
+---
+
+### Manual Steps (if needed)
+
+#### Step 1: Clear Sheet
 
 ```bash
 cd testing/scripts/active
-npx ts-node copy-bracket-formatting.ts
+npx ts-node clear-sheet.ts <sheet-id>
+```
+
+**Duration:** ~5 seconds
+
+---
+
+#### Step 2: Apply Formatting from Codified Rules
+
+```bash
+cd testing/scripts/active
+npx ts-node apply-formatting-standalone.ts <sheet-id>
 ```
 
 **What it does:**
-- Reads ALL cell formatting from source sheet (1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w)
-- Creates/clears Bracket tab in target sheet
-- Applies 1995 cells of formatting
-- Copies 16 merged cell ranges
+- Applies ALL formatting from extracted rules (no external sheet dependency)
+- 1995 cells of formatting
+- 460 cells with borders
+- 16 merged cell ranges
 - Freezes row 1
 
-**Duration:** ~30 seconds
+**Duration:** ~15 seconds
 
 **Result:** Blank formatted Bracket tab
 
 ---
 
-### Step 2: Populate Data
+#### Step 3: Populate Data
 
-**IMPORTANT:** Populate script must use `--skip-region-formatting` flag to preserve copied formatting
+**IMPORTANT:** Populate script must use `--skip-region-formatting` flag to preserve applied formatting
 
 ```bash
-npm run populate-test-sheet <target-sheet-id> -- --skip-region-formatting
+npm run populate-test-sheet <sheet-id> -- --skip-region-formatting
 ```
 
 **What it does:**
@@ -51,15 +76,15 @@ npm run populate-test-sheet <target-sheet-id> -- --skip-region-formatting
 - Writes 64 participants, config settings, regions
 - Generates 136 bracket formulas
 - Adds 126 checkbox validations
-- ✅ **SKIPS region formatting** when `--skip-region-formatting` flag is provided (preserves 4×4 merged blocks from Step 1)
+- ✅ **SKIPS region formatting** when `--skip-region-formatting` flag is provided (preserves 4×4 merged blocks from Step 2)
 
 **Duration:** ~15 seconds
 
-**Result:** All tabs populated, region formatting preserved from Step 1
+**Result:** All tabs populated, region formatting preserved from Step 2
 
 ---
 
-### Step 3: Championship Cell and Column Autosizing
+#### Step 4: Championship Cell and Column Autosizing
 
 ```bash
 cd testing/scripts/active
@@ -83,25 +108,29 @@ npx ts-node fix-test-sheet.ts
 
 ---
 
-## Complete Workflow Script (Automated)
+## How Formatting Extraction Works
 
-✅ **READY** (2025-11-14) - The `generate-complete-bracket.ts` script now automates all three steps correctly.
+**One-Time Setup:** Extract formatting rules from source sheet into code
 
-**Completed:**
-1. ✅ Added `--skip-region-formatting` flag to populate-test-sheet.ts
-2. ✅ Updated populate-test-sheet.ts to skip lines 462-541 when flag is set
-3. ⏳ **TODO:** Test generate-complete-bracket.ts end-to-end
-
-**Usage:**
 ```bash
 cd testing/scripts/active
-npx ts-node generate-complete-bracket.ts <target-sheet-id>
+npx ts-node extract-all-formatting.ts
 ```
 
-**The script automatically:**
-1. Copies formatting from source (1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w)
-2. Populates data with `--skip-region-formatting` flag
-3. Writes region values and autosizes columns
+**What it does:**
+1. Reads source sheet (1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w) with `includeGridData`
+2. Extracts ALL formatting:
+   - 16 merged ranges
+   - 460 cells with borders (all 4 sides with style/width/color)
+   - 4 region cells with backgrounds, text colors, fonts
+   - Row 1 freeze setting
+3. Cleans null values from border data
+4. Generates `apply-formatting-standalone.ts` with all rules as TypeScript code
+5. Saves formatted JSON to `testing/logs/extracted-formatting.json` for inspection
+
+**Result:** Self-contained `apply-formatting-standalone.ts` that applies all formatting without needing source sheet
+
+**Duration:** ~10 seconds | **Needs re-run:** Only if source sheet formatting changes
 
 ---
 
@@ -110,47 +139,62 @@ npx ts-node generate-complete-bracket.ts <target-sheet-id>
 **Run these commands in order:**
 
 ```bash
-# Step 1: Copy formatting from source sheet
+# Step 1: Clear sheet
 cd testing/scripts/active
-npx ts-node copy-bracket-formatting.ts
+npx ts-node clear-sheet.ts <sheet-id>
 
-# Step 2: Populate data WITHOUT overwriting formatting
+# Step 2: Apply formatting from codified rules
+cd testing/scripts/active
+npx ts-node apply-formatting-standalone.ts <sheet-id>
+
+# Step 3: Populate data WITHOUT overwriting formatting
 cd ../../..
-npm run populate-test-sheet <target-sheet-id> -- --skip-region-formatting
+npm run populate-test-sheet <sheet-id> -- --skip-region-formatting
 
-# Step 3: Write region name values and autosize columns
+# Step 4: Championship cell and autosize columns
 cd testing/scripts/active
-npx ts-node fix-test-sheet.ts
+npx ts-node fix-test-sheet.ts <sheet-id>
 ```
 
-**Total time:** ~50 seconds
+**Total time:** ~40 seconds
 
-**✅ Result:** Fully formatted bracket with 100% fidelity to source sheet
+**✅ Result:** Perfect bracket generated entirely from scripts, no external sheet dependencies
 
 ---
 
 ## Files Involved
 
-### Source Sheet (User's Formatted Template)
+### Source Sheet (For Reference Only)
 **ID:** `1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w`
-**Purpose:** Master template with perfect formatting manually created by user
+**Purpose:** Source of truth for formatting - used once to extract rules via `extract-all-formatting.ts`
+**Not required during generation:** All formatting rules extracted into `apply-formatting-standalone.ts`
 
-### Scripts Created
-1. **copy-bracket-formatting.ts** - Copies formatting from source to target
-2. **populate-test-sheet.ts** - Populates data (needs update to skip region formatting)
-3. **fix-test-sheet.ts** - Writes region values and autosizes columns
-4. **generate-complete-bracket.ts** - Future: Orchestrates all steps (not ready yet)
+### Active Scripts
+1. **extract-all-formatting.ts** - ONE-TIME: Extracts formatting from source sheet, generates standalone code
+2. **apply-formatting-standalone.ts** - GENERATED: Applies all 481 formatting rules without external dependencies
+3. **populate-test-sheet.ts** - Populates data with `--skip-region-formatting` flag
+4. **fix-test-sheet.ts** - Championship cell and column autosizing
+5. **complete-bracket-test.ts** - Orchestrates all 4 steps automatically
 
-### Scripts Updated
-- **populate-test-sheet.ts** - Fixed tab setup logic, removed invalid Bracket placeholder
+### Deprecated Scripts (No Longer Used)
+- **copy-bracket-formatting.ts** - Replaced by `apply-formatting-standalone.ts`
 
 ---
 
-## What Needs to be Fixed
+## Key Achievements
 
-### ✅ Issue 1: populate-test-sheet.ts Overwrites Region Formatting (FIXED)
+### ✅ Standalone Generation (2025-11-17)
 
-**Status:** Fixed on 2025-11-14
+**Achievement:** Bracket generation no longer requires external sheet during generation
+
+**Implementation:**
+1. Created `extract-all-formatting.ts` - extracts ALL formatting from source sheet into code
+2. Generated `apply-formatting-standalone.ts` - self-contained formatting application
+3. Updated `complete-bracket-test.ts` - uses standalone formatting instead of copying
+
+**Result:** Perfect brackets generated entirely from scripts
+
+### ✅ Issue 1: populate-test-sheet.ts Overwrites Region Formatting (FIXED 2025-11-14)
 
 **Location:** Lines 462-541 (now wrapped in flag check)
 
