@@ -27,6 +27,12 @@ yarn-error.log*
 coverage/
 testing/logs/
 
+# Debug files
+debug/
+*.png
+*.jpg
+*.jpeg
+
 # Google API Credentials
 keys/
 *.json

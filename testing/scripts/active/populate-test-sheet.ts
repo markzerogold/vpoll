@@ -14,80 +14,80 @@ import { generateCompleteBracket, BracketCell } from './generate-bracket';
  * https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
  */
 
-// Mock participant data - 64 Star Trek characters
+// Mock participant data - 64 pizza toppings
 const mockParticipants = [
-  { rank: 1, name: 'Spock (TOS/TAS/Films/SNW)', notes: 'Science Officer, USS Enterprise. Logical and iconic Vulcan.', refLink: 'https://memory-alpha.fandom.com/wiki/Spock' },
-  { rank: 2, name: 'Jean-Luc Picard (TNG/Films)', notes: 'Captain, USS Enterprise-D. "Make it so."', refLink: 'https://memory-alpha.fandom.com/wiki/Jean-Luc_Picard' },
-  { rank: 3, name: 'Data (TNG/Films)', notes: 'Android officer, USS Enterprise-D. Fully functional.', refLink: 'https://memory-alpha.fandom.com/wiki/Data' },
-  { rank: 4, name: 'Worf (TNG/DS9/Films)', notes: 'First Klingon in Starfleet. Honor and glory.', refLink: 'https://memory-alpha.fandom.com/wiki/Worf' },
-  { rank: 5, name: 'Kathryn Janeway (VOY)', notes: 'Captain, USS Voyager. Coffee enthusiast.', refLink: 'https://memory-alpha.fandom.com/wiki/Kathryn_Janeway' },
-  { rank: 6, name: 'Benjamin Sisko (DS9)', notes: 'Commander/Captain, Deep Space Nine. The Emissary.', refLink: 'https://memory-alpha.fandom.com/wiki/Benjamin_Sisko' },
-  { rank: 7, name: 'James T. Kirk (TOS/TAS/Films)', notes: 'Captain, USS Enterprise. Bold and legendary.', refLink: 'https://memory-alpha.fandom.com/wiki/James_T._Kirk' },
-  { rank: 8, name: 'Seven of Nine (VOY)', notes: 'Former Borg drone. Tertiary adjunct of Unimatrix 01.', refLink: 'https://memory-alpha.fandom.com/wiki/Seven_of_Nine' },
-  { rank: 9, name: 'Miles O\'Brien (TNG/DS9)', notes: 'Chief of Operations, DS9. Best engineer.', refLink: 'https://memory-alpha.fandom.com/wiki/Miles_O\'Brien' },
-  { rank: 10, name: 'Kira Nerys (DS9)', notes: 'Major, Bajoran Militia. Freedom fighter.', refLink: 'https://memory-alpha.fandom.com/wiki/Kira_Nerys' },
-  { rank: 11, name: 'The Doctor (VOY)', notes: 'Emergency Medical Hologram. Please state the nature of the medical emergency.', refLink: 'https://memory-alpha.fandom.com/wiki/The_Doctor' },
-  { rank: 12, name: 'Odo (DS9)', notes: 'Changeling, Chief of Security. Justice above all.', refLink: 'https://memory-alpha.fandom.com/wiki/Odo' },
-  { rank: 13, name: 'William Riker (TNG/Films)', notes: 'First Officer, USS Enterprise-D. Number One.', refLink: 'https://memory-alpha.fandom.com/wiki/William_Riker' },
-  { rank: 14, name: 'Jadzia Dax (DS9)', notes: 'Trill science officer. 300+ years of experience.', refLink: 'https://memory-alpha.fandom.com/wiki/Jadzia_Dax' },
-  { rank: 15, name: 'Leonard McCoy (TOS/TAS/Films)', notes: 'Chief Medical Officer. "I\'m a doctor, not a..."', refLink: 'https://memory-alpha.fandom.com/wiki/Leonard_McCoy' },
-  { rank: 16, name: 'Quark (DS9)', notes: 'Ferengi bartender. Rules of Acquisition expert.', refLink: 'https://memory-alpha.fandom.com/wiki/Quark' },
-  { rank: 17, name: 'Deanna Troi (TNG/Films)', notes: 'Counselor, USS Enterprise-D. Empath.', refLink: 'https://memory-alpha.fandom.com/wiki/Deanna_Troi' },
-  { rank: 18, name: 'Geordi La Forge (TNG/Films)', notes: 'Chief Engineer, USS Enterprise-D. VISOR user.', refLink: 'https://memory-alpha.fandom.com/wiki/Geordi_La_Forge' },
-  { rank: 19, name: 'Chakotay (VOY)', notes: 'First Officer, USS Voyager. Former Maquis.', refLink: 'https://memory-alpha.fandom.com/wiki/Chakotay' },
-  { rank: 20, name: 'B\'Elanna Torres (VOY)', notes: 'Chief Engineer, USS Voyager. Half-Klingon.', refLink: 'https://memory-alpha.fandom.com/wiki/B\'Elanna_Torres' },
-  { rank: 21, name: 'Julian Bashir (DS9)', notes: 'Chief Medical Officer, DS9. Genetically enhanced.', refLink: 'https://memory-alpha.fandom.com/wiki/Julian_Bashir' },
-  { rank: 22, name: 'Tuvok (VOY)', notes: 'Tactical/Security Officer, USS Voyager. Vulcan logic.', refLink: 'https://memory-alpha.fandom.com/wiki/Tuvok' },
-  { rank: 23, name: 'Beverly Crusher (TNG/Films)', notes: 'Chief Medical Officer, USS Enterprise-D.', refLink: 'https://memory-alpha.fandom.com/wiki/Beverly_Crusher' },
-  { rank: 24, name: 'Ezri Dax (DS9)', notes: 'Trill counselor. Ninth host of the Dax symbiont.', refLink: 'https://memory-alpha.fandom.com/wiki/Ezri_Dax' },
-  { rank: 25, name: 'Tom Paris (VOY)', notes: 'Helmsman, USS Voyager. Former convict.', refLink: 'https://memory-alpha.fandom.com/wiki/Tom_Paris' },
-  { rank: 26, name: 'Nyota Uhura (TOS/TAS/Films)', notes: 'Communications Officer, USS Enterprise.', refLink: 'https://memory-alpha.fandom.com/wiki/Nyota_Uhura' },
-  { rank: 27, name: 'Montgomery Scott (TOS/TAS/Films)', notes: 'Chief Engineer, USS Enterprise. Miracle worker.', refLink: 'https://memory-alpha.fandom.com/wiki/Montgomery_Scott' },
-  { rank: 28, name: 'Garak (DS9)', notes: 'Cardassian tailor. Just a simple tailor.', refLink: 'https://memory-alpha.fandom.com/wiki/Elim_Garak' },
-  { rank: 29, name: 'Nog (DS9)', notes: 'First Ferengi in Starfleet. Overcame adversity.', refLink: 'https://memory-alpha.fandom.com/wiki/Nog' },
-  { rank: 30, name: 'Neelix (VOY)', notes: 'Morale officer and cook, USS Voyager.', refLink: 'https://memory-alpha.fandom.com/wiki/Neelix' },
-  { rank: 31, name: 'Kes (VOY)', notes: 'Ocampa medical assistant. Telepathic abilities.', refLink: 'https://memory-alpha.fandom.com/wiki/Kes' },
-  { rank: 32, name: 'Guinan (TNG)', notes: 'El-Aurian bartender, Ten Forward. Wise listener.', refLink: 'https://memory-alpha.fandom.com/wiki/Guinan' },
-  { rank: 33, name: 'Q (TNG/DS9/VOY)', notes: 'Omnipotent being from the Q Continuum.', refLink: 'https://memory-alpha.fandom.com/wiki/Q' },
-  { rank: 34, name: 'Tasha Yar (TNG)', notes: 'Chief Security Officer, USS Enterprise-D.', refLink: 'https://memory-alpha.fandom.com/wiki/Tasha_Yar' },
-  { rank: 35, name: 'Wesley Crusher (TNG)', notes: 'Acting Ensign, USS Enterprise-D. Prodigy.', refLink: 'https://memory-alpha.fandom.com/wiki/Wesley_Crusher' },
-  { rank: 36, name: 'Lwaxana Troi (TNG/DS9)', notes: 'Betazoid ambassador. Daughter of the Fifth House.', refLink: 'https://memory-alpha.fandom.com/wiki/Lwaxana_Troi' },
-  { rank: 37, name: 'Ro Laren (TNG)', notes: 'Bajoran officer, USS Enterprise-D.', refLink: 'https://memory-alpha.fandom.com/wiki/Ro_Laren' },
-  { rank: 38, name: 'Keiko O\'Brien (TNG/DS9)', notes: 'Botanist and teacher. Miles\' wife.', refLink: 'https://memory-alpha.fandom.com/wiki/Keiko_O\'Brien' },
-  { rank: 39, name: 'Alexander Rozhenko (TNG/DS9)', notes: 'Worf\'s son. Half-Klingon, half-human.', refLink: 'https://memory-alpha.fandom.com/wiki/Alexander_Rozhenko' },
-  { rank: 40, name: 'Reginald Barclay (TNG/VOY)', notes: 'Systems engineer. Overcame social anxiety.', refLink: 'https://memory-alpha.fandom.com/wiki/Reginald_Barclay' },
-  { rank: 41, name: 'Harry Kim (VOY)', notes: 'Operations Officer, USS Voyager. Forever ensign.', refLink: 'https://memory-alpha.fandom.com/wiki/Harry_Kim' },
-  { rank: 42, name: 'Rom (DS9)', notes: 'Ferengi engineer. Brother of Quark.', refLink: 'https://memory-alpha.fandom.com/wiki/Rom' },
-  { rank: 43, name: 'Leeta (DS9)', notes: 'Dabo girl on Deep Space Nine.', refLink: 'https://memory-alpha.fandom.com/wiki/Leeta' },
-  { rank: 44, name: 'Vic Fontaine (DS9)', notes: 'Holographic lounge singer. Counselor to many.', refLink: 'https://memory-alpha.fandom.com/wiki/Vic_Fontaine' },
-  { rank: 45, name: 'Martok (DS9)', notes: 'Klingon General. Chancellor of the Empire.', refLink: 'https://memory-alpha.fandom.com/wiki/Martok' },
-  { rank: 46, name: 'Gowron (TNG/DS9)', notes: 'Klingon Chancellor. Distinctive eyes.', refLink: 'https://memory-alpha.fandom.com/wiki/Gowron' },
-  { rank: 47, name: 'Kai Winn (DS9)', notes: 'Bajoran religious leader. Complex morality.', refLink: 'https://memory-alpha.fandom.com/wiki/Winn_Adami' },
-  { rank: 48, name: 'Dukat (DS9)', notes: 'Cardassian Gul. Complex antagonist.', refLink: 'https://memory-alpha.fandom.com/wiki/Dukat' },
-  { rank: 49, name: 'Khan Noonien Singh (TOS/Films)', notes: 'Genetically enhanced superhuman. "KHAAAAAN!"', refLink: 'https://memory-alpha.fandom.com/wiki/Khan_Noonien_Singh' },
-  { rank: 50, name: 'Sarek (TOS/TNG/Films)', notes: 'Spock\'s father. Vulcan ambassador.', refLink: 'https://memory-alpha.fandom.com/wiki/Sarek' },
-  { rank: 51, name: 'Amanda Grayson (TOS/Films)', notes: 'Spock\'s human mother.', refLink: 'https://memory-alpha.fandom.com/wiki/Amanda_Grayson' },
-  { rank: 52, name: 'Christopher Pike (TOS/SNW)', notes: 'Captain, USS Enterprise. Picard\'s predecessor.', refLink: 'https://memory-alpha.fandom.com/wiki/Christopher_Pike' },
-  { rank: 53, name: 'Number One (TOS/SNW)', notes: 'First Officer, USS Enterprise. Una Chin-Riley.', refLink: 'https://memory-alpha.fandom.com/wiki/Number_One' },
-  { rank: 54, name: 'Christine Chapel (TOS/SNW)', notes: 'Nurse, USS Enterprise. Unrequited love for Spock.', refLink: 'https://memory-alpha.fandom.com/wiki/Christine_Chapel' },
-  { rank: 55, name: 'Sulu (TOS/Films)', notes: 'Helmsman, USS Enterprise. Oh my!', refLink: 'https://memory-alpha.fandom.com/wiki/Hikaru_Sulu' },
-  { rank: 56, name: 'Chekov (TOS/Films)', notes: 'Navigator, USS Enterprise. Russian pride.', refLink: 'https://memory-alpha.fandom.com/wiki/Pavel_Chekov' },
-  { rank: 57, name: 'Nurse Ogawa (TNG)', notes: 'Head nurse, USS Enterprise-D.', refLink: 'https://memory-alpha.fandom.com/wiki/Alyssa_Ogawa' },
-  { rank: 58, name: 'Mot (TNG)', notes: 'Bolian barber, USS Enterprise-D.', refLink: 'https://memory-alpha.fandom.com/wiki/Mot' },
-  { rank: 59, name: 'Morn (DS9)', notes: 'Lurian bar patron. Surprisingly chatty off-screen.', refLink: 'https://memory-alpha.fandom.com/wiki/Morn' },
-  { rank: 60, name: 'Naomi Wildman (VOY)', notes: 'First child born on USS Voyager.', refLink: 'https://memory-alpha.fandom.com/wiki/Naomi_Wildman' },
-  { rank: 61, name: 'Icheb (VOY)', notes: 'Former Borg drone rescued by Voyager.', refLink: 'https://memory-alpha.fandom.com/wiki/Icheb' },
-  { rank: 62, name: 'Seska (VOY)', notes: 'Cardassian spy posing as Bajoran.', refLink: 'https://memory-alpha.fandom.com/wiki/Seska' },
-  { rank: 63, name: 'Lon Suder (VOY)', notes: 'Betazoid engineer with violent past.', refLink: 'https://memory-alpha.fandom.com/wiki/Lon_Suder' },
-  { rank: 64, name: 'Tuvix (VOY)', notes: 'Transporter accident fusion of Tuvok and Neelix.', refLink: 'https://memory-alpha.fandom.com/wiki/Tuvix' },
+  { rank: 1, name: 'Pepperoni', notes: 'The undisputed king of pizza toppings. Classic, spicy, and beloved worldwide.', refLink: 'https://en.wikipedia.org/wiki/Pepperoni' },
+  { rank: 2, name: 'Italian Sausage', notes: 'Savory, seasoned pork sausage. A staple of traditional Italian-American pizza.', refLink: 'https://en.wikipedia.org/wiki/Italian_sausage' },
+  { rank: 3, name: 'Mushrooms', notes: 'Earthy, umami-rich fungi. Perfect complement to cheese and meats.', refLink: 'https://en.wikipedia.org/wiki/Edible_mushroom' },
+  { rank: 4, name: 'Mozzarella', notes: 'The foundation of pizza. Fresh, melty, and essential.', refLink: 'https://en.wikipedia.org/wiki/Mozzarella' },
+  { rank: 5, name: 'Bacon', notes: 'Crispy, smoky, irresistible. Everything is better with bacon.', refLink: 'https://en.wikipedia.org/wiki/Bacon' },
+  { rank: 6, name: 'Bell Peppers', notes: 'Sweet and crunchy. Adds color and freshness to any pie.', refLink: 'https://en.wikipedia.org/wiki/Bell_pepper' },
+  { rank: 7, name: 'Onions', notes: 'Sweet when caramelized, sharp when raw. Versatile and flavorful.', refLink: 'https://en.wikipedia.org/wiki/Onion' },
+  { rank: 8, name: 'Basil', notes: 'Fresh herb that defines Margherita pizza. Aromatic and classic.', refLink: 'https://en.wikipedia.org/wiki/Basil' },
+  { rank: 9, name: 'Black Olives', notes: 'Briny, rich, and slightly bitter. Mediterranean flavor.', refLink: 'https://en.wikipedia.org/wiki/Olive' },
+  { rank: 10, name: 'Garlic', notes: 'Pungent, aromatic, and essential. Raw or roasted, always delicious.', refLink: 'https://en.wikipedia.org/wiki/Garlic' },
+  { rank: 11, name: 'Prosciutto', notes: 'Delicate Italian ham. Often added after baking for maximum flavor.', refLink: 'https://en.wikipedia.org/wiki/Prosciutto' },
+  { rank: 12, name: 'Ricotta', notes: 'Creamy, mild cheese. Perfect for white pizzas.', refLink: 'https://en.wikipedia.org/wiki/Ricotta' },
+  { rank: 13, name: 'Jalapeños', notes: 'Spicy peppers that bring the heat. Not for the faint of heart.', refLink: 'https://en.wikipedia.org/wiki/Jalape%C3%B1o' },
+  { rank: 14, name: 'Pineapple', notes: 'The most controversial topping. Sweet, tropical, and polarizing.', refLink: 'https://en.wikipedia.org/wiki/Hawaiian_pizza' },
+  { rank: 15, name: 'Spinach', notes: 'Leafy green that wilts beautifully. Adds nutrition and earthy flavor.', refLink: 'https://en.wikipedia.org/wiki/Spinach' },
+  { rank: 16, name: 'Parmesan', notes: 'Aged, nutty, and salty. The finishing touch on many pizzas.', refLink: 'https://en.wikipedia.org/wiki/Parmigiano-Reggiano' },
+  { rank: 17, name: 'Ham', notes: 'Sweet and salty cured pork. Classic pairing with pineapple.', refLink: 'https://en.wikipedia.org/wiki/Ham' },
+  { rank: 18, name: 'Arugula', notes: 'Peppery greens often added fresh after baking. Modern and sophisticated.', refLink: 'https://en.wikipedia.org/wiki/Eruca_vesicaria' },
+  { rank: 19, name: 'Ground Beef', notes: 'Hearty meat topping. Foundation of taco pizza and many meat lovers pies.', refLink: 'https://en.wikipedia.org/wiki/Ground_beef' },
+  { rank: 20, name: 'Tomatoes', notes: 'Fresh sliced tomatoes add brightness. Different from sauce.', refLink: 'https://en.wikipedia.org/wiki/Tomato' },
+  { rank: 21, name: 'Gorgonzola', notes: 'Blue cheese with bold, tangy flavor. Pairs well with pears and walnuts.', refLink: 'https://en.wikipedia.org/wiki/Gorgonzola' },
+  { rank: 22, name: 'Anchovies', notes: 'Salty, umami-packed fish. Love it or hate it.', refLink: 'https://en.wikipedia.org/wiki/Anchovy' },
+  { rank: 23, name: 'Chicken', notes: 'Lean protein that works with BBQ sauce, Buffalo sauce, or classic red sauce.', refLink: 'https://en.wikipedia.org/wiki/Chicken_as_food' },
+  { rank: 24, name: 'Green Olives', notes: 'Tangy and firm. Different flavor profile than black olives.', refLink: 'https://en.wikipedia.org/wiki/Olive' },
+  { rank: 25, name: 'Feta', notes: 'Crumbly Greek cheese. Perfect for Mediterranean-style pizzas.', refLink: 'https://en.wikipedia.org/wiki/Feta' },
+  { rank: 26, name: 'Salami', notes: 'Cured Italian sausage. Similar to pepperoni but with different spices.', refLink: 'https://en.wikipedia.org/wiki/Salami' },
+  { rank: 27, name: 'Roasted Red Peppers', notes: 'Sweet, smoky, and charred. Adds depth and color.', refLink: 'https://en.wikipedia.org/wiki/Roasting' },
+  { rank: 28, name: 'Banana Peppers', notes: 'Mild, tangy peppers. Sweet heat that doesn\'t overpower.', refLink: 'https://en.wikipedia.org/wiki/Banana_pepper' },
+  { rank: 29, name: 'Pancetta', notes: 'Italian bacon. Less smoky than American bacon, more subtle.', refLink: 'https://en.wikipedia.org/wiki/Pancetta' },
+  { rank: 30, name: 'Goat Cheese', notes: 'Creamy, tangy cheese. Pairs beautifully with caramelized onions.', refLink: 'https://en.wikipedia.org/wiki/Goat_cheese' },
+  { rank: 31, name: 'Artichoke Hearts', notes: 'Tender, briny vegetables. Mediterranean delicacy.', refLink: 'https://en.wikipedia.org/wiki/Artichoke' },
+  { rank: 32, name: 'Pesto', notes: 'Basil, pine nuts, and garlic paste. Can replace or complement tomato sauce.', refLink: 'https://en.wikipedia.org/wiki/Pesto' },
+  { rank: 33, name: 'Sun-Dried Tomatoes', notes: 'Concentrated tomato flavor. Sweet, intense, and chewy.', refLink: 'https://en.wikipedia.org/wiki/Sun-dried_tomato' },
+  { rank: 34, name: 'Capers', notes: 'Tiny pickled flower buds. Briny and sophisticated.', refLink: 'https://en.wikipedia.org/wiki/Caper' },
+  { rank: 35, name: 'Canadian Bacon', notes: 'Lean back bacon. Hawaiian pizza essential.', refLink: 'https://en.wikipedia.org/wiki/Back_bacon' },
+  { rank: 36, name: 'Provolone', notes: 'Semi-hard Italian cheese. Melts beautifully, slightly sharp.', refLink: 'https://en.wikipedia.org/wiki/Provolone' },
+  { rank: 37, name: 'Chorizo', notes: 'Spicy Spanish or Mexican sausage. Bold and flavorful.', refLink: 'https://en.wikipedia.org/wiki/Chorizo' },
+  { rank: 38, name: 'Broccoli', notes: 'Nutritious florets that char nicely. Green and healthy.', refLink: 'https://en.wikipedia.org/wiki/Broccoli' },
+  { rank: 39, name: 'Eggplant', notes: 'Sliced aubergine that becomes tender and rich. Italian favorite.', refLink: 'https://en.wikipedia.org/wiki/Eggplant' },
+  { rank: 40, name: 'Meatballs', notes: 'Ground meat formed into balls. Hearty and filling.', refLink: 'https://en.wikipedia.org/wiki/Meatball' },
+  { rank: 41, name: 'Fontina', notes: 'Semi-soft Italian cheese. Creamy and nutty.', refLink: 'https://en.wikipedia.org/wiki/Fontina' },
+  { rank: 42, name: 'Zucchini', notes: 'Mild summer squash. Adds moisture and subtle flavor.', refLink: 'https://en.wikipedia.org/wiki/Zucchini' },
+  { rank: 43, name: 'Truffle Oil', notes: 'Luxurious finishing oil. A few drops transform a pizza.', refLink: 'https://en.wikipedia.org/wiki/Truffle_oil' },
+  { rank: 44, name: 'Egg', notes: 'Runny yolk creates creamy sauce. Breakfast pizza star.', refLink: 'https://en.wikipedia.org/wiki/Egg_as_food' },
+  { rank: 45, name: 'Caramelized Onions', notes: 'Slow-cooked until sweet and jammy. Worth the effort.', refLink: 'https://en.wikipedia.org/wiki/Caramelization' },
+  { rank: 46, name: 'BBQ Sauce', notes: 'Sweet and tangy sauce. Replaces traditional tomato sauce.', refLink: 'https://en.wikipedia.org/wiki/Barbecue_sauce' },
+  { rank: 47, name: 'Asiago', notes: 'Italian aged cheese. Sharp and crumbly.', refLink: 'https://en.wikipedia.org/wiki/Asiago_cheese' },
+  { rank: 48, name: 'Burrata', notes: 'Fresh mozzarella with creamy center. Decadent and luxurious.', refLink: 'https://en.wikipedia.org/wiki/Burrata' },
+  { rank: 49, name: 'Capicola', notes: 'Italian cold cut. Spicy and flavorful cured meat.', refLink: 'https://en.wikipedia.org/wiki/Capocollo' },
+  { rank: 50, name: 'Roasted Garlic', notes: 'Mellow, sweet garlic cloves. Less pungent than raw.', refLink: 'https://en.wikipedia.org/wiki/Roasting' },
+  { rank: 51, name: 'Pecorino Romano', notes: 'Salty sheep\'s milk cheese. Sharp and tangy.', refLink: 'https://en.wikipedia.org/wiki/Pecorino_Romano' },
+  { rank: 52, name: 'Buffalo Sauce', notes: 'Spicy hot sauce and butter. Perfect for buffalo chicken pizza.', refLink: 'https://en.wikipedia.org/wiki/Buffalo_wing_sauce' },
+  { rank: 53, name: 'Mortadella', notes: 'Italian bologna with pistachios. Smooth and flavorful.', refLink: 'https://en.wikipedia.org/wiki/Mortadella' },
+  { rank: 54, name: 'Mascarpone', notes: 'Creamy Italian cheese. Rich and sweet.', refLink: 'https://en.wikipedia.org/wiki/Mascarpone' },
+  { rank: 55, name: 'Gruyere', notes: 'Swiss cheese with nutty flavor. Melts perfectly.', refLink: 'https://en.wikipedia.org/wiki/Gruy%C3%A8re_cheese' },
+  { rank: 56, name: 'Ranch Dressing', notes: 'Creamy dressing drizzled on top. Controversial but popular.', refLink: 'https://en.wikipedia.org/wiki/Ranch_dressing' },
+  { rank: 57, name: 'Speck', notes: 'Smoked prosciutto from Alto Adige. Delicate and smoky.', refLink: 'https://en.wikipedia.org/wiki/Speck' },
+  { rank: 58, name: 'Cheddar', notes: 'Sharp American cheese. Unconventional but tasty.', refLink: 'https://en.wikipedia.org/wiki/Cheddar_cheese' },
+  { rank: 59, name: 'Blue Cheese', notes: 'Bold, pungent cheese. Pairs with buffalo chicken.', refLink: 'https://en.wikipedia.org/wiki/Blue_cheese' },
+  { rank: 60, name: 'Bresaola', notes: 'Air-dried salted beef. Lean and flavorful Italian cured meat.', refLink: 'https://en.wikipedia.org/wiki/Bresaola' },
+  { rank: 61, name: 'Honey', notes: 'Sweet drizzle that contrasts with salty cheese. Modern favorite.', refLink: 'https://en.wikipedia.org/wiki/Honey' },
+  { rank: 62, name: 'Nduja', notes: 'Spicy, spreadable Calabrian sausage. Intense heat and flavor.', refLink: 'https://en.wikipedia.org/wiki/%27Nduja' },
+  { rank: 63, name: 'Soppressata', notes: 'Dry Italian salami. Coarse-ground and flavorful.', refLink: 'https://en.wikipedia.org/wiki/Soppressata' },
+  { rank: 64, name: 'Fig Jam', notes: 'Sweet fruit preserve. Pairs beautifully with prosciutto and cheese.', refLink: 'https://en.wikipedia.org/wiki/Fruit_preserves' },
 ];
 
 // Tournament configuration with descriptions
 const tournamentConfig = [
   ['Setting Name', 'Value', 'Valid Options / Description'],
   ['--- REQUIRED TOURNAMENT SETTINGS ---', '', ''],
-  ['Tournament Name', 'Star Trek Character Battle 2025', 'Any text - Display name for the tournament'],
-  ['Tournament Description', 'Vote for the best character across all Star Trek series!', 'Any text - Brief description shown in announcements'],
+  ['Tournament Name', 'Best Pizza Toppings 2025', 'Any text - Display name for the tournament'],
+  ['Tournament Description', 'Vote for the ultimate pizza topping! From classic pepperoni to controversial pineapple, which will reign supreme?', 'Any text - Brief description shown in announcements'],
   ['Start Date', '2025-10-25', 'Date in YYYY-MM-DD format (display only, not enforced)'],
   ['Poll Length', '24', 'Number of hours (positive integer). Examples: 24, 48, 72'],
   ['Poll Batches', 'full round', '"full round" | "one per region" | "two per region" | "half round" | "sequential" | number (e.g., "6")'],
@@ -340,8 +340,8 @@ async function populateSheet(spreadsheetId: string) {
     const regionsData = [
       // Row 1: Generic headers including "Seed"
       ['Seed', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
-      // Row 2: "Seed" label + Customizable region names
-      ['Seed', 'Federation', 'Klingon Empire', 'Romulan Star Empire', 'Dominion'],
+      // Row 2: "Seed" label + Customizable region names (Pizza Cities)
+      ['Seed', 'New York', 'Chicago', 'New Haven', 'Naples'],
     ];
 
     // Seed order for tournament bracket (ALWAYS FIXED)
@@ -469,35 +469,35 @@ async function populateSheet(spreadsheetId: string) {
     if (!skipRegionFormatting) {
       console.log('Formatting region names...');
 
-      // Region colors from REGION_COLOR_UPDATE.md (2025-11-04)
-      // High contrast colors with optimized text colors for readability
+      // Region colors extracted from source sheet (2025-11-17)
+      // EXACT match to source sheet: 1ako1JgzwNxjG7TfkfwdJDfw6fvr1gL9Svrr8mvBCO_w
       const regionNameFormats = [
-        // Federation (E15) - ALPHA/Region 1 - Firebrick Red #B22222, White text
+        // E15 - ALPHA/Region 1 - Firebrick Red #B22222, White text
         {
           row: 14,
           col: 4,
-          backgroundColor: { red: 0.698, green: 0.133, blue: 0.133 },
+          backgroundColor: { red: 0.69803923, green: 0.13333334, blue: 0.13333334 },
           textColor: { red: 1, green: 1, blue: 1 }
         },
-        // Klingon Empire (E31) - BETA/Region 2 - Amber #FFB300, Black text
+        // E47 - BETA/Region 2 - Amber/Orange #FFB300, White text
         {
-          row: 30,
+          row: 46,
           col: 4,
-          backgroundColor: { red: 1.0, green: 0.702, blue: 0.0 },
-          textColor: { red: 0, green: 0, blue: 0 }
+          backgroundColor: { red: 1.0, green: 0.7019608, blue: 0.0 },
+          textColor: { red: 1, green: 1, blue: 1 }
         },
-        // Romulan Star Empire (Y15) - GAMMA/Region 3 - Light Blue #6699CC, Black text
+        // Y15 - GAMMA/Region 3 - Light Blue #6699CC, White text
         {
           row: 14,
           col: 24,
           backgroundColor: { red: 0.4, green: 0.6, blue: 0.8 },
-          textColor: { red: 0, green: 0, blue: 0 }
+          textColor: { red: 1, green: 1, blue: 1 }
         },
-        // Dominion (Y31) - DELTA/Region 4 - Gray #999999, White text
+        // Y47 - DELTA/Region 4 - Dark Green, White text
         {
-          row: 30,
+          row: 46,
           col: 24,
-          backgroundColor: { red: 0.6, green: 0.6, blue: 0.6 },
+          backgroundColor: { red: 0.023529412, green: 0.2784314, blue: 0.047058824 },
           textColor: { red: 1, green: 1, blue: 1 }
         },
       ];
@@ -515,7 +515,7 @@ async function populateSheet(spreadsheetId: string) {
             userEnteredFormat: {
               backgroundColor: backgroundColor,
               textFormat: {
-                fontSize: 24,
+                fontSize: 20, // EXACT match to source sheet (was 24, should be 20)
                 bold: true,
                 foregroundColor: textColor,
               },

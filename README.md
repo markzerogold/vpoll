@@ -4,6 +4,8 @@
 
 Uses Discord.js v14 native polls + Google Sheets for tournament data management and bracket visualization.
 
+**Repository:** https://github.com/markzerogold/vpoll
+
 ---
 
 ## 🚀 New Session? Start Here
