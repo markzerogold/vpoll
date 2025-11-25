@@ -348,14 +348,15 @@ async function populateSheet(spreadsheetId: string) {
     // Creates matchups: 1v16, 8v9, 5v12, 4v13, 6v11, 3v14, 7v10, 2v15
     const seedOrder = [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15];
 
-    // Distribute 64 participants across 4 regions (16 each)
+    // Distribute 64 participants across 4 regions (16 each) using VLOOKUP formulas
+    // This ensures participants automatically populate from the Participants tab
     // Participant ranks 1-4 go to first seed position across regions
     // Participant ranks 5-8 go to their respective seed positions
     for (let i = 0; i < 16; i++) {
       const seed = seedOrder[i];
       const row: any[] = [seed]; // Column A: Seed number
 
-      // For each region, add the appropriate participant
+      // For each region, add a VLOOKUP formula that pulls from Participants tab
       for (let regionIdx = 0; regionIdx < 4; regionIdx++) {
         // Calculate which participant rank goes in this region's seed position
         // Region 1 (idx 0): ranks 1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61
@@ -364,13 +365,12 @@ async function populateSheet(spreadsheetId: string) {
         // Region 4 (idx 3): ranks 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64
 
         // Find which rank should be at this seed position for this region
-        // The pattern: rank = (seed_position * 4) + region_offset + 1
-        // But we need to map seed to seed position (0-15)
         const seedPosition = i; // Position in seedOrder array
         const participantRank = (seedPosition * 4) + regionIdx + 1;
 
-        const participant = mockParticipants.find(p => p.rank === participantRank);
-        row.push(participant ? participant.name : '');
+        // Use VLOOKUP formula to pull participant name from Participants tab
+        // =VLOOKUP(rank, Participants!$A$2:$B$65, 2, FALSE)
+        row.push(`=VLOOKUP(${participantRank},Participants!$A$2:$B$65,2,FALSE)`);
       }
       regionsData.push(row);
     }

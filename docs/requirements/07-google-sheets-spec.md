@@ -165,10 +165,14 @@ Participants from the Participants tab are distributed by rank:
 - Typical examples: "ALPHA", "BETA", "GAMMA", "DELTA" OR "Federation", "Klingon Empire", "Romulan Star Empire", "Dominion"
 
 **Formulas:**
-- Cells B3:E18 contain VLOOKUP formulas referencing Participants tab
+- Cells B3:E18 contain VLOOKUP formulas referencing Participants tab (implemented in populate-test-sheet.ts as of 2025-11-25)
 - Automatically populate based on Participants tab Rank column
 - Do not manually edit participant names in this tab
-- Example formula (B3): `=VLOOKUP(1, Participants!$A$2:$B$65, 2, FALSE)` pulls Rank 1 participant
+- Example formulas:
+  - B3: `=VLOOKUP(1,Participants!$A$2:$B$65,2,FALSE)` pulls Rank 1 participant
+  - C3: `=VLOOKUP(2,Participants!$A$2:$B$65,2,FALSE)` pulls Rank 2 participant
+  - D3: `=VLOOKUP(3,Participants!$A$2:$B$65,2,FALSE)` pulls Rank 3 participant
+  - E3: `=VLOOKUP(4,Participants!$A$2:$B$65,2,FALSE)` pulls Rank 4 participant
 
 **Formatting:**
 - Both header rows (rows 1-2) are frozen for scrolling visibility

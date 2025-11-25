@@ -18,7 +18,9 @@
 ### 2. Regions Tab Structure
 - Column A: "Seed" (not "Rank") with correct order
 - Participant distribution across 4 regions (16 each)
-- VLOOKUP formulas pull from Participants tab
+- VLOOKUP formulas automatically pull from Participants tab (as of 2025-11-25)
+- Formula pattern: `=VLOOKUP(rank,Participants!$A$2:$B$65,2,FALSE)`
+- Distribution: Region 1 gets ranks 1,5,9,13..., Region 2 gets 2,6,10,14..., etc.
 - Updated documentation (docs/requirements/07-google-sheets-spec.md)
 
 ### 3. Round 1 Bracket Formulas
@@ -335,6 +337,43 @@ Error: Bracket sheet not found
 
 **Result:** Script now runs successfully, applying all 483 formatting requests (1995 cells, 460 borders, 16 merges) to properly created tabs
 
+### 15. Regions Tab VLOOKUP Formula Generation (2025-11-25)
+
+**Achievement:** Regions tab now automatically populates from Participants tab using VLOOKUP formulas
+
+**Change:** Updated `populate-test-sheet.ts` to generate VLOOKUP formulas instead of static values for Regions tab columns B-E
+
+**Before:**
+```typescript
+// Static values
+const participant = mockParticipants.find(p => p.rank === participantRank);
+row.push(participant ? participant.name : '');
+```
+
+**After:**
+```typescript
+// VLOOKUP formulas
+row.push(`=VLOOKUP(${participantRank},Participants!$A$2:$B$65,2,FALSE)`);
+```
+
+**Benefits:**
+- ✅ Participants automatically populate from Participants tab
+- ✅ Changes to Participants tab instantly reflect in Regions tab
+- ✅ No manual sync required between tabs
+- ✅ Consistent with formula-driven architecture
+- ✅ Template sheets now truly dynamic
+
+**Formula Distribution Pattern:**
+- Region 1 (Col B): Ranks 1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61
+- Region 2 (Col C): Ranks 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62
+- Region 3 (Col D): Ranks 3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63
+- Region 4 (Col E): Ranks 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64
+
+**Files Modified:**
+- ✅ `testing/scripts/active/populate-test-sheet.ts` - Lines 351-373: Changed to generate VLOOKUP formulas
+
+**Result:** All new tournament sheets will have formula-driven Regions tab that auto-syncs with Participants tab
+
 ---
 
 ## Active Tasks
@@ -536,6 +575,7 @@ See docs/reference/FUTURE.md for complete list of deferred features:
 
 ### Modified Files (2025-11-25)
 - `testing/scripts/active/complete-bracket-test.ts` - Fixed execution order: now populates data (creates tabs) before applying formatting
+- `testing/scripts/active/populate-test-sheet.ts` - Regions tab now generates VLOOKUP formulas instead of static values (lines 351-373)
 
 ### New Files (2025-11-14)
 - `testing/scripts/active/read-bracket-formatting.ts` - Analyzes source sheet formatting
