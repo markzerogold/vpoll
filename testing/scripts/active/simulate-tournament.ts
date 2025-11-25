@@ -43,14 +43,39 @@ interface MatchResult {
 // Round names for display
 const ROUND_NAMES = ['Round 1', 'Round 2', 'Sweet 16', 'Elite 8', 'Final 4', 'Championship'];
 
-// Region names
-const REGIONS = ['ALPHA', 'BETA', 'GAMMA', 'DELTA'];
+// Region names (will be loaded from Regions tab at runtime)
+let REGIONS: string[] = ['ALPHA', 'BETA', 'GAMMA', 'DELTA']; // Default fallback
 
 /**
  * Generate random vote count (between 20-100)
  */
 function randomVotes(): number {
   return Math.floor(Math.random() * 80) + 20;
+}
+
+/**
+ * Read region names from Regions tab (row 2, columns B-E)
+ */
+async function loadRegionNames(sheets: any, spreadsheetId: string): Promise<void> {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Regions!B2:E2',
+    });
+
+    const values = response.data.values?.[0];
+    if (values && values.length === 4) {
+      REGIONS[0] = values[0] || 'ALPHA';
+      REGIONS[1] = values[1] || 'BETA';
+      REGIONS[2] = values[2] || 'GAMMA';
+      REGIONS[3] = values[3] || 'DELTA';
+      console.log(`📍 Region names loaded: ${REGIONS.join(', ')}`);
+    } else {
+      console.warn('⚠️  Could not read region names, using defaults: ALPHA, BETA, GAMMA, DELTA');
+    }
+  } catch (error) {
+    console.warn('⚠️  Error reading region names, using defaults:', error);
+  }
 }
 
 /**
@@ -211,18 +236,18 @@ function getRound4Matches(): Match[] {
 function getRound5Matches(): Match[] {
   return [
     {
-      matchId: 'R5-ALPHA_vs_BETA-M1',
+      matchId: `R5-${REGIONS[0]}_vs_${REGIONS[1]}-M1`,
       round: 5,
       roundName: 'Final 4',
-      region: 'ALPHA_vs_BETA',
+      region: `${REGIONS[0]}_vs_${REGIONS[1]}`,
       participant1: { name: '', seed: 0, checkboxCell: 'M31' },
       participant2: { name: '', seed: 0, checkboxCell: 'M32' }
     },
     {
-      matchId: 'R5-GAMMA_vs_DELTA-M1',
+      matchId: `R5-${REGIONS[2]}_vs_${REGIONS[3]}-M1`,
       round: 5,
       roundName: 'Final 4',
-      region: 'GAMMA_vs_DELTA',
+      region: `${REGIONS[2]}_vs_${REGIONS[3]}`,
       participant1: { name: '', seed: 0, checkboxCell: 'S31' },  // Round 5 right side: S=checkbox, R=name
       participant2: { name: '', seed: 0, checkboxCell: 'S32' }
     }
@@ -512,6 +537,10 @@ async function simulateTournament() {
   try {
     console.log('🎮 Starting tournament simulation...');
     console.log(`📊 Sheet: https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit\n`);
+
+    // Load region names from Regions tab
+    await loadRegionNames(sheets, SPREADSHEET_ID);
+    console.log('');
 
     // Clear previous simulation results (keep header row)
     console.log('🧹 Clearing previous results from Results tab...');

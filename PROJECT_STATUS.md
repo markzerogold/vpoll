@@ -374,20 +374,59 @@ row.push(`=VLOOKUP(${participantRank},Participants!$A$2:$B$65,2,FALSE)`);
 
 **Result:** All new tournament sheets will have formula-driven Regions tab that auto-syncs with Participants tab
 
+### 16. Results Tab Region Names Fix (2025-11-25)
+
+**Achievement:** Results tab now uses actual custom region names from Regions tab instead of hardcoded ALPHA/BETA/GAMMA/DELTA
+
+**Issue:** Tournament simulation was writing hardcoded region names (ALPHA, BETA, GAMMA, DELTA) to Results tab instead of the user's custom region names (e.g., "New York", "Chicago", "New Haven", "Naples")
+
+**Changes:**
+- Updated `simulate-tournament.ts` to dynamically load region names from Regions tab (row 2, columns B-E) at simulation start
+- Changed `REGIONS` from constant to variable loaded at runtime
+- Updated Round 5 match generation to use actual region names instead of hardcoded values
+
+**Before:**
+```typescript
+const REGIONS = ['ALPHA', 'BETA', 'GAMMA', 'DELTA'];
+```
+
+**After:**
+```typescript
+let REGIONS: string[] = ['ALPHA', 'BETA', 'GAMMA', 'DELTA']; // Default fallback
+
+async function loadRegionNames(sheets: any, spreadsheetId: string): Promise<void> {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Regions!B2:E2',
+  });
+  const values = response.data.values?.[0];
+  if (values && values.length === 4) {
+    REGIONS[0] = values[0] || 'ALPHA';
+    REGIONS[1] = values[1] || 'BETA';
+    REGIONS[2] = values[2] || 'GAMMA';
+    REGIONS[3] = values[3] || 'DELTA';
+  }
+}
+```
+
+**Round 5 Example:**
+- **Before:** `R5-ALPHA_vs_BETA-M1`, region: `ALPHA_vs_BETA`
+- **After:** `R5-New York_vs_Chicago-M1`, region: `New York_vs_Chicago`
+
+**Benefits:**
+- ✅ Results tab now shows user's custom region names
+- ✅ Better data quality and readability
+- ✅ Consistent with user's tournament theme
+- ✅ Works for all 6 rounds including Final Four
+
+**Files Modified:**
+- ✅ `testing/scripts/active/simulate-tournament.ts` - Added loadRegionNames(), updated Round 5 match generation
+
+**Result:** Results tab matches are now labeled with the actual region names chosen by tournament creator
+
 ---
 
 ## Active Tasks
-
-### High Priority - Known Issues
-
-**Status:** ⚠️ Action Required
-**Priority:** High - Data Quality
-
-#### Results Tab Region Names (2025-11-18)
-- [ ] **TODO:** Fix region names in Results tab
-- **Issue:** Region names may not be populating correctly from simulation
-- **Priority:** Should be fixed before MVP bot development
-- **Location:** Check `simulate-tournament.ts` Results tab writing logic
 
 ### High Priority - MVP Development (Critical)
 
@@ -576,6 +615,8 @@ See docs/reference/FUTURE.md for complete list of deferred features:
 ### Modified Files (2025-11-25)
 - `testing/scripts/active/complete-bracket-test.ts` - Fixed execution order: now populates data (creates tabs) before applying formatting
 - `testing/scripts/active/populate-test-sheet.ts` - Regions tab now generates VLOOKUP formulas instead of static values (lines 351-373)
+- `testing/scripts/active/simulate-tournament.ts` - Results tab now uses actual region names from Regions tab instead of hardcoded ALPHA/BETA/GAMMA/DELTA
+- `PROJECT_STATUS.md` - Added Section 16 (Results Tab Region Names Fix), removed from Known Issues
 
 ### New Files (2025-11-14)
 - `testing/scripts/active/read-bracket-formatting.ts` - Analyzes source sheet formatting
