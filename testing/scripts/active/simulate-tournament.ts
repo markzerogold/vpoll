@@ -500,6 +500,32 @@ async function processRound(
         values: resultRows,
       },
     });
+
+    // Autosize Results tab columns to fit participant names
+    console.log('📏 Autosizing Results tab columns to fit names...');
+    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
+    const resultsSheet = metadata.data.sheets?.find((s: any) => s.properties?.title === 'Results');
+    const resultsSheetId = resultsSheet?.properties?.sheetId;
+
+    if (resultsSheetId !== undefined) {
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          requests: [
+            {
+              autoResizeDimensions: {
+                dimensions: {
+                  sheetId: resultsSheetId,
+                  dimension: 'COLUMNS',
+                  startIndex: 0,
+                  endIndex: 16, // A-P (16 columns)
+                },
+              },
+            },
+          ],
+        },
+      });
+    }
   }
 
   console.log(`\n✅ Round ${roundNum} complete!`);
